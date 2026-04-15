@@ -1,0 +1,6 @@
+@SistemaGolAhora_HostAddress = http://localhost:5184
+
+GET {{SistemaGolAhora_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
