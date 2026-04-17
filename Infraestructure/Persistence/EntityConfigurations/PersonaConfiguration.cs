@@ -34,7 +34,8 @@ namespace Infraestructure.Persistence.EntityConfigurations
                 .IsRequired();
 
             entity.Property(p => p.Telefono)
-                .HasMaxLength(20);
+                .HasMaxLength(20)
+                .IsRequired();
 
             entity.Property(p => p.Direccion)
                 .HasMaxLength(200);
