@@ -16,6 +16,6 @@ namespace Domain.Entities
         // Relaciones
         //public ICollection<Clase> Clases { get; set; }
 
-        //public ICollection<Entrenamiento> Entrenamientos { get; set; }
+        public ICollection<Entrenamiento> Entrenamientos { get; set; }
     }
 }

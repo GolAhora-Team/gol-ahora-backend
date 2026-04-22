@@ -32,6 +32,7 @@ namespace Domain.Entities
         public decimal PrecioPorHora { get; set; }
 
         // Relaciones
-        //public ICollection<Reserva> Reservas { get; set; }
+        public ICollection<Reserva> Reservas { get; set; }
+        public ICollection<Precio> Precios { get; set; }
     }
 }
