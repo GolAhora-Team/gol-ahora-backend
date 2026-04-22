@@ -12,10 +12,10 @@ namespace Infraestructure.Persistence.EntityConfigurations
             entity.HasKey(p => p.Id);
 
             // Discriminador (herencia TPH)
-            //entity.HasDiscriminator<string>("TipoPersona")
-            //    .HasValue<Cliente>("Cliente")
-            //    .HasValue<Profesor>("Profesor")
-            //    .HasValue<Administrador>("Administrador");
+            entity.HasDiscriminator<string>("TipoPersona")
+                .HasValue<Cliente>("Cliente")
+                .HasValue<Profesor>("Profesor")
+                .HasValue<Administrador>("Administrador");
 
             // Propiedades obligatorias
             entity.Property(p => p.Nombre)
@@ -34,7 +34,8 @@ namespace Infraestructure.Persistence.EntityConfigurations
                 .IsRequired();
 
             entity.Property(p => p.Telefono)
-                .HasMaxLength(20);
+                .HasMaxLength(20)
+                .IsRequired();
 
             entity.Property(p => p.Direccion)
                 .HasMaxLength(200);
