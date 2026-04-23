@@ -20,13 +20,25 @@ namespace Infraestructure.Command
         public async Task InsertCliente(Cliente cliente)
         {
             _context.Add(cliente);
-
             await _context.SaveChangesAsync();
         }
 
-        public Task RemoveCliente(int cliente)
+        public async Task UpdateCliente(Cliente cliente)
         {
-            throw new NotImplementedException();
+            _context.Update(cliente);
+            await _context.SaveChangesAsync();
         }
+
+        public async Task RemoveCliente(int idCliente)
+        {
+            var cliente = await _context.Clientes.FindAsync(idCliente);
+
+            if (cliente != null)
+            {
+                _context.Remove(cliente); 
+                await _context.SaveChangesAsync();
+            }
+        }       
+
     }
 }
