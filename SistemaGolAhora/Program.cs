@@ -1,3 +1,7 @@
+using Aplication.Interfaces.ICliente;
+using Aplication.UseCase.Clientes;
+using Infraestructure.Command;
+using Infraestructure.Querys;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +17,19 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+//custom
+
+builder.Services.AddScoped<IClienteServices, ClientesService>();
+
+builder.Services.AddScoped<IClienteQuery, ClienteQuery>();
+builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
+
+
+
+
+
 
 var app = builder.Build();
 
