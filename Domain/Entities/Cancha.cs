@@ -33,5 +33,6 @@ namespace Domain.Entities
 
         // Relaciones
         public ICollection<Reserva> Reservas { get; set; }
+        public ICollection<Precio> Precios { get; set; }
     }
 }
