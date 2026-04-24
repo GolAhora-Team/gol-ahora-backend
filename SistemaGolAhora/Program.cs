@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IClienteServices, ClientesService>();
 
-builder.Services.AddScoped<IClienteQuery, ClienteQuery>();
+builder.Services.AddScoped<IClientesQuery, ClientesQuery>();
 builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
 
 

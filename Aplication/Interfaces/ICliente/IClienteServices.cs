@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Aplication.DTOs.Clientes;
+using Aplication.Response;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,10 @@ namespace Aplication.Interfaces.ICliente
 {
     public interface IClienteServices
     {
-        Task<Cliente> CreateCliente();
-        Task<Cliente> DeleteCliente();
-        Task<Cliente> UpdateCliente(int clienteId);
-        Task<List<Cliente>> GetAll();
+        Task<ClienteResponse> CreateCliente(CreateClienteRequest request);        
+        Task<ClienteResponse> UpdateCliente(int clienteId, UpdateClienteRequest request);
+        Task DeleteCliente(int clienteId);
+        Task<List<ClienteResponse>> GetAll();
+        Task<ClienteResponse> GetClienteById(int clienteId);
     }
 }
