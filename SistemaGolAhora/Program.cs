@@ -1,4 +1,5 @@
 using Aplication.Interfaces.ICliente;
+using Aplication.Interfaces.IJugador;
 using Aplication.UseCase.Clientes;
 using Infraestructure.Command;
 using Infraestructure.Querys;
@@ -25,6 +26,8 @@ builder.Services.AddScoped<IClienteServices, ClientesService>();
 
 builder.Services.AddScoped<IClienteQuery, ClienteQuery>();
 builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
+builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
+builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
 
 
 
