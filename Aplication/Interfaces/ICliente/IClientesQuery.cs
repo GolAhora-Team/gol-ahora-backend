@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Aplication.Interfaces.ICliente
 {
-    public interface IClienteQuery
+    public interface IClientesQuery
     {
-        List<Cliente> GetListClientes();
-        Cliente GetCliente(int id);
+        Task<Cliente> GetClienteById(int idCliente);
+        Task<IEnumerable<Cliente>> GetListClientes();
     }
 }
