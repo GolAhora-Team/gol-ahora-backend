@@ -30,6 +30,8 @@ builder.Services.AddScoped<IClienteServices, ClientesService>();
 builder.Services.AddScoped<IClientesQuery, ClientesQuery>();
 builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
 builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
+
+//Jugadores
 builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
 
 //Asistencia
