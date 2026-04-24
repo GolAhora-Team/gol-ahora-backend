@@ -2,6 +2,7 @@ using Aplication.Interfaces.IAsistencia;
 using Aplication.Interfaces.IClases;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IReserva;
+using Aplication.Interfaces.IJugador;
 using Aplication.UseCase.Clientes;
 using Infraestructure.Command;
 using Infraestructure.Querys;
@@ -28,6 +29,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IClienteServices, ClientesService>();
 builder.Services.AddScoped<IClientesQuery, ClientesQuery>();
 builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
+builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
+builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
 
 //Asistencia
 builder.Services.AddScoped<IAsistenciaCommand, AsistneciaCommand>();
