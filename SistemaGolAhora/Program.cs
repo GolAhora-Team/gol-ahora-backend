@@ -1,3 +1,4 @@
+using Aplication.Interfaces.IAdmin;
 using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IJugador;
@@ -32,6 +33,10 @@ builder.Services.AddScoped<ICanchaQuery, CanchasQuery>();
 builder.Services.AddScoped<IPrecioCommand, PrecioCommand>();
 builder.Services.AddScoped<IPrecioQuery, PreciosQuery>();
 builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
+builder.Services.AddScoped<IJugadorCommand, JugadoresCommand>();
+builder.Services.AddScoped<IAdminCommand, AdministradorCommand>();
+builder.Services.AddScoped<IAdminQuery, AdminQuery>();
+builder.Services.AddScoped<IAdminService, AdministradorService>();
 
 
 
