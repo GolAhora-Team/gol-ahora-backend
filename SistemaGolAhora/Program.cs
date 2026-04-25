@@ -1,5 +1,7 @@
+using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IJugador;
+using Aplication.Interfaces.IPrecio;
 using Aplication.UseCase.Clientes;
 using Infraestructure.Command;
 using Infraestructure.Querys;
@@ -23,10 +25,12 @@ builder.Services.AddSwaggerGen();
 //custom
 
 builder.Services.AddScoped<IClienteServices, ClientesService>();
-
 builder.Services.AddScoped<IClientesQuery, ClientesQuery>();
 builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
-builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
+builder.Services.AddScoped<ICanchaCommand, CanchaCommand>();
+builder.Services.AddScoped<ICanchaQuery, CanchasQuery>();
+builder.Services.AddScoped<IPrecioCommand, PrecioCommand>();
+builder.Services.AddScoped<IPrecioQuery, PreciosQuery>();
 builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
 
 
