@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Aplication.DTOs.Descuento;
+using Aplication.DTOs.Request.Descuento;
 
 
 namespace Aplication.Interfaces.IDescuento

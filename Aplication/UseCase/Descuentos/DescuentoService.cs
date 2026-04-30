@@ -1,6 +1,5 @@
 ﻿using Aplication.Interfaces.IDescuento;
 using Aplication.Response;
-using Aplication.DTOs.Descuento;
 using Domain.Entities;
 
 using System;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Aplication.DTOs.Request.Descuento;
 
 namespace Aplication.UseCase.Descuentos
 {

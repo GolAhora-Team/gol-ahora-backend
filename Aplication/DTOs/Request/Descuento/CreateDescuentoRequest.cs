@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aplication.DTOs.Descuento
+namespace Aplication.DTOs.Request.Descuento
 {
-    public class UpdateDescuentoRequest
+    public class CreateDescuentoRequest
     {
         public string Nombre { get; set; }
         public string Descripcion { get; set; }

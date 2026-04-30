@@ -4,7 +4,6 @@ using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IReserva;
 using Aplication.Interfaces.IAdmin;
 using Aplication.Interfaces.ICancha;
-using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IDescuento;
 using Aplication.Interfaces.IJugador;
 using Aplication.Interfaces.IPrecio;

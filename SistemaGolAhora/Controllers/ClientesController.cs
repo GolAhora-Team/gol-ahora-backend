@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Clientes;
+﻿using Aplication.DTOs.Request.Cliente;
 using Aplication.Interfaces.ICliente;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
