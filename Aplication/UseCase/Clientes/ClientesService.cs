@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Clientes;
+﻿using Aplication.DTOs.Request.Cliente;
 using Aplication.Interfaces.ICliente;
 using Aplication.Response;
 using Domain.Entities;
@@ -15,88 +15,30 @@ namespace Aplication.UseCase.Clientes
     {
         private readonly IClientesCommand _command;
         private readonly IClientesQuery _query;
+        private readonly IClienteMapper _mapper;
 
-        public ClientesService(IClientesCommand command, IClientesQuery query)
+        public ClientesService(IClientesCommand command, IClientesQuery query, IClienteMapper mapper)
         {
             _command = command;
             _query = query;
+            _mapper = mapper;
         }
 
         public async Task<ClienteResponse> CreateCliente(CreateClienteRequest request)
         {
-            var cliente = new Cliente
-            {
-                Nombre = request.Nombre,
-                Apellido = request.Apellido,
-                Dni = request.Dni,
-                Genero = request.Genero,
-                FechaNacimiento = request.FechaNacimiento,
-                Telefono = request.Telefono,                
-                Pais = request.Pais,
-                Provincia = request.Provincia,
-                Localidad = request.Localidad,
-                CodigoPostal = request.CodigoPostal,
-                Direccion = request.Direccion,
-                ContactoEmergencia = request.ContactoEmergencia,
-                Email = request.Email,
-                ObraSocial = request.ObraSocial,
-                AptoFisico = request.AptoFisico,
-            };
+            var cliente = _mapper.CreateCliente(request);
 
             await _command.InsertCliente(cliente);
-            return new ClienteResponse
-            {
-                Nombre = cliente.Nombre,
-                Apellido = cliente.Apellido,
-                Dni = cliente.Dni,
-                Genero = cliente.Genero,
-                FechaNacimiento = cliente.FechaNacimiento,
-                Telefono = cliente.Telefono,
-                Pais= cliente.Pais,
-                Provincia= cliente.Provincia,
-                Localidad= cliente.Localidad,
-                CodigoPostal= cliente.CodigoPostal,
-                Direccion = cliente.Direccion,
-                ContactoEmergencia = cliente.ContactoEmergencia,
-                Email = cliente.Email,
-                ObraSocial= cliente.ObraSocial,
-                AptoFisico= cliente.AptoFisico
-            };            
-        }      
-                
+
+            cliente = await _query.GetClienteById(cliente.Id);
+            return _mapper.CreateClienteResponse(cliente);               
+        }                      
 
         public async Task<List<ClienteResponse>> GetAll()
         {            
             var clientes = await _query.GetListClientes();
-                        
-            var responseList = new List<ClienteResponse>();
-            foreach (var cliente in clientes)
-            {
-                responseList.Add(new ClienteResponse
-                {
-                    Id = cliente.Id,
-                    Nombre = cliente.Nombre,
-                    Apellido = cliente.Apellido,
-                    Dni = cliente.Dni,
-                    Genero = cliente.Genero,
-                    FechaNacimiento = cliente.FechaNacimiento,
-                    Telefono = cliente.Telefono,
-                    Pais = cliente.Pais,
-                    Provincia = cliente.Provincia,
-                    Localidad = cliente.Localidad,
-                    CodigoPostal = cliente.CodigoPostal,
-                    Direccion = cliente.Direccion,
-                    ContactoEmergencia = cliente.ContactoEmergencia,
-                    Email = cliente.Email,
-                    ObraSocial = cliente.ObraSocial,
-                    AptoFisico = cliente.AptoFisico,
-                    FechaAlta = cliente.FechaAlta,
-                    FechaBaja = cliente.FechaBaja,
-                    EsSocioActivo = cliente.EsSocioActivo
-                });
-            }
 
-            return responseList;
+            return clientes.Select(cliente => _mapper.CreateClienteResponse(cliente)).ToList();
         }
         
         public async Task<ClienteResponse> UpdateCliente(int clienteId, UpdateClienteRequest request)
@@ -125,26 +67,8 @@ namespace Aplication.UseCase.Clientes
 
             await _command.UpdateCliente(clienteOriginal);
 
-            return new ClienteResponse
-            {
-                Id = clienteOriginal.Id,
-                Nombre = clienteOriginal.Nombre,
-                Apellido = clienteOriginal.Apellido,
-                Dni = clienteOriginal.Dni,
-                Genero = clienteOriginal.Genero,
-                FechaNacimiento = clienteOriginal.FechaNacimiento,
-                Telefono = clienteOriginal.Telefono,
-                Pais = clienteOriginal.Pais,
-                Provincia = clienteOriginal.Provincia,
-                Localidad = clienteOriginal.Localidad,
-                CodigoPostal = clienteOriginal.CodigoPostal,
-                Direccion = clienteOriginal.Direccion,
-                ContactoEmergencia = clienteOriginal.ContactoEmergencia,
-                Email = clienteOriginal.Email,
-                ObraSocial = clienteOriginal.ObraSocial,
-                AptoFisico = clienteOriginal.AptoFisico,
-                EsSocioActivo = clienteOriginal.EsSocioActivo
-            };
+            clienteOriginal = await _query.GetClienteById(clienteOriginal.Id);
+            return _mapper.CreateClienteResponse(clienteOriginal);
         }
 
         public async Task<ClienteResponse> GetClienteById(int clienteId)
@@ -154,33 +78,19 @@ namespace Aplication.UseCase.Clientes
             if (cliente == null)
                 throw new Exception("El cliente no existe");
 
-            return new ClienteResponse
-            {
-                Id = cliente.Id,
-                Nombre = cliente.Nombre,
-                Apellido = cliente.Apellido,
-                Dni = cliente.Dni,
-                Genero = cliente.Genero,
-                FechaNacimiento = cliente.FechaNacimiento,
-                Telefono = cliente.Telefono,
-                Pais = cliente.Pais,
-                Provincia = cliente.Provincia,
-                Localidad = cliente.Localidad,
-                CodigoPostal = cliente.CodigoPostal,
-                Direccion = cliente.Direccion,
-                ContactoEmergencia = cliente.ContactoEmergencia,
-                Email = cliente.Email,
-                ObraSocial = cliente.ObraSocial,
-                AptoFisico = cliente.AptoFisico,
-                FechaAlta = cliente.FechaAlta,
-                FechaBaja = cliente.FechaBaja,
-                EsSocioActivo = cliente.EsSocioActivo
-            };
+            return _mapper.CreateClienteResponse(cliente);
         }
                 
-        public async Task DeleteCliente(int id)
+        public async Task<ClienteResponse> DeleteCliente(int id)
         {
-            await _command.RemoveCliente(id);
+            var cliente = await _query.GetClienteById(id);
+            if (cliente == null)
+            {
+                throw new Exception("Cliente no encontrado");
+            }
+
+            await _command.RemoveCliente(cliente.Id);
+            return _mapper.CreateClienteResponse(cliente);
         }
     }
 }

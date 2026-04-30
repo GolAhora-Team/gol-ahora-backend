@@ -1,6 +1,6 @@
 ﻿namespace SistemaGolAhora.Controllers
 {
-    using Aplication.DTOs.Descuento;
+    using Aplication.DTOs.Request.Descuento;
     using Aplication.Interfaces.IDescuento;
 
     using Microsoft.AspNetCore.Mvc;

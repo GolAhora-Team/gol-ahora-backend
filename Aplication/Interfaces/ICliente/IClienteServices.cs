@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Clientes;
+﻿using Aplication.DTOs.Request.Cliente;
 using Aplication.Response;
 using Domain.Entities;
 using System;
@@ -13,7 +13,7 @@ namespace Aplication.Interfaces.ICliente
     {
         Task<ClienteResponse> CreateCliente(CreateClienteRequest request);        
         Task<ClienteResponse> UpdateCliente(int clienteId, UpdateClienteRequest request);
-        Task DeleteCliente(int clienteId);
+        Task<ClienteResponse> DeleteCliente(int clienteId);
         Task<List<ClienteResponse>> GetAll();
         Task<ClienteResponse> GetClienteById(int clienteId);
     }
