@@ -1,4 +1,6 @@
-﻿using Aplication.DTOs;
+using Aplication.DTOs;
+using Aplication.DTOs.Request.Profesor;
+using Aplication.DTOs.Response.Profesor;
 using Aplication.Interfaces.IProfesor;
 using System;
 using System.Collections.Generic;
@@ -41,6 +43,9 @@ namespace Aplication.UseCase
 
         public async Task<ProfesorDto?> UpdateAsync(int id, ProfesorDto dto)
             => await _command.UpdateAsync(id, dto);
+
+        public async Task<ProfesorResponse?> UpdateSimpleAsync(int id, UpdateProfesorSimpleRequest request)
+            => await _command.UpdateSimpleAsync(id, request);
 
         public async Task<bool> DeleteAsync(int id)
             => await _command.DeleteAsync(id);

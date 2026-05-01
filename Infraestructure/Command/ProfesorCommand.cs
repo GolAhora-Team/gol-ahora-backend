@@ -1,4 +1,6 @@
-﻿using Aplication.DTOs;
+using Aplication.DTOs;
+using Aplication.DTOs.Request.Profesor;
+using Aplication.DTOs.Response.Profesor;
 using Aplication.Interfaces.IProfesor;
 using Domain.Entities;
 using System;
@@ -12,10 +14,12 @@ namespace Infraestructure.Command
     public class ProfesorCommand : IProfesorCommand
     {
         private readonly AppDbContext _context;
+        private readonly IProfesorMapper _mapper;
 
-        public ProfesorCommand(AppDbContext context)
+        public ProfesorCommand(AppDbContext context, IProfesorMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<ProfesorDto> CreateAsync(ProfesorDto dto)
@@ -65,6 +69,25 @@ namespace Infraestructure.Command
 
             dto.Id = profesor.Id;
             return dto;
+        }
+
+        public async Task<ProfesorResponse?> UpdateSimpleAsync(int id, UpdateProfesorSimpleRequest request)
+        {
+            var profesor = await _context.Profesores.FindAsync(id);
+            if (profesor is null) return null;
+
+            profesor.Telefono = request.Telefono;
+            profesor.Direccion = request.Direccion;
+            profesor.Localidad = request.Localidad;
+            profesor.CodigoPostal = request.CodigoPostal;
+            profesor.Provincia = request.Provincia;
+            profesor.Pais = request.Pais;
+            profesor.ContactoEmergencia = request.ContactoEmergencia;
+            profesor.Email = request.Email;
+
+            await _context.SaveChangesAsync();
+
+            return _mapper.CreateProfesorResponse(profesor);
         }
 
         public async Task<bool> DeleteAsync(int id)

@@ -11,6 +11,7 @@ using Aplication.Interfaces.IProfesor;
 using Aplication.UseCase;
 using Aplication.UseCase.Clientes;
 using Aplication.UseCase.Descuentos;
+using Aplication.Mappers;
 using Infraestructure.Command;
 using Infraestructure.Querys;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IProfesorService, ProfesorService>();
 builder.Services.AddScoped<IProfesorQuery, ProfesorQuery>();
 builder.Services.AddScoped<IProfesorCommand, ProfesorCommand>();
 builder.Services.AddScoped<IProfesorService, ProfesorService>();
+builder.Services.AddScoped<IProfesorMapper, ProfesorMapper>();
 
 
 builder.Services.AddScoped<IDescuentoService, DescuentoService>();
