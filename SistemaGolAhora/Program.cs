@@ -47,6 +47,7 @@ builder.Services.AddScoped<IJugadorCommand, JugadoresCommand>();
 builder.Services.AddScoped<IAdminCommand, AdministradorCommand>();
 builder.Services.AddScoped<IAdminQuery, AdminQuery>();
 builder.Services.AddScoped<IAdminService, AdministradorService>();
+builder.Services.AddScoped<IAdminMapper, AdminMapper>();
 builder.Services.AddScoped<IProfesorService, ProfesorService>();
 builder.Services.AddScoped<IProfesorQuery, ProfesorQuery>();
 builder.Services.AddScoped<IProfesorCommand, ProfesorCommand>();
