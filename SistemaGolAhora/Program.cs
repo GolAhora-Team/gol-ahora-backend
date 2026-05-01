@@ -3,6 +3,8 @@ using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IJugador;
 using Aplication.Interfaces.IPrecio;
+using Aplication.Interfaces.IProfesor;
+using Aplication.UseCase;
 using Aplication.UseCase.Clientes;
 using Infraestructure.Command;
 using Infraestructure.Querys;
@@ -37,6 +39,10 @@ builder.Services.AddScoped<IJugadorCommand, JugadoresCommand>();
 builder.Services.AddScoped<IAdminCommand, AdministradorCommand>();
 builder.Services.AddScoped<IAdminQuery, AdminQuery>();
 builder.Services.AddScoped<IAdminService, AdministradorService>();
+builder.Services.AddScoped<IProfesorService, ProfesorService>();
+builder.Services.AddScoped<IProfesorQuery, ProfesorQuery>();
+builder.Services.AddScoped<IProfesorCommand, ProfesorCommand>();
+builder.Services.AddScoped<IProfesorService, ProfesorService>();
 
 
 
