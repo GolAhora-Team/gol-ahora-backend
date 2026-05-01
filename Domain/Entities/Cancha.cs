@@ -21,9 +21,9 @@ namespace Domain.Entities
 
         public int Capacidad { get; set; }
 
-        public TimeSpan HoraInicio { get; set; }
+        public DateTime HoraInicio { get; set; }
 
-        public TimeSpan HoraFin { get; set; }
+        public DateTime HoraFin { get; set; }
 
         public int DuracionMax { get; set; }
 
@@ -32,6 +32,7 @@ namespace Domain.Entities
         public decimal PrecioPorHora { get; set; }
 
         // Relaciones
-        //public ICollection<Reserva> Reservas { get; set; }
+        public ICollection<Reserva> Reservas { get; set; }
+        public ICollection<Precio> Precios { get; set; }
     }
 }

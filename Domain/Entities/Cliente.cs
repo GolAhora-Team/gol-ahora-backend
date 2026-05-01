@@ -18,7 +18,9 @@ namespace Domain.Entities
 
         public DateTime? FechaBaja { get; set; }
 
+        public Jugador Jugador { get; set; }
+
         // Relaciones
-        //public ICollection<Reserva> Reservas { get; set; }
+        public ICollection<Reserva> Reservas { get; set; }
     }
 }
