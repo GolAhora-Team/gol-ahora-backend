@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aplication.DTOs.Clientes
+namespace Aplication.DTOs.Request.Cliente
 {
     public class CreateClienteRequest
     {
