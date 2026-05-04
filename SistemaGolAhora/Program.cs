@@ -1,14 +1,16 @@
+using Aplication.Interfaces.IAdmin;
 using Aplication.Interfaces.IAsistencia;
+using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.IClases;
 using Aplication.Interfaces.ICliente;
-using Aplication.Interfaces.IReserva;
-using Aplication.Interfaces.IAdmin;
-using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.IDescuento;
 using Aplication.Interfaces.IJugador;
 using Aplication.Interfaces.IPrecio;
 using Aplication.Interfaces.IProfesor;
 using Aplication.UseCase;
+using Aplication.Interfaces.IReserva;
+using Aplication.Interfaces.IUsuario;
+using Aplication.Mappers;
 using Aplication.UseCase.Clientes;
 using Aplication.UseCase.Descuentos;
 using Aplication.Mappers;
@@ -37,13 +39,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IClienteServices, ClientesService>();
 builder.Services.AddScoped<IClientesQuery, ClientesQuery>();
 builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
-builder.Services.AddScoped<IClientesCommand, ClientesCommand>();
+builder.Services.AddScoped<IClienteMapper, ClienteMapper>();
+
+
 builder.Services.AddScoped<ICanchaCommand, CanchaCommand>();
 builder.Services.AddScoped<ICanchaQuery, CanchasQuery>();
+
 builder.Services.AddScoped<IPrecioCommand, PrecioCommand>();
 builder.Services.AddScoped<IPrecioQuery, PreciosQuery>();
+
 builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
 builder.Services.AddScoped<IJugadorCommand, JugadoresCommand>();
+
 builder.Services.AddScoped<IAdminCommand, AdministradorCommand>();
 builder.Services.AddScoped<IAdminQuery, AdminQuery>();
 builder.Services.AddScoped<IAdminService, AdministradorService>();
@@ -54,14 +61,9 @@ builder.Services.AddScoped<IProfesorCommand, ProfesorCommand>();
 builder.Services.AddScoped<IProfesorService, ProfesorService>();
 builder.Services.AddScoped<IProfesorMapper, ProfesorMapper>();
 
-
 builder.Services.AddScoped<IDescuentoService, DescuentoService>();
 builder.Services.AddScoped<IDescuentoCommand, DescuentoCommand>();
 builder.Services.AddScoped<IDescuentoQuery, DescuentoQuery>();
-
-
-//Jugadores
-builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
 
 //Asistencia
 builder.Services.AddScoped<IAsistenciaCommand, AsistneciaCommand>();
@@ -74,6 +76,10 @@ builder.Services.AddScoped<IClaseQuery, ClaseQuery>();
 // Reservas
 builder.Services.AddScoped<IReservaCommand, ReservaCommand>();
 builder.Services.AddScoped<IReservaQuery, ReservaQuery>();
+
+builder.Services.AddScoped<IUsuarioCommand, UsuarioCommand>();
+builder.Services.AddScoped<IUsuarioQuery, UsuarioQuery>();
+builder.Services.AddScoped<IUsuarioMapper, UsuarioMapper>();
 
 var app = builder.Build();
 
