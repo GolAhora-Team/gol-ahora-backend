@@ -37,5 +37,7 @@ namespace Domain.Entities
         public string Email { get; set; }
 
         public DateTime FechaRegistro { get; set; }
+
+        public Usuario Usuario { get; set; }
     }
 }

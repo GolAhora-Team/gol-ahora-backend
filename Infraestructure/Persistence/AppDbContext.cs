@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
     }
 
     // 🔹 PERSONAS (herencia)
+    public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Persona> Personas { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Profesor> Profesores { get; set; }
