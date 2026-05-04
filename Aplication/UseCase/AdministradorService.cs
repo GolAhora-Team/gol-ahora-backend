@@ -1,4 +1,6 @@
-﻿using Aplication.DTOs;
+using Aplication.DTOs;
+using Aplication.DTOs.Request.Admin;
+using Aplication.DTOs.Response.Admin;
 using Aplication.Interfaces.IAdmin;
 using System;
 using System.Collections.Generic;
@@ -6,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aplication.UseCase.Clientes
+namespace Aplication.UseCase
 {
     public class AdministradorService : IAdminService
     {
@@ -41,6 +43,9 @@ namespace Aplication.UseCase.Clientes
 
         public async Task<AdministradorDto?> UpdateAsync(int id, AdministradorDto dto)
             => await _command.UpdateAsync(id, dto);
+
+        public async Task<AdministradorResponse?> UpdateSimpleAsync(int id, UpdateAdministradorSimpleRequest request)
+            => await _command.UpdateSimpleAsync(id, request);
 
         public async Task<bool> DeleteAsync(int id)
             => await _command.DeleteAsync(id);

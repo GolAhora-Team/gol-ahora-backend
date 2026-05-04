@@ -1,0 +1,74 @@
+using Aplication.DTOs;
+using Aplication.DTOs.Request.Profesor;
+using Aplication.DTOs.Response.Profesor;
+using Aplication.Interfaces.IProfesor;
+using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Aplication.Mappers
+{
+    public class ProfesorMapper : IProfesorMapper
+    {
+        public ProfesorResponse CreateProfesorResponse(Profesor profesor)
+        {
+            if (profesor == null)
+            {
+                return null;
+            }
+
+            return new ProfesorResponse
+            {
+                Id = profesor.Id,
+                Certificacion = profesor.Certificacion,
+                Especialidad = profesor.Especialidad,
+                Dni = profesor.Dni,
+                Nombre = profesor.Nombre,
+                Apellido = profesor.Apellido,
+                Genero = profesor.Genero,
+                FechaNacimiento = profesor.FechaNacimiento,
+                Telefono = profesor.Telefono,
+                Direccion = profesor.Direccion,
+                Localidad = profesor.Localidad,
+                CodigoPostal = profesor.CodigoPostal,
+                Provincia = profesor.Provincia,
+                Pais = profesor.Pais,
+                ContactoEmergencia = profesor.ContactoEmergencia,
+                Email = profesor.Email,
+                FechaRegistro = profesor.FechaRegistro
+            };
+        }
+
+        public ProfesorResponse CreateProfesorResponseFromDto(ProfesorDto dto)
+        {
+            if (dto == null)
+            {
+                return null;
+            }
+
+            return new ProfesorResponse
+            {
+                Id = dto.Id,
+                Certificacion = dto.Certificacion,
+                Especialidad = dto.Especialidad,
+                Dni = dto.Dni,
+                Nombre = dto.Nombre,
+                Apellido = dto.Apellido,
+                Genero = dto.Genero,
+                FechaNacimiento = dto.FechaNacimiento,
+                Telefono = dto.Telefono,
+                Direccion = dto.Direccion,
+                Localidad = dto.Localidad,
+                CodigoPostal = dto.CodigoPostal,
+                Provincia = dto.Provincia,
+                Pais = dto.Pais,
+                ContactoEmergencia = dto.ContactoEmergencia,
+                Email = dto.Email,
+                FechaRegistro = dto.FechaRegistro
+            };
+        }
+    }
+}

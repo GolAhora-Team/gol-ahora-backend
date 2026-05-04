@@ -1,23 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aplication.DTOs
+namespace Aplication.DTOs.Response.Profesor
 {
-    public class ProfesorDto
+    public class ProfesorResponse
     {
-        // ── Profesor ───────────────────────
         public int Id { get; set; }
         public string Certificacion { get; set; }
         public string Especialidad { get; set; }
-
-        // Relaciones (IDs para el DTO)
-        public int ClaseId { get; set; }
-        public int EntrenamientoId { get; set; }
-
-        // ── Persona (heredadas) ────────────
         public int Dni { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
