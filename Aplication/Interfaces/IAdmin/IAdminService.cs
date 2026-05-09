@@ -19,7 +19,7 @@ namespace Aplication.Interfaces.IAdmin
         Task<IEnumerable<AdministradorDto>> GetFacturadoresAsync();
 
         // ── Commands ───────────────────────────────
-        Task<AdministradorDto> CreateAsync(AdministradorDto dto);
+        //Task<AdministradorDto> CreateAsync(AdministradorDto dto);
         Task<AdministradorDto?> UpdateAsync(int id, AdministradorDto dto);
         Task<AdministradorResponse?> UpdateSimpleAsync(int id, UpdateAdministradorSimpleRequest request);
         Task<bool> DeleteAsync(int id);

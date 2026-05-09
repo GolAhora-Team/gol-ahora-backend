@@ -38,8 +38,8 @@ namespace Aplication.UseCase
             => await _query.GetFacturadoresAsync();
 
         // ── Commands ───────────────────────────────
-        public async Task<AdministradorDto> CreateAsync(AdministradorDto dto)
-            => await _command.CreateAsync(dto);
+        //public async Task<AdministradorDto> CreateAsync(AdministradorDto dto)
+        //    => await _command.CreateAsync(dto);
 
         public async Task<AdministradorDto?> UpdateAsync(int id, AdministradorDto dto)
             => await _command.UpdateAsync(id, dto);

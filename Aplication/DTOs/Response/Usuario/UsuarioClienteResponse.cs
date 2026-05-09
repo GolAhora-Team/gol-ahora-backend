@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aplication.DTOs.Response
+namespace Aplication.DTOs.Response.Usuario
 {
     public class UsuarioClienteResponse
     {
