@@ -14,5 +14,6 @@ namespace Aplication.Interfaces.IProfesor
     {
         ProfesorResponse CreateProfesorResponse(Profesor profesor);
         ProfesorResponse CreateProfesorResponseFromDto(ProfesorDto dto);
+        Profesor CreateProfesorToProfesorRequest(CreateProfesorRequest request);
     }
 }

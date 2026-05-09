@@ -15,8 +15,12 @@ namespace Aplication.Interfaces.IUsuario
 
         Usuario CreateUsuario(CreateUsuarioAdminRequest request, int personaId);
 
+        Usuario CreateUsuario(CreateUsuarioProfesorRequest request, int personaId);
+
         UsuarioClienteResponse CreateUsuarioResponse(int id, string nombre, string apellido);
 
         UsuarioAdminResponse CreateUsuarioAdminResponse(int id, string nombre, string apellido, DateTime fechaAlta);
+
+        UsuarioProfesorResponse CreateUsuarioProfesorResponse(int id, string nombre, string apellido, string especialidad);
     }
 }

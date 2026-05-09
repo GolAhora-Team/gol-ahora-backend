@@ -53,6 +53,12 @@ namespace Infraestructure.Command
             return dto;
         }
 
+        public async Task CreateProfesor(Profesor profesor)
+        {
+            _context.Profesores.Add(profesor);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<ProfesorDto?> UpdateAsync(int id, ProfesorDto dto)
         {
             var profesor = await _context.Profesores.FindAsync(id);

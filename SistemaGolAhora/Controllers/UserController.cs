@@ -44,5 +44,19 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("Profesor")]
+        public async Task<IActionResult> CreateUsuarioProfesor([FromBody] CreateUsuarioProfesorRequest request)
+        {
+            try
+            {
+                var response = await _usuarioService.CreateUsuarioProfesor(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
