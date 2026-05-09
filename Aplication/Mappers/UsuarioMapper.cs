@@ -29,7 +29,7 @@ namespace Aplication.Mappers
             {
                 Email = request.Email,
                 PasswordHash = request.Password,
-                TipoUsuario = Domain.Enums.TipoUsuario.Cliente,
+                TipoUsuario = Domain.Enums.TipoUsuario.Administrador,
                 PersonaId = personaId
             };
         }
