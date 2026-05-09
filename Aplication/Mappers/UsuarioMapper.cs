@@ -34,6 +34,17 @@ namespace Aplication.Mappers
             };
         }
 
+        public Usuario CreateUsuario(CreateUsuarioProfesorRequest request, int personaId)
+        {
+            return new Usuario
+            {
+                Email = request.Email,
+                PasswordHash = request.Password,
+                TipoUsuario = Domain.Enums.TipoUsuario.Profesor,
+                PersonaId = personaId
+            };
+        }
+
         public UsuarioClienteResponse CreateUsuarioResponse(int id, string nombre, string apellido)
         {
             return new UsuarioClienteResponse
@@ -52,6 +63,17 @@ namespace Aplication.Mappers
                 Nombre = nombre,
                 Apellido = apellido,
                 FechaAlta = fechaAlta
+            };
+        }
+
+        public UsuarioProfesorResponse CreateUsuarioProfesorResponse(int id, string nombre, string apellido, string especialidad)
+        {
+            return new UsuarioProfesorResponse
+            {
+                IdUsuario = id,
+                Nombre = nombre,
+                Apellido = apellido,
+                Especialidad = especialidad
             };
         }
     }

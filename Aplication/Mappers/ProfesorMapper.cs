@@ -70,5 +70,31 @@ namespace Aplication.Mappers
                 FechaRegistro = dto.FechaRegistro
             };
         }
+
+        public Profesor CreateProfesorToProfesorRequest(CreateProfesorRequest request)
+        {
+            if (request == null)
+            {
+                return null;
+            }
+            return new Profesor
+            {
+                Certificacion = request.Certificacion,
+                Especialidad = request.Especialidad,
+                Dni = request.Dni,
+                Nombre = request.Nombre,
+                Apellido = request.Apellido,
+                Genero = request.Genero,
+                FechaNacimiento = request.FechaNacimiento,
+                Telefono = request.Telefono,
+                Direccion = request.Direccion,
+                Localidad = request.Localidad,
+                CodigoPostal = request.CodigoPostal,
+                Provincia = request.Provincia,
+                Pais = request.Pais,
+                ContactoEmergencia = request.ContactoEmergencia,
+                Email = request.Email
+            };
+        }
     }
 }
