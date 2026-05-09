@@ -12,7 +12,7 @@ namespace Aplication.Interfaces.IAdmin
 {
     public interface IAdminCommand
     {
-        Task<AdministradorDto> CreateAsync(AdministradorDto dto);
+        Task<AdministradorDto> CreateAsync(Administrador dto);
         Task<AdministradorDto?> UpdateAsync(int id, AdministradorDto dto);
         Task<AdministradorResponse?> UpdateSimpleAsync(int id, UpdateAdministradorSimpleRequest request);
         Task<bool> DeleteAsync(int id);

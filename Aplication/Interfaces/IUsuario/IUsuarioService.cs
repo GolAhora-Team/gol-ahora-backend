@@ -1,5 +1,5 @@
 ﻿using Aplication.DTOs.Request.Usuario;
-using Aplication.DTOs.Response;
+using Aplication.DTOs.Response.Usuario;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +11,6 @@ namespace Aplication.Interfaces.IUsuario
     public interface IUsuarioService
     {
         Task<UsuarioClienteResponse> CreateUsuarioCliente(CreateUsuarioClienteRequest usuario);
+        Task<UsuarioAdminResponse> CreateUsuarioAdmin(CreateUsuarioAdminRequest usuario);
     }
 }

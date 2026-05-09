@@ -1,5 +1,5 @@
 ﻿using Aplication.DTOs.Request.Usuario;
-using Aplication.DTOs.Response;
+using Aplication.DTOs.Response.Usuario;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,10 @@ namespace Aplication.Interfaces.IUsuario
     {
         Usuario CreateUsuario(CreateUsuarioClienteRequest request, int personaId);
 
+        Usuario CreateUsuario(CreateUsuarioAdminRequest request, int personaId);
+
         UsuarioClienteResponse CreateUsuarioResponse(int id, string nombre, string apellido);
+
+        UsuarioAdminResponse CreateUsuarioAdminResponse(int id, string nombre, string apellido, DateTime fechaAlta);
     }
 }

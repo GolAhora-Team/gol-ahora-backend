@@ -17,12 +17,26 @@ namespace SistemaGolAhora.Controllers
             _usuarioService = usuarioService;
         }
 
-        [HttpPost]
+        [HttpPost("Cliente")]
         public async Task<IActionResult> CreateUsuarioCliente([FromBody] CreateUsuarioClienteRequest request)
         {
             try
             {
                 var response = await _usuarioService.CreateUsuarioCliente(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("Admin")]
+        public async Task<IActionResult> CreateUsuarioAdmin([FromBody] CreateUsuarioAdminRequest request)
+        {
+            try
+            {
+                var response = await _usuarioService.CreateUsuarioAdmin(request);
                 return Ok(response);
             }
             catch (Exception ex)

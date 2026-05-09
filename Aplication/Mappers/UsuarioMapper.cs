@@ -1,5 +1,5 @@
 ﻿using Aplication.DTOs.Request.Usuario;
-using Aplication.DTOs.Response;
+using Aplication.DTOs.Response.Usuario;
 using Aplication.Interfaces.IUsuario;
 using Domain.Entities;
 using System;
@@ -23,6 +23,17 @@ namespace Aplication.Mappers
             };
         }
 
+        public Usuario CreateUsuario(CreateUsuarioAdminRequest request, int personaId)
+        {
+            return new Usuario
+            {
+                Email = request.Email,
+                PasswordHash = request.Password,
+                TipoUsuario = Domain.Enums.TipoUsuario.Cliente,
+                PersonaId = personaId
+            };
+        }
+
         public UsuarioClienteResponse CreateUsuarioResponse(int id, string nombre, string apellido)
         {
             return new UsuarioClienteResponse
@@ -30,6 +41,17 @@ namespace Aplication.Mappers
                 IdUsuario = id,
                 Nombre = nombre,
                 Apellido = apellido
+            };
+        }
+
+        public UsuarioAdminResponse CreateUsuarioAdminResponse(int id, string nombre, string apellido,DateTime fechaAlta)
+        {
+            return new UsuarioAdminResponse
+            {
+                IdUsuario = id,
+                Nombre = nombre,
+                Apellido = apellido,
+                FechaAlta = fechaAlta
             };
         }
     }
