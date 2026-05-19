@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace Aplication.DTOs.Request.Cliente
 {
     public class UpdateClienteRequest
-    {
-        public string Id { get; set; }
+    {        
         public int Dni { get; set; }
 
         public string Nombre { get; set; }

@@ -22,12 +22,6 @@ namespace Infraestructure.Querys
         {
             var cliente = await _context.Clientes.FindAsync(idCliente);
 
-            if (cliente != null)
-            {
-                _context.Remove(cliente);
-                await _context.SaveChangesAsync();
-            }
-
             return cliente;
         }
 
