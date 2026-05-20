@@ -13,7 +13,6 @@ using Aplication.Interfaces.IUsuario;
 using Aplication.Mappers;
 using Aplication.UseCase.Clientes;
 using Aplication.UseCase.Descuentos;
-using Aplication.Mappers;
 using Infraestructure.Command;
 using Infraestructure.Querys;
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +85,8 @@ builder.Services.AddScoped<IAsistenciaQuery, AsistenciaQuery>();
 // Clases
 builder.Services.AddScoped<IClaseCommand, ClaseCommand>();
 builder.Services.AddScoped<IClaseQuery, ClaseQuery>();
+builder.Services.AddScoped<IClaseService, ClaseService>();
+builder.Services.AddScoped<IClaseMapper, ClaseMapper>();
 
 // Reservas
 builder.Services.AddScoped<IReservaCommand, ReservaCommand>();
