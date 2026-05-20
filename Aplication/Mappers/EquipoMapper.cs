@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Aplication.Mappers
 {
     public class EquipoMapper : IEquipoMapper
-    {
+    {        
         public Equipo CreateEquipo(CreateEquipoRequest equipo)
         {
             return new Equipo

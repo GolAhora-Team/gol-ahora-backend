@@ -13,11 +13,11 @@ using Aplication.Interfaces.IUsuario;
 using Aplication.Mappers;
 using Aplication.UseCase.Clientes;
 using Aplication.UseCase.Descuentos;
-using Aplication.Mappers;
 using Infraestructure.Command;
 using Infraestructure.Querys;
 using Microsoft.EntityFrameworkCore;
 using Aplication.Interfaces.IEquipo;
+using Aplication.Interfaces.ICompeticion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +59,12 @@ builder.Services.AddScoped<IEquipoService, EquipoService>();
 builder.Services.AddScoped<IEquipoCommand, EquipoCommand>();
 builder.Services.AddScoped<IEquipoQuery, EquipoQuery>();
 builder.Services.AddScoped<IEquipoMapper, EquipoMapper>();
+
+//Competicion
+builder.Services.AddScoped<ICompeticionService, CompeticionService>();
+builder.Services.AddScoped<ICompeticionCommand, CompeticionCommand>();
+builder.Services.AddScoped<ICompeticionQuery, CompeticionQuery>();
+builder.Services.AddScoped<ICompeticionMapper, CompeticionMapper>();
 
 //Administrador
 builder.Services.AddScoped<IAdminCommand, AdministradorCommand>();
