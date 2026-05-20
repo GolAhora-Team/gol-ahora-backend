@@ -19,6 +19,8 @@ namespace Domain.Entities
 
         public int CantidadEquipos { get; set; }
 
+        public EstadoCompeticion Estado { get; set; }
+
         // 🔗 Equipos
         public ICollection<Equipo> Equipos { get; set; }
 
