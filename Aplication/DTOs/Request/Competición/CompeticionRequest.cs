@@ -5,12 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Aplication.DTOs.Request.Competición
 {
-    public class Competicion
+    public class CompeticionRequest
     {
-        public int Id { get; set; }
-
         public string Nombre { get; set; }
 
         public TipoCompeticion Tipo { get; set; }
@@ -18,13 +16,6 @@ namespace Domain.Entities
         public string Descripcion { get; set; }
 
         public int CantidadEquipos { get; set; }
-
-        public EstadoCompeticion Estado { get; set; }
-
-        // 🔗 Equipos
-        public ICollection<Equipo> Equipos { get; set; }
-
-        // 🔗 Partidos (fixture real)
-        public ICollection<Partido> Partidos { get; set; }
+        
     }
 }

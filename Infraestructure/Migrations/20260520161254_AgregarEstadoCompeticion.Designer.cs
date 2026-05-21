@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520161254_AgregarEstadoCompeticion")]
+    partial class AgregarEstadoCompeticion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -446,12 +449,6 @@ namespace Infraestructure.Migrations
                     b.Property<int>("EquipoVisitanteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Fase")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
@@ -466,9 +463,6 @@ namespace Infraestructure.Migrations
 
                     b.Property<TimeSpan>("Hora")
                         .HasColumnType("time");
-
-                    b.Property<int>("Jornada")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

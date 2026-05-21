@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Aplication.DTOs.Response
 {
-    public class Competicion
+    public class CompeticionResponse
     {
         public int Id { get; set; }
 
@@ -20,11 +20,5 @@ namespace Domain.Entities
         public int CantidadEquipos { get; set; }
 
         public EstadoCompeticion Estado { get; set; }
-
-        // 🔗 Equipos
-        public ICollection<Equipo> Equipos { get; set; }
-
-        // 🔗 Partidos (fixture real)
-        public ICollection<Partido> Partidos { get; set; }
     }
 }
