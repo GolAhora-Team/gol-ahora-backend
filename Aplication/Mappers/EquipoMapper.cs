@@ -15,7 +15,7 @@ namespace Aplication.Mappers
         public Equipo CreateEquipo(CreateEquipoRequest equipo)
         {
             return new Equipo
-            {
+            {                
                 Nombre = equipo.Nombre,
                 CantidadMaxJugadores = equipo.CantidadMaxJugadores,
                 Descripcion = equipo.Descripcion,
@@ -27,6 +27,7 @@ namespace Aplication.Mappers
         {
             return new EquipoResponse
             {
+                Id = equipo.Id,
                 Nombre = equipo.Nombre,
                 CantidadMaxJugadores = equipo.CantidadMaxJugadores,
                 Descripcion = equipo.Descripcion,

@@ -15,7 +15,7 @@ namespace Aplication.Mappers
         public Cliente CreateCliente(CreateClienteRequest cliente)
         {
             return new Cliente
-            {
+            {                
                 Dni = cliente.Dni,
                 Nombre = cliente.Nombre,
                 Apellido = cliente.Apellido,
@@ -38,6 +38,7 @@ namespace Aplication.Mappers
         {
             return new ClienteResponse
             {                
+                Id = cliente.Id,
                 Dni = cliente.Dni,
                 Nombre = cliente.Nombre,
                 Apellido = cliente.Apellido,

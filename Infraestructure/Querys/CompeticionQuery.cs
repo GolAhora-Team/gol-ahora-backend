@@ -1,5 +1,7 @@
 ﻿using Aplication.Interfaces.ICompeticion;
+using Aplication.Interfaces.IEquipo;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,10 +26,18 @@ namespace Infraestructure.Querys
 
             return competicion;
         }
+                
 
         public async Task<IEnumerable<Competicion>> GetListCompeticion()
         {
             return await _context.Competiciones.ToListAsync();
+        }
+
+        public async Task<Competicion?> GetCompeticionConEquipos(int competicionId)
+        {
+            return await _context.Competiciones
+                .Include(c => c.Equipos) // 👈 Esto le dice a EF: "Traeme la competición y cargame su lista de equipos"
+                .FirstOrDefaultAsync(c => c.Id == competicionId);
         }
     }
 }

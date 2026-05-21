@@ -28,6 +28,7 @@ namespace Aplication.Mappers
         {
             return new CompeticionResponse
             {
+                Id = competicion.Id,
                 Nombre = competicion.Nombre,
                 Tipo = competicion.Tipo,
                 Descripcion = competicion.Descripcion,

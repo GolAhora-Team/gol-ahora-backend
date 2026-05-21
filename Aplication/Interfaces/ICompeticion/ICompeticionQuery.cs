@@ -10,6 +10,8 @@ namespace Aplication.Interfaces.ICompeticion
     public interface ICompeticionQuery
     {
         Task<Competicion> GetCompeticionById(int idCompeticion);
-        Task<IEnumerable<Competicion>> GetListCompeticion();
+        Task<IEnumerable<Competicion>> GetListCompeticion();        
+        Task<Competicion?> GetCompeticionConEquipos(int idCompeticion);
+
     }
 }
