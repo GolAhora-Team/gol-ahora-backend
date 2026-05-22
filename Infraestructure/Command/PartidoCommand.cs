@@ -17,7 +17,7 @@ namespace Infraestructure.Command
             _context = context;
         }
 
-        public async Task InsertPartido(List<Partido> partidos)
+        public async Task InsertPartidos(List<Partido> partidos)
         {
             await _context.Partidos.AddRangeAsync(partidos);
             await _context.SaveChangesAsync();
