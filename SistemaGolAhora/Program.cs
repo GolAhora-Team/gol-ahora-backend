@@ -4,15 +4,20 @@ using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.IClases;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IDescuento;
+using Aplication.Interfaces.IEquipo;
+using Aplication.Interfaces.IFactura;
 using Aplication.Interfaces.IJugador;
+using Aplication.Interfaces.IPago;
 using Aplication.Interfaces.IPrecio;
 using Aplication.Interfaces.IProfesor;
-using Aplication.UseCase;
 using Aplication.Interfaces.IReserva;
 using Aplication.Interfaces.IUsuario;
 using Aplication.Mappers;
+using Aplication.UseCase;
 using Aplication.UseCase.Clientes;
 using Aplication.UseCase.Descuentos;
+using Aplication.UseCase.Facturas;
+using Aplication.UseCase.Pagos;
 using Infraestructure.Command;
 using Infraestructure.Querys;
 using Microsoft.EntityFrameworkCore;
@@ -90,7 +95,19 @@ builder.Services.AddScoped<IProfesorMapper, ProfesorMapper>();
 builder.Services.AddScoped<IDescuentoService, DescuentoService>();
 builder.Services.AddScoped<IDescuentoCommand, DescuentoCommand>();
 builder.Services.AddScoped<IDescuentoQuery, DescuentoQuery>();
+builder.Services.AddScoped<IDescuentoMapper, DescuentoMapper>();
 
+//Pago
+builder.Services.AddScoped<IPagoService, PagoService>();
+builder.Services.AddScoped<IPagoCommand, PagoCommand>();
+builder.Services.AddScoped<IPagoQuery, PagoQuery>();
+builder.Services.AddScoped<IPagoMapper, PagoMapper>();
+
+//Factura
+builder.Services.AddScoped<IFacturaService, FacturaService>();
+builder.Services.AddScoped<IFacturaCommand, FacturaCommand>();
+builder.Services.AddScoped<IFacturaQuery, FacturaQuery>();
+builder.Services.AddScoped<IFacturaMapper, FacturaMapper>();
 
 // Asistencia
 builder.Services.AddScoped<IAsistenciaCommand, AsistneciaCommand>();
