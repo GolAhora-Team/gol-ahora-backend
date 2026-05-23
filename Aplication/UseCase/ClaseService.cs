@@ -1,6 +1,7 @@
 ﻿using Aplication.DTOs.Request.Clase;
 using Aplication.DTOs.Response.Clase;
 using Aplication.Interfaces.IClases;
+using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IProfesor;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -18,6 +19,7 @@ namespace Aplication.UseCase
         private readonly IClaseQuery _claseQuery;
         private readonly IClaseMapper _claseMapper;
         private readonly IProfesorQuery _profesorQuery;
+        private readonly IClientesQuery _clienteQuery;
 
         public ClaseService(IClaseCommand claseCommand, IClaseQuery claseQuery, IClaseMapper claseMapper, IProfesorQuery profesorQuery)
         {
@@ -115,6 +117,68 @@ namespace Aplication.UseCase
             {
                 Id = claseExistente.Id,
                 Nombre = claseExistente.Nombre
+            };
+        }
+
+        public async Task<ClaseShortResponse> addProfesor(int claseId, int profesorId)
+        {
+            var claseExistente = await _claseQuery.GetClaseById(claseId);
+            var profesorExistente = await _profesorQuery.GetByIdAsync(profesorId);
+            if (claseExistente == null)
+            {
+                throw new ExceptionNotFound("Clase no encontrada.");
+            }
+            if (profesorExistente == null)
+            {
+                throw new ExceptionNotFound("Profesor no encontrado.");
+            }
+            claseExistente.ProfesorId = profesorId;
+            await _claseCommand.UpdateClase(claseExistente);
+            return new ClaseShortResponse
+            {
+                Id = claseExistente.Id,
+                Nombre = claseExistente.Nombre,
+                capacidadMax = claseExistente.CapacidadMax,
+                IdProfesor = profesorId
+            };
+        }
+
+        public async Task<ClaseShortResponse> addCliente(int claseId, int clienteId)
+        {
+            var claseExistente = await _claseQuery.GetClaseById(claseId);
+            var clienteExiste = await _clienteQuery.GetClienteById(clienteId);
+
+            if (claseExistente == null)
+            {
+                throw new ExceptionNotFound("Clase no encontrada.");
+            }
+            if (clienteExiste == null)
+            {
+                throw new ExceptionNotFound("Cliente no encontrado");
+            }
+            if (claseExistente.Asistencias.Count >= claseExistente.CapacidadMax)
+            {
+                throw new ExceptionBadRequest("La clase ha alcanzado su capacidad máxima.");
+            }
+            if (claseExistente.Asistencias.Any(a => a.ClienteId == clienteId))
+            {
+                throw new ExceptionBadRequest("El cliente ya está inscrito en esta clase.");
+            }
+            var nuevaAsistencia = new Asistencia
+            {
+                ClaseId = claseId,
+                ClienteId = clienteId,
+                Fecha = claseExistente.Fecha,
+                Presente = false
+            };
+            claseExistente.Asistencias.Add(nuevaAsistencia);
+            await _claseCommand.UpdateClase(claseExistente);
+            return new ClaseShortResponse
+            {
+                Id = claseExistente.Id,
+                Nombre = claseExistente.Nombre,
+                capacidadMax = claseExistente.CapacidadMax,
+                IdProfesor = claseExistente.ProfesorId
             };
         }
     }

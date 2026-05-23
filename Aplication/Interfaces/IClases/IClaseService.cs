@@ -16,5 +16,7 @@ namespace Aplication.Interfaces.IClases
         Task<List<ClaseResponse>> getClases();
         Task<ClaseCreateResponse> UpdateClase(int id, ClaseUpdateRequest clase);
         Task<ClaseDeleteResponse> DeleteClase(int id);
+        Task<ClaseShortResponse> addProfesor(int claseId, int profesorId);
+        Task<ClaseShortResponse> addCliente(int claseId, int clienteId);
     }
 }
