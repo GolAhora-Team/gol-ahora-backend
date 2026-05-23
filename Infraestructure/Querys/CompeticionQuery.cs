@@ -36,7 +36,7 @@ namespace Infraestructure.Querys
         public async Task<Competicion?> GetCompeticionConEquipos(int competicionId)
         {
             return await _context.Competiciones
-                .Include(c => c.Equipos) // 👈 Esto le dice a EF: "Traeme la competición y cargame su lista de equipos"
+                .Include(c => c.Equipos) 
                 .FirstOrDefaultAsync(c => c.Id == competicionId);
         }
     }

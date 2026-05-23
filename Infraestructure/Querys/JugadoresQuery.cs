@@ -1,5 +1,6 @@
 ﻿using Aplication.DTOs;
 using Aplication.Interfaces.IJugador;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,17 +17,16 @@ namespace Infraestructure.Querys
         {
             _context = context;
         }
-        public async Task<IEnumerable<JugadorDto>> GetAllAsync()
+
+        public async Task<Jugador> GetJugadorById(int idJugador)
         {
-            throw new NotImplementedException();
+            var jugador = await _context.Jugadores.FindAsync(idJugador);
+            return jugador;
         }
-        public async Task<JugadorDto?> GetByIdAsync(int id)
+
+        public async Task<IEnumerable<Jugador>> GetListJugadores()
         {
-            throw new NotImplementedException();
-        }
-        public async Task<JugadorDto?> GetByClienteIdAsync(int clienteId)
-        {
-            throw new NotImplementedException();
+            return await _context.Jugadores.ToListAsync();
         }
     }
 }
