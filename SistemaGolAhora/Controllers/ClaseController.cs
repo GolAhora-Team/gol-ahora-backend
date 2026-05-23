@@ -82,5 +82,41 @@ namespace SistemaGolAhora.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPatch("{claseId}/profesor/{profesorId}")]
+        public async Task<IActionResult> AddProfesor(int claseId, int profesorId)
+        {
+            try
+            {
+                var result = await _claseService.addProfesor(claseId, profesorId);
+                return Ok(result);
+            }
+            catch (ExceptionBadRequest ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ExceptionNotFound ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPatch("{claseId}/cliente/{clienteId}")]
+        public async Task<IActionResult> AddCliente(int claseId, int clienteId)
+        {
+            try
+            {
+                var result = await _claseService.addCliente(claseId, clienteId);
+                return Ok(result);
+            }
+            catch (ExceptionBadRequest ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ExceptionNotFound ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }
