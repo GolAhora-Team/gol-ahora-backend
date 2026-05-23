@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260523221917_AddEntrenamientoCupoMaximo")]
+    partial class AddEntrenamientoCupoMaximo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -375,13 +378,6 @@ namespace Infraestructure.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EquipoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EquipoNombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("EsCapitan")
                         .HasColumnType("bit");
 
@@ -401,8 +397,6 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("ClienteId")
                         .IsUnique();
-
-                    b.HasIndex("EquipoId");
 
                     b.ToTable("Jugadores");
                 });
@@ -919,15 +913,7 @@ namespace Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Equipo", "Equipo")
-                        .WithMany()
-                        .HasForeignKey("EquipoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Cliente");
-
-                    b.Navigation("Equipo");
                 });
 
             modelBuilder.Entity("Domain.Entities.Pago", b =>

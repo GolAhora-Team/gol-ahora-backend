@@ -24,6 +24,8 @@ using Microsoft.EntityFrameworkCore;
 using Aplication.Interfaces.IEquipo;
 using Aplication.Interfaces.ICompeticion;
 using Aplication.Interfaces.IPartido;
+using Aplication.Interfaces.IEntrenamiento;
+using Aplication.UseCase.Entrenamientos;
 using Aplication.Interfaces.ISancion;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -127,6 +129,12 @@ builder.Services.AddScoped<IClaseCommand, ClaseCommand>();
 builder.Services.AddScoped<IClaseQuery, ClaseQuery>();
 builder.Services.AddScoped<IClaseService, ClaseService>();
 builder.Services.AddScoped<IClaseMapper, ClaseMapper>();
+
+// Entrenamiento
+builder.Services.AddScoped<IEntrenamientoCommand, EntrenamientoCommand>();
+builder.Services.AddScoped<IEntrenamientoQuery, EntrenamientoQuery>();
+builder.Services.AddScoped<IEntrenamientoService, EntrenamientoService>();
+builder.Services.AddScoped<IEntrenamientoMapper, EntrenamientoMapper>();
 
 // Reservas
 builder.Services.AddScoped<IReservaCommand, ReservaCommand>();
