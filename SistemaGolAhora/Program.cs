@@ -26,6 +26,7 @@ using Aplication.Interfaces.ICompeticion;
 using Aplication.Interfaces.IPartido;
 using Aplication.Interfaces.IEntrenamiento;
 using Aplication.UseCase.Entrenamientos;
+using Aplication.Interfaces.ISancion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,8 +60,16 @@ builder.Services.AddScoped<IPrecioCommand, PrecioCommand>();
 builder.Services.AddScoped<IPrecioQuery, PreciosQuery>();
 
 // Jugador
-builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
+builder.Services.AddScoped<IJugadorService, JugadoresService>();
 builder.Services.AddScoped<IJugadorCommand, JugadoresCommand>();
+builder.Services.AddScoped<IJugadorQuery, JugadoresQuery>();
+builder.Services.AddScoped<IJugadorMapper, JugadorMapper>();
+
+//Sancion
+builder.Services.AddScoped<ISancionService, SancionService>();
+builder.Services.AddScoped<ISancionCommand, SancionCommand>();
+builder.Services.AddScoped<ISancionQuery, SancionQuery>();
+builder.Services.AddScoped<ISancionMapper, SancionMapper>();
 
 // Equipo
 builder.Services.AddScoped<IEquipoService, EquipoService>();

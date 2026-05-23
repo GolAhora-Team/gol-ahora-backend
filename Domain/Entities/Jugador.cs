@@ -24,7 +24,12 @@ namespace Domain.Entities
         // 🔗 Cliente (obligatorio)
         public int ClienteId { get; set; }
         public Cliente Cliente { get; set; }
-
+        
         public ICollection<Sancion> Sanciones { get; set; }
+
+        // 🔗 Equipo (obligatorio)        
+        public int EquipoId { get; set; }
+        public string EquipoNombre { get; set; }
+        public Equipo Equipo { get; set; }
     }
 }
