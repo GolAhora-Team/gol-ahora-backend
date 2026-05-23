@@ -1,4 +1,5 @@
 ﻿using Aplication.DTOs;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Aplication.Interfaces.IJugador
 {
     public interface IJugadorCommand
     {
-        Task<JugadorDto> CreateAsync(JugadorDto jugadorDto);
-        Task<JugadorDto?> UpdateAsync(int id, JugadorDto jugadorDto);
-        Task<bool> DeleteAsync(int id);
+        Task InsertJugador(Jugador jugador);
+        Task UpdateJugador(Jugador jugador);
+        Task RemoveJugador(int idJugador);
     }
 }

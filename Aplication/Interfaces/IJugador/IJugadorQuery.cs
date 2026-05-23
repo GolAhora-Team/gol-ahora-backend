@@ -1,4 +1,5 @@
 ﻿using Aplication.DTOs;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,7 @@ namespace Aplication.Interfaces.IJugador
 {
     public interface IJugadorQuery
     {
-        Task<IEnumerable<JugadorDto>> GetAllAsync();
-        Task<JugadorDto?> GetByIdAsync(int id);
-        Task<JugadorDto?> GetByClienteIdAsync(int clienteId);
+        Task<Jugador> GetJugadorById(int idJugador);
+        Task<IEnumerable<Jugador>> GetListJugadores();
     }
 }
