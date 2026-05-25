@@ -1,5 +1,6 @@
 ﻿using Aplication.DTOs.Request.Cliente;
 using Aplication.DTOs.Request.Equipo;
+using Aplication.DTOs.Response;
 using Aplication.Interfaces.IEquipo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(EquipoResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await _services.GetAll();
