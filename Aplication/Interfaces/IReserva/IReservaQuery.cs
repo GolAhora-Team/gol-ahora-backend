@@ -13,5 +13,12 @@ namespace Aplication.Interfaces.IReserva
             Task<bool> ReservaExists(int id);
         
             Task<List<Domain.Entities.Reserva>> GetAllReservas();
+
+            //para evitar doble reserva simultanea
+            Task<bool> ExisteReservaEnHorario(
+                int canchaId,
+                DateTime fecha,
+                TimeSpan horaInicio,
+                TimeSpan horaFin);
     }
 }

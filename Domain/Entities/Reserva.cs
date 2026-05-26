@@ -13,9 +13,9 @@ namespace Domain.Entities
 
         public DateTime Fecha { get; set; }
 
-        public DateTime HoraInicio { get; set; }
+        public TimeSpan HoraInicio { get; set; }
 
-        public DateTime HoraFin { get; set; }
+        public TimeSpan HoraFin { get; set; }
 
         // 🔗 Cliente
         public int ClienteId { get; set; }
