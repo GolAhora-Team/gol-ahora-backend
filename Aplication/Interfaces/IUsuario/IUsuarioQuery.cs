@@ -11,5 +11,6 @@ namespace Aplication.Interfaces.IUsuario
     {
         Task<Usuario?> GetById(int id);
         Task<List<Usuario>> GetAll();
+        Task<Usuario?> GetByEmailPassword(string email, string password);
     }
 }

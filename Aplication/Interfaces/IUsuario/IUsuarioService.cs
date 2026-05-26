@@ -13,5 +13,6 @@ namespace Aplication.Interfaces.IUsuario
         Task<UsuarioClienteResponse> CreateUsuarioCliente(CreateUsuarioClienteRequest usuario);
         Task<UsuarioAdminResponse> CreateUsuarioAdmin(CreateUsuarioAdminRequest usuario);
         Task<UsuarioProfesorResponse> CreateUsuarioProfesor(CreateUsuarioProfesorRequest usuario);
+        Task<UsuarioLogginResponse> LogginUsuario(LoginRequest loginRequest);
     }
 }
