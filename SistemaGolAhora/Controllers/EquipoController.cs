@@ -19,7 +19,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(EquipoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<EquipoResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await _services.GetAll();
@@ -27,6 +27,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(EquipoResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateEquipo(CreateEquipoRequest request)
         {
             try
@@ -41,6 +42,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(EquipoResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -55,6 +57,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(EquipoResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(int id, [FromBody] CreateEquipoRequest request)
         {
             try
@@ -69,6 +72,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(EquipoResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int id)
         {
             try

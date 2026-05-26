@@ -23,6 +23,11 @@ namespace Infraestructure.Querys
             return await _context.Usuarios.Include(s => s.Persona).ToListAsync();
         }
 
+        public async Task<Usuario?> GetByEmailPassword(string email, string password)
+        {
+            return await _context.Usuarios.Where(u => u.Email == email && u.PasswordHash == password).FirstOrDefaultAsync();
+        }
+
         public async Task<Usuario?> GetById(int id)
         {
             return await _context.Usuarios.Include(s => s.Persona).FirstOrDefaultAsync(u => u.Id == id);

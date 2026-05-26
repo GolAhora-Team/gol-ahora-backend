@@ -11,15 +11,19 @@ namespace Aplication.UseCase
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioCommand _usuariocommand;
+        private readonly IUsuarioQuery _usuarioQuery;
         private readonly IUsuarioMapper _usuariomapper;
         private readonly IClienteMapper _clientemapper;
         private readonly IClientesCommand _clienteCommand;
+        private readonly IClientesQuery _clientesQuery;
         private readonly IAdminCommand _adminCommand;
         private readonly IAdminMapper _adminMapper;
+        private readonly IAdminQuery _adminQuery;
         private readonly IProfesorCommand _profesorCommand;
         private readonly IProfesorMapper _profesorMapper;
+        private readonly IProfesorQuery _profesorQuery;
 
-        public UsuarioService(IUsuarioCommand usuariocommand, IClienteMapper clientemapper, IClientesCommand clienteCommand, IAdminMapper adminMapper, IAdminCommand adminCommand, IProfesorMapper profesorMapper, IProfesorCommand profesorCommand)
+        public UsuarioService(IUsuarioCommand usuariocommand, IClienteMapper clientemapper, IClientesCommand clienteCommand, IAdminMapper adminMapper, IAdminCommand adminCommand, IProfesorMapper profesorMapper, IProfesorCommand profesorCommand, IUsuarioQuery usuarioQuery, IProfesorQuery profesorQuery, IClientesQuery clientesQuery, IAdminQuery adminQuery)
         {
             _usuariocommand = usuariocommand;
             _clientemapper = clientemapper;
@@ -28,6 +32,10 @@ namespace Aplication.UseCase
             _adminCommand = adminCommand;
             _profesorMapper = profesorMapper;
             _profesorCommand = profesorCommand;
+            _usuarioQuery = usuarioQuery;
+            _profesorQuery = profesorQuery;
+            _clientesQuery = clientesQuery;
+            _adminQuery = adminQuery;
         }
 
         public async Task<UsuarioClienteResponse> CreateUsuarioCliente(CreateUsuarioClienteRequest usuario)
@@ -76,6 +84,68 @@ namespace Aplication.UseCase
             await _usuariocommand.Create(usuarioEntity);
 
             return _usuariomapper.CreateUsuarioProfesorResponse(usuarioEntity.Id, profesorEntity.Nombre, profesorEntity.Apellido, profesorEntity.Especialidad);
+        }
+
+        public async Task<UsuarioLogginResponse> LogginUsuario(LoginRequest loginRequest)
+        {
+            var usuarioEntity = await _usuarioQuery.GetByEmailPassword(loginRequest.Email, loginRequest.Password);
+            if (usuarioEntity == null)
+            {
+                throw new ExceptionNotFound("Usuario no encontrado.");
+            }
+
+            if (usuarioEntity.TipoUsuario == Domain.Enums.TipoUsuario.Cliente)
+            {
+                var clienteEntity = await _clientesQuery.GetClienteById(usuarioEntity.PersonaId);
+                if (clienteEntity == null)
+                {
+                    throw new ExceptionNotFound("Cliente no encontrado.");
+                }
+                return new UsuarioLogginResponse
+                {
+                    IdUsuario = usuarioEntity.Id,
+                    TipoUsuario = usuarioEntity.TipoUsuario,
+                    IdPersona = clienteEntity.Id,
+                    Nombre = clienteEntity.Nombre,
+                    Apellido = clienteEntity.Apellido
+                };
+            }
+            else if (usuarioEntity.TipoUsuario == Domain.Enums.TipoUsuario.Administrador)
+            {
+                var adminEntity = await _adminQuery.GetByIdAsync(usuarioEntity.PersonaId);
+                if (adminEntity == null)
+                {
+                    throw new ExceptionNotFound("Admin no encontrado.");
+                }
+                return new UsuarioLogginResponse
+                {
+                    IdUsuario = usuarioEntity.Id,
+                    TipoUsuario = usuarioEntity.TipoUsuario,
+                    IdPersona = adminEntity.Id,
+                    Nombre = adminEntity.Nombre,
+                    Apellido = adminEntity.Apellido
+                };
+            }
+            else if (usuarioEntity.TipoUsuario == Domain.Enums.TipoUsuario.Profesor)
+            {
+                var profesorEntity = await _profesorQuery.GetByIdAsync(usuarioEntity.PersonaId);
+                if (profesorEntity == null)
+                {
+                    throw new ExceptionNotFound("Profesor no encontrado.");
+                }
+                return new UsuarioLogginResponse
+                {
+                    IdUsuario = usuarioEntity.Id,
+                    TipoUsuario = usuarioEntity.TipoUsuario,
+                    IdPersona = profesorEntity.Id,
+                    Nombre = profesorEntity.Nombre,
+                    Apellido = profesorEntity.Apellido
+                };
+            }
+            else
+            {
+                throw new ExceptionBadRequest("Tipo de usuario no válido.");
+            }
         }
     }
 }
