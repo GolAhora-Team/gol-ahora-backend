@@ -29,5 +29,10 @@ namespace Infraestructure.Querys
         {
             return await _context.Clientes.ToListAsync();
         }
+
+        public async Task<bool> ClienteExists(int idCliente)
+        {
+            return await _context.Clientes.AnyAsync(c => c.Id == idCliente);
+        }
     }
 }

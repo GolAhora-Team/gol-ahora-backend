@@ -1,6 +1,7 @@
 ﻿using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.ICliente;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +19,38 @@ namespace Infraestructure.Querys
             _context = context;
         }
 
-        public Task<Cancha> GetCanchaById(int idCancha)
+        public async Task<Cancha> GetCanchaById(int idCancha)
         {
-            throw new NotImplementedException();
+            return await _context.Canchas.FindAsync(idCancha);
         }
 
-        public Task<Cancha> GetCanchasActivas()
+        public async Task<List<Cancha>> GetCanchasActivas()
         {
-            throw new NotImplementedException();
+            return await _context.Canchas.Where(c => c.Disponibilidad == true).ToListAsync();
         }
 
-        public Task<Cancha> GetCanchasDisponibles(DateTime fecha, TimeSpan hora)
+        public Task<List<Cancha>> GetCanchasDisponibles(DateTime fecha, TimeSpan hora)
         {
-            throw new NotImplementedException();
+            return _context.Canchas.Where(c =>
+                c.Disponibilidad == true &&
+                !_context.Reservas.Any(r =>
+                    r.CanchaId == c.Id &&
+                    r.Fecha.Date == fecha.Date &&
+                    r.Estado != Domain.Enums.EstadoReserva.Cancelada &&
+                    r.HoraInicio <= hora &&
+                    r.HoraFin > hora
+                )
+            ).ToListAsync();
         }
 
-        public Task<IEnumerable<Cliente>> GetListCancha()
+        public Task<List<Cancha>> GetListCancha()
         {
-            throw new NotImplementedException();
+            return _context.Canchas.ToListAsync();
+        }
+
+        public Task<bool> CanchaExists(int idCancha)
+        {
+            return _context.Canchas.AnyAsync(c => c.Id == idCancha);
         }
     }
 }

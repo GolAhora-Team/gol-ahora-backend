@@ -139,6 +139,7 @@ builder.Services.AddScoped<IEntrenamientoMapper, EntrenamientoMapper>();
 // Reservas
 builder.Services.AddScoped<IReservaCommand, ReservaCommand>();
 builder.Services.AddScoped<IReservaQuery, ReservaQuery>();
+builder.Services.AddScoped<IReservaService, ReservaService>();
 
 // Usuario
 builder.Services.AddScoped<IUsuarioCommand, UsuarioCommand>();

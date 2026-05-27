@@ -11,5 +11,6 @@ namespace Aplication.Interfaces.ICliente
     {
         Task<Cliente> GetClienteById(int idCliente);
         Task<IEnumerable<Cliente>> GetListClientes();
+        Task<bool> ClienteExists(int idCliente);
     }
 }

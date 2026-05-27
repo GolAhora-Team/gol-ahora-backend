@@ -10,8 +10,9 @@ namespace Aplication.Interfaces.ICancha
     public interface ICanchaQuery
     {
         Task<Cancha> GetCanchaById(int idCancha);
-        Task<IEnumerable<Cliente>> GetListCancha();
-        Task<Cancha> GetCanchasActivas();
-        Task<Cancha> GetCanchasDisponibles(DateTime fecha, TimeSpan hora);
+        Task<List<Cancha>> GetListCancha();
+        Task<List<Cancha>> GetCanchasActivas();
+        Task<List<Cancha>> GetCanchasDisponibles(DateTime fecha, TimeSpan hora);
+        Task<bool> CanchaExists(int idCancha);
     }
 }
