@@ -1,4 +1,5 @@
 ﻿using Aplication.Interfaces.IReserva;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,22 @@ namespace Infraestructure.Querys
         public async Task<bool> ReservaExists(int id)
         {
             return await _context.Reservas.AnyAsync(r => r.Id == id);
+        }
+
+        public async Task<bool> ExisteReservaEnHorario(
+        int canchaId,
+        DateTime fecha,
+        TimeSpan horaInicio,
+        TimeSpan horaFin)
+        {
+            return await _context.Reservas.AnyAsync(r =>
+                r.CanchaId == canchaId &&
+                r.Fecha.Date == fecha.Date &&
+                r.Estado != EstadoReserva.Cancelada &&
+                (
+                    horaInicio < r.HoraFin &&
+                    horaFin > r.HoraInicio
+                ));
         }
     }
 }
