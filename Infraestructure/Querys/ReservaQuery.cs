@@ -18,11 +18,11 @@ namespace Infraestructure.Querys
         }
         public async Task<List<Domain.Entities.Reserva>> GetAllReservas()
         {
-            return await _context.Reservas.ToListAsync();
+            return await _context.Reservas.Include(r => r.Cancha).Include(r => r.Cliente).ToListAsync();
         }
         public async Task<Domain.Entities.Reserva?> GetReservaById(int id)
         {
-            return await _context.Reservas.FirstOrDefaultAsync(r => r.Id == id);
+            return await _context.Reservas.Include(r => r.Cancha).Include(r => r.Cliente).FirstOrDefaultAsync(r => r.Id == id);
         }
         public async Task<bool> ReservaExists(int id)
         {
