@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class migracionFinal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,8 +22,8 @@ namespace Infraestructure.Migrations
                     Tipo = table.Column<int>(type: "int", nullable: false),
                     Superficie = table.Column<int>(type: "int", nullable: false),
                     Capacidad = table.Column<int>(type: "int", nullable: false),
-                    HoraInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HoraFin = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HoraInicio = table.Column<TimeSpan>(type: "time", nullable: false),
+                    HoraFin = table.Column<TimeSpan>(type: "time", nullable: false),
                     DuracionMax = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<int>(type: "int", nullable: false),
                     PrecioPorHora = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
@@ -42,7 +42,8 @@ namespace Infraestructure.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Tipo = table.Column<int>(type: "int", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    CantidadEquipos = table.Column<int>(type: "int", nullable: false)
+                    CantidadEquipos = table.Column<int>(type: "int", nullable: false),
+                    Estado = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -192,6 +193,7 @@ namespace Infraestructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CupoMaximo = table.Column<int>(type: "int", nullable: false),
                     ProfesorId = table.Column<int>(type: "int", nullable: false),
                     CanchaId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -234,38 +236,14 @@ namespace Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Jugadores",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Numero = table.Column<int>(type: "int", nullable: false),
-                    EsCapitan = table.Column<bool>(type: "bit", nullable: false),
-                    EsTitular = table.Column<bool>(type: "bit", nullable: false),
-                    Posicion = table.Column<int>(type: "int", nullable: false),
-                    Estado = table.Column<int>(type: "int", nullable: false),
-                    ClienteId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Jugadores", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Jugadores_Personas_ClienteId",
-                        column: x => x.ClienteId,
-                        principalTable: "Personas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Reservas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HoraInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HoraFin = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HoraInicio = table.Column<TimeSpan>(type: "time", nullable: false),
+                    HoraFin = table.Column<TimeSpan>(type: "time", nullable: false),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
                     CanchaId = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<int>(type: "int", nullable: false)
@@ -288,6 +266,59 @@ namespace Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Usuarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoUsuario = table.Column<int>(type: "int", nullable: false),
+                    PersonaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Usuarios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Usuarios_Personas_PersonaId",
+                        column: x => x.PersonaId,
+                        principalTable: "Personas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Jugadores",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Numero = table.Column<int>(type: "int", nullable: false),
+                    EsCapitan = table.Column<bool>(type: "bit", nullable: false),
+                    EsTitular = table.Column<bool>(type: "bit", nullable: false),
+                    Posicion = table.Column<int>(type: "int", nullable: false),
+                    Estado = table.Column<int>(type: "int", nullable: false),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    EquipoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Jugadores", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Jugadores_Equipos_EquipoId",
+                        column: x => x.EquipoId,
+                        principalTable: "Equipos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Jugadores_Personas_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Personas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Partidos",
                 columns: table => new
                 {
@@ -298,6 +329,9 @@ namespace Infraestructure.Migrations
                     Arbitro = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GolesLocal = table.Column<int>(type: "int", nullable: false),
                     GolesVisitante = table.Column<int>(type: "int", nullable: false),
+                    Estado = table.Column<int>(type: "int", nullable: false),
+                    Jornada = table.Column<int>(type: "int", nullable: false),
+                    Fase = table.Column<int>(type: "int", nullable: false),
                     EquipoLocalId = table.Column<int>(type: "int", nullable: false),
                     EquipoVisitanteId = table.Column<int>(type: "int", nullable: false),
                     CompeticionId = table.Column<int>(type: "int", nullable: false),
@@ -408,30 +442,6 @@ namespace Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EquipoJugadores",
-                columns: table => new
-                {
-                    EquipoId = table.Column<int>(type: "int", nullable: false),
-                    JugadorId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EquipoJugadores", x => new { x.EquipoId, x.JugadorId });
-                    table.ForeignKey(
-                        name: "FK_EquipoJugadores_Equipos_EquipoId",
-                        column: x => x.EquipoId,
-                        principalTable: "Equipos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EquipoJugadores_Jugadores_JugadorId",
-                        column: x => x.JugadorId,
-                        principalTable: "Jugadores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Sanciones",
                 columns: table => new
                 {
@@ -534,11 +544,6 @@ namespace Infraestructure.Migrations
                 column: "ProfesorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EquipoJugadores_JugadorId",
-                table: "EquipoJugadores",
-                column: "JugadorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Equipos_CompeticionId",
                 table: "Equipos",
                 column: "CompeticionId");
@@ -553,6 +558,11 @@ namespace Infraestructure.Migrations
                 table: "Jugadores",
                 column: "ClienteId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Jugadores_EquipoId",
+                table: "Jugadores",
+                column: "EquipoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pagos_FacturaId",
@@ -609,6 +619,18 @@ namespace Infraestructure.Migrations
                 name: "IX_Sanciones_JugadorId",
                 table: "Sanciones",
                 column: "JugadorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_Email",
+                table: "Usuarios",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_PersonaId",
+                table: "Usuarios",
+                column: "PersonaId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -624,9 +646,6 @@ namespace Infraestructure.Migrations
                 name: "ClienteEntrenamientos");
 
             migrationBuilder.DropTable(
-                name: "EquipoJugadores");
-
-            migrationBuilder.DropTable(
                 name: "Pagos");
 
             migrationBuilder.DropTable(
@@ -637,6 +656,9 @@ namespace Infraestructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Sanciones");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "Clases");
@@ -657,10 +679,10 @@ namespace Infraestructure.Migrations
                 name: "Jugadores");
 
             migrationBuilder.DropTable(
-                name: "Equipos");
+                name: "Canchas");
 
             migrationBuilder.DropTable(
-                name: "Canchas");
+                name: "Equipos");
 
             migrationBuilder.DropTable(
                 name: "Personas");

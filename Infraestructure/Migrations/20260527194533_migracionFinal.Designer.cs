@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260501004004_addUsuarioCompleto")]
-    partial class addUsuarioCompleto
+    [Migration("20260527194533_migracionFinal")]
+    partial class migracionFinal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,11 +105,11 @@ namespace Infraestructure.Migrations
                     b.Property<int>("Estado")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("HoraFin")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime>("HoraInicio")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("time");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -204,6 +204,9 @@ namespace Infraestructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -258,6 +261,9 @@ namespace Infraestructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CanchaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CupoMaximo")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Fecha")
@@ -321,21 +327,6 @@ namespace Infraestructure.Migrations
                     b.ToTable("Equipos");
                 });
 
-            modelBuilder.Entity("Domain.Entities.EquipoJugador", b =>
-                {
-                    b.Property<int>("EquipoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("JugadorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EquipoId", "JugadorId");
-
-                    b.HasIndex("JugadorId");
-
-                    b.ToTable("EquipoJugadores");
-                });
-
             modelBuilder.Entity("Domain.Entities.Factura", b =>
                 {
                     b.Property<int>("Id")
@@ -372,6 +363,9 @@ namespace Infraestructure.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("EquipoId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("EsCapitan")
                         .HasColumnType("bit");
 
@@ -391,6 +385,8 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("ClienteId")
                         .IsUnique();
+
+                    b.HasIndex("EquipoId");
 
                     b.ToTable("Jugadores");
                 });
@@ -446,6 +442,12 @@ namespace Infraestructure.Migrations
                     b.Property<int>("EquipoVisitanteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Fase")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
@@ -460,6 +462,9 @@ namespace Infraestructure.Migrations
 
                     b.Property<TimeSpan>("Hora")
                         .HasColumnType("time");
+
+                    b.Property<int>("Jornada")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -616,11 +621,11 @@ namespace Infraestructure.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("HoraFin")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime>("HoraInicio")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("time");
 
                     b.HasKey("Id");
 
@@ -860,25 +865,6 @@ namespace Infraestructure.Migrations
                     b.Navigation("Competicion");
                 });
 
-            modelBuilder.Entity("Domain.Entities.EquipoJugador", b =>
-                {
-                    b.HasOne("Domain.Entities.Equipo", "Equipo")
-                        .WithMany("Jugadores")
-                        .HasForeignKey("EquipoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Jugador", "Jugador")
-                        .WithMany()
-                        .HasForeignKey("JugadorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Equipo");
-
-                    b.Navigation("Jugador");
-                });
-
             modelBuilder.Entity("Domain.Entities.Factura", b =>
                 {
                     b.HasOne("Domain.Entities.Cliente", "Cliente")
@@ -898,7 +884,15 @@ namespace Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Equipo", "Equipo")
+                        .WithMany("Jugadores")
+                        .HasForeignKey("EquipoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Cliente");
+
+                    b.Navigation("Equipo");
                 });
 
             modelBuilder.Entity("Domain.Entities.Pago", b =>

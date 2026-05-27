@@ -34,7 +34,6 @@ namespace Aplication.Mappers
                 Estado = jugador.Estado,
                 ClienteId = jugador.ClienteId,
                 EquipoId = jugador.EquipoId,
-                EquipoNombre = jugador.EquipoNombre,
                 Sanciones = jugador.Sanciones.Select(s => new SancionResponse
                 {
                     Id = s.Id,

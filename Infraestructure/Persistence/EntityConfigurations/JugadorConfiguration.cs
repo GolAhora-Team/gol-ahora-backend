@@ -23,6 +23,12 @@ namespace Infraestructure.Persistence.EntityConfigurations
                 .WithOne(c => c.Jugador)
                 .HasForeignKey<Jugador>(j => j.ClienteId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // 🔗 Muchos a 1 con Equipo
+            entity.HasOne(j => j.Equipo)
+            .WithMany(e => e.Jugadores)
+            .HasForeignKey(j => j.EquipoId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -24,8 +24,8 @@ namespace Domain.Entities
 
         public int GolesEnContra { get; set; }
 
-        // 🔗 Jugadores (muchos a muchos)
-        public ICollection<EquipoJugador> Jugadores { get; set; }
+        // 🔗 Jugadores
+        public ICollection<Jugador> Jugadores { get; set; }
 
         // 🔗 Competición
         public int CompeticionId { get; set; }

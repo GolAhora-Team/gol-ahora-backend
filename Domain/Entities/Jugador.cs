@@ -21,15 +21,15 @@ namespace Domain.Entities
 
         public EstadoJugador Estado { get; set; }
 
-        // 🔗 Cliente (obligatorio)
+        // 🔗 Cliente
         public int ClienteId { get; set; }
         public Cliente Cliente { get; set; }
-        
-        public ICollection<Sancion> Sanciones { get; set; }
 
-        // 🔗 Equipo (obligatorio)        
+        // 🔗 Equipo
         public int EquipoId { get; set; }
-        public string EquipoNombre { get; set; }
         public Equipo Equipo { get; set; }
+
+        // 🔗 Sanciones
+        public ICollection<Sancion> Sanciones { get; set; }
     }
 }
