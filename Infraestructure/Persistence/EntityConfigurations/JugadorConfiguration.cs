@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -23,6 +23,12 @@ namespace Infraestructure.Persistence.EntityConfigurations
                 .WithOne(c => c.Jugador)
                 .HasForeignKey<Jugador>(j => j.ClienteId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // 🔗 1 a N con Equipo
+            entity.HasOne(j => j.Equipo)
+                .WithMany()
+                .HasForeignKey(j => j.EquipoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

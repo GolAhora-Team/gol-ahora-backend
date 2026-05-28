@@ -23,7 +23,7 @@ namespace Infraestructure.Command
             _mapper = mapper;
         }
 
-        public Task<AdministradorDto> CreateAsync(AdministradorDto dto)
+        public Task<AdministradorDto> CreateAsync(Administrador dto)
         {
             throw new NotImplementedException();
         }

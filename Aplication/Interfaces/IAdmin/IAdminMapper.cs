@@ -1,4 +1,5 @@
 using Aplication.DTOs;
+using Aplication.DTOs.Request.Admin;
 using Aplication.DTOs.Response.Admin;
 using Domain.Entities;
 using System;
@@ -13,5 +14,6 @@ namespace Aplication.Interfaces.IAdmin
     {
         AdministradorResponse CreateAdministradorResponse(Administrador admin);
         AdministradorResponse CreateAdministradorResponseFromDto(AdministradorDto dto);
+        Administrador CreateAdminToRequest(CreateAdminRequest request);
     }
 }

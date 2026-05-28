@@ -22,18 +22,17 @@ namespace Infraestructure.Querys
         {
             var cliente = await _context.Clientes.FindAsync(idCliente);
 
-            if (cliente != null)
-            {
-                _context.Remove(cliente);
-                await _context.SaveChangesAsync();
-            }
-
             return cliente;
         }
 
         public async Task<IEnumerable<Cliente>> GetListClientes()
         {
             return await _context.Clientes.ToListAsync();
+        }
+
+        public async Task<bool> ClienteExists(int idCliente)
+        {
+            return await _context.Clientes.AnyAsync(c => c.Id == idCliente);
         }
     }
 }

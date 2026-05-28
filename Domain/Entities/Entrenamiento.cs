@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +13,8 @@ namespace Domain.Entities
         public string Nombre { get; set; }
 
         public DateTime Fecha { get; set; }
+
+        public int CupoMaximo { get; set; }
 
         // 🔗 Profesor
         public int ProfesorId { get; set; }

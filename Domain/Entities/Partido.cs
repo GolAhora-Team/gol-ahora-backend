@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,12 @@ namespace Domain.Entities
         public int GolesLocal { get; set; }
 
         public int GolesVisitante { get; set; }
+
+        public EstadoPartido Estado { get; set; }
+
+        public int Jornada { get; set; }
+
+        public FaseTorneo Fase { get; set; }
 
         // 🔗 Equipos
         public int EquipoLocalId { get; set; }

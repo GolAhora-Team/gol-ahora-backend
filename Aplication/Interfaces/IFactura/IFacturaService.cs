@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Aplication.DTOs.Request.Factura;
+using Aplication.DTOs.Response.Factura;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +11,14 @@ namespace Aplication.Interfaces.IFactura
 {
     public interface IFacturaService
     {
-        Task<List<Factura>> GetAll();
-        Task<Factura> GetById(int id);
-        Task<Factura> Create(Factura factura);
+        Task<List<FacturaResponse>> GetAll();
+
+        Task<FacturaResponse> GetById(int id);
+
+        Task<FacturaResponse> CreateFactura(CreateFacturaRequest request);
+
+        Task<FacturaResponse> UpdateFactura(int id, UpdateFacturaRequest request);
+
+        Task DeleteFactura(int id);
     }
 }

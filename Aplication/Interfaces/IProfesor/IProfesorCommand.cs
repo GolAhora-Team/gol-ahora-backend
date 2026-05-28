@@ -1,6 +1,7 @@
 using Aplication.DTOs;
 using Aplication.DTOs.Request.Profesor;
 using Aplication.DTOs.Response.Profesor;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Aplication.Interfaces.IProfesor
     {
         Task<ProfesorDto> CreateAsync(ProfesorDto dto);
         Task<ProfesorDto?> UpdateAsync(int id, ProfesorDto dto);
+        Task CreateProfesor(Profesor profesor);
         Task<ProfesorResponse?> UpdateSimpleAsync(int id, UpdateProfesorSimpleRequest request);
         Task<bool> DeleteAsync(int id);
         Task<bool> AsignarClaseAsync(int profesorId, int claseId);

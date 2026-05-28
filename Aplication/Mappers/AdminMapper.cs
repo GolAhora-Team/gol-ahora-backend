@@ -1,4 +1,5 @@
 using Aplication.DTOs;
+using Aplication.DTOs.Request.Admin;
 using Aplication.DTOs.Response.Admin;
 using Aplication.Interfaces.IAdmin;
 using Domain.Entities;
@@ -12,6 +13,30 @@ namespace Aplication.Mappers
 {
     public class AdminMapper : IAdminMapper
     {
+        public Administrador CreateAdminToRequest(CreateAdminRequest request)
+        {
+            if (request == null) return null;
+            return new Administrador
+            {
+                Identificador = request.Identificador,
+                PuedeFacturar = request.PuedeFacturar,
+                Dni = request.Dni,
+                Nombre = request.Nombre,
+                Apellido = request.Apellido,
+                Genero = request.Genero,
+                FechaNacimiento = request.FechaNacimiento,
+                Telefono = request.Telefono,
+                Direccion = request.Direccion,
+                Localidad = request.Localidad,
+                CodigoPostal = request.CodigoPostal,
+                Provincia = request.Provincia,
+                Pais = request.Pais,
+                ContactoEmergencia = request.ContactoEmergencia,
+                Email = request.Email,
+                FechaRegistro = DateTime.UtcNow,
+                FechaAlta = DateTime.UtcNow
+            };
+        }
         public AdministradorResponse CreateAdministradorResponse(Administrador admin)
         {
             if (admin == null) return null;

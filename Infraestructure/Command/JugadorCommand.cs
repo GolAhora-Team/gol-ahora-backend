@@ -17,17 +17,27 @@ namespace Infraestructure.Command
         {
             _context = context;
         }
-        public async Task<JugadorDto> CreateAsync(JugadorDto jugadorDto)
+
+        public async Task InsertJugador(Jugador jugador)
         {
-            throw new NotImplementedException();
+            _context.Add(jugador);
+            await _context.SaveChangesAsync();
         }
-        public async Task<JugadorDto?> UpdateAsync(int id, JugadorDto jugadorDto)
+
+        public async Task RemoveJugador(int idJugador)
         {
-            throw new NotImplementedException();
+            var jugador = await _context.Jugadores.FindAsync(idJugador);
+            if(jugador != null)
+            {
+                _context.Remove(jugador);
+                await _context.SaveChangesAsync();
+            }            
         }
-        public async Task<bool> DeleteAsync(int id)
+
+        public async Task UpdateJugador(Jugador jugador)
         {
-            throw new NotImplementedException();
+            _context.Update(jugador);
+            await _context.SaveChangesAsync();
         }
     }
 }

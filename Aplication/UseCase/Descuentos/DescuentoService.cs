@@ -15,36 +15,23 @@ namespace Aplication.UseCase.Descuentos
     {
         private readonly IDescuentoCommand _command;
         private readonly IDescuentoQuery _query;
+        private readonly IDescuentoMapper _mapper;
 
-        public DescuentoService(IDescuentoCommand command, IDescuentoQuery query)
+        public DescuentoService(IDescuentoCommand command, IDescuentoQuery query, IDescuentoMapper mapper)
         {
             _command = command;
             _query = query;
+            _mapper = mapper;
         }
 
         // 🟢 CREATE
         public async Task<DescuentoResponse> CreateDescuento(CreateDescuentoRequest request)
         {
-            var descuento = new Descuento
-            {
-                Nombre = request.Nombre,
-                Descripcion = request.Descripcion,
-                Porcentaje = request.Porcentaje,
-                FechaInicio = request.FechaInicio,
-                FechaFin = request.FechaFin
-            };
+            var descuento = _mapper.CreateDescuento(request);
 
             await _command.InsertDescuento(descuento);
-
-            return new DescuentoResponse
-            {
-                Id = descuento.Id,
-                Nombre = descuento.Nombre,
-                Descripcion = descuento.Descripcion,
-                Porcentaje = descuento.Porcentaje,
-                FechaInicio = descuento.FechaInicio,
-                FechaFin = descuento.FechaFin
-            };
+            descuento = await _query.GetDescuentoById(descuento.Id);
+            return _mapper.CreateDescuentoResponse(descuento);
         }
 
         // 🔵 GET ALL
@@ -52,22 +39,7 @@ namespace Aplication.UseCase.Descuentos
         {
             var descuentos = await _query.GetListDescuentos();
 
-            var responseList = new List<DescuentoResponse>();
-
-            foreach (var d in descuentos)
-            {
-                responseList.Add(new DescuentoResponse
-                {
-                    Id = d.Id,
-                    Nombre = d.Nombre,
-                    Descripcion = d.Descripcion,
-                    Porcentaje = d.Porcentaje,
-                    FechaInicio = d.FechaInicio,
-                    FechaFin = d.FechaFin
-                });
-            }
-
-            return responseList;
+            return _mapper.CreateDescuentoResponseList(descuentos);
         }
 
         // 🔵 GET BY ID
@@ -78,15 +50,7 @@ namespace Aplication.UseCase.Descuentos
             if (d == null)
                 throw new Exception("El descuento no existe");
 
-            return new DescuentoResponse
-            {
-                Id = d.Id,
-                Nombre = d.Nombre,
-                Descripcion = d.Descripcion,
-                Porcentaje = d.Porcentaje,
-                FechaInicio = d.FechaInicio,
-                FechaFin = d.FechaFin
-            };
+            return _mapper.CreateDescuentoResponse(d);
         }
 
         // 🟡 UPDATE
@@ -97,23 +61,11 @@ namespace Aplication.UseCase.Descuentos
             if (d == null)
                 throw new Exception("El descuento no existe");
 
-            d.Nombre = request.Nombre;
-            d.Descripcion = request.Descripcion;
-            d.Porcentaje = request.Porcentaje;
-            d.FechaInicio = request.FechaInicio;
-            d.FechaFin = request.FechaFin;
+            _mapper.UpdateDescuento(d, request);
 
             await _command.UpdateDescuento(d);
 
-            return new DescuentoResponse
-            {
-                Id = d.Id,
-                Nombre = d.Nombre,
-                Descripcion = d.Descripcion,
-                Porcentaje = d.Porcentaje,
-                FechaInicio = d.FechaInicio,
-                FechaFin = d.FechaFin
-            };
+            return _mapper.CreateDescuentoResponse(d);
         }
 
         // 🔴 DELETE

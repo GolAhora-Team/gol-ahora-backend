@@ -25,12 +25,16 @@ namespace Infraestructure.Querys
     
             public async Task<List<Clase>> GetAllClases()
             {
-                return await _context.Clases.ToListAsync();
+                return await _context.Clases.Include(c => c.Profesor)
+                                            .Include(c => c.Asistencias).ThenInclude(a => a.Cliente)
+                                            .ToListAsync();
             }
     
             public async Task<Clase?> GetClaseById(int id)
             {
-                return await _context.Clases.FirstOrDefaultAsync(c => c.Id == id);
-        }
+                return await _context.Clases.Include(c => c.Profesor)
+                                            .Include(c => c.Asistencias).ThenInclude(a => a.Cliente)
+                                            .FirstOrDefaultAsync(c => c.Id == id);
+            }
     }
 }
