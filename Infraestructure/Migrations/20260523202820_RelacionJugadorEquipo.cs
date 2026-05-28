@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -28,7 +28,7 @@ namespace Infraestructure.Migrations
                 column: "EquipoId",
                 principalTable: "Equipos",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />

@@ -145,6 +145,18 @@ builder.Services.AddScoped<IReservaService, ReservaService>();
 builder.Services.AddScoped<IUsuarioCommand, UsuarioCommand>();
 builder.Services.AddScoped<IUsuarioQuery, UsuarioQuery>();
 builder.Services.AddScoped<IUsuarioMapper, UsuarioMapper>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
+// CORS configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -154,6 +166,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
