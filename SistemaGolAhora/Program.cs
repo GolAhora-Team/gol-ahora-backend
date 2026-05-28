@@ -26,6 +26,7 @@ using Aplication.Interfaces.ICompeticion;
 using Aplication.Interfaces.IPartido;
 using Aplication.Interfaces.IEntrenamiento;
 using Aplication.UseCase.Entrenamientos;
+using Aplication.UseCase.Canchas;
 using Aplication.Interfaces.ISancion;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +55,8 @@ builder.Services.AddScoped<IClienteMapper, ClienteMapper>();
 // Cancha
 builder.Services.AddScoped<ICanchaCommand, CanchaCommand>();
 builder.Services.AddScoped<ICanchaQuery, CanchasQuery>();
+builder.Services.AddScoped<ICanchaService, CanchaService>();
+builder.Services.AddScoped<ICanchaMapper, CanchaMapper>();
 
 // Precio
 builder.Services.AddScoped<IPrecioCommand, PrecioCommand>();
