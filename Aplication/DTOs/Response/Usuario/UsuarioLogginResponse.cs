@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +14,6 @@ namespace Aplication.DTOs.Response.Usuario
         public int IdPersona { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
+        public int? Identificador { get; set; }
     }
 }

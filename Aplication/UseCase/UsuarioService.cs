@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Usuario;
+using Aplication.DTOs.Request.Usuario;
 using Aplication.DTOs.Response.Usuario;
 using Aplication.Interfaces.IAdmin;
 using Aplication.Interfaces.ICliente;
@@ -23,9 +23,10 @@ namespace Aplication.UseCase
         private readonly IProfesorMapper _profesorMapper;
         private readonly IProfesorQuery _profesorQuery;
 
-        public UsuarioService(IUsuarioCommand usuariocommand, IClienteMapper clientemapper, IClientesCommand clienteCommand, IAdminMapper adminMapper, IAdminCommand adminCommand, IProfesorMapper profesorMapper, IProfesorCommand profesorCommand, IUsuarioQuery usuarioQuery, IProfesorQuery profesorQuery, IClientesQuery clientesQuery, IAdminQuery adminQuery)
+        public UsuarioService(IUsuarioCommand usuariocommand, IUsuarioMapper usuariomapper, IClienteMapper clientemapper, IClientesCommand clienteCommand, IAdminMapper adminMapper, IAdminCommand adminCommand, IProfesorMapper profesorMapper, IProfesorCommand profesorCommand, IUsuarioQuery usuarioQuery, IProfesorQuery profesorQuery, IClientesQuery clientesQuery, IAdminQuery adminQuery)
         {
             _usuariocommand = usuariocommand;
+            _usuariomapper = usuariomapper;
             _clientemapper = clientemapper;
             _clienteCommand = clienteCommand;
             _adminMapper = adminMapper;
@@ -123,7 +124,8 @@ namespace Aplication.UseCase
                     TipoUsuario = usuarioEntity.TipoUsuario,
                     IdPersona = adminEntity.Id,
                     Nombre = adminEntity.Nombre,
-                    Apellido = adminEntity.Apellido
+                    Apellido = adminEntity.Apellido,
+                    Identificador = adminEntity.Identificador
                 };
             }
             else if (usuarioEntity.TipoUsuario == Domain.Enums.TipoUsuario.Profesor)
