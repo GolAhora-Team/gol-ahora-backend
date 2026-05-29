@@ -149,5 +149,24 @@ namespace Aplication.UseCase
                 throw new ExceptionBadRequest("Tipo de usuario no válido.");
             }
         }
+
+        public async Task<bool> ChangePassword(ChangePasswordRequest request)
+        {
+            var usuario = await _usuarioQuery.GetById(request.IdUsuario);
+            if (usuario == null)
+            {
+                throw new ExceptionNotFound("Usuario no encontrado.");
+            }
+
+            if (usuario.PasswordHash != request.CurrentPassword)
+            {
+                throw new ExceptionBadRequest("La contraseña actual es incorrecta.");
+            }
+
+            usuario.PasswordHash = request.NewPassword;
+            await _usuariocommand.Update(usuario);
+
+            return true;
+        }
     }
 }
