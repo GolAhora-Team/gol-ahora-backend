@@ -23,9 +23,31 @@ namespace Infraestructure.Command
             _mapper = mapper;
         }
 
-        public Task<AdministradorDto> CreateAsync(Administrador dto)
+        public async Task<AdministradorDto> CreateAsync(Administrador dto)
         {
-            throw new NotImplementedException();
+            _context.Administradores.Add(dto);
+            await _context.SaveChangesAsync();
+            return new AdministradorDto
+            {
+                Id = dto.Id,
+                Identificador = dto.Identificador,
+                FechaAlta = dto.FechaAlta,
+                PuedeFacturar = dto.PuedeFacturar,
+                Dni = dto.Dni,
+                Nombre = dto.Nombre,
+                Apellido = dto.Apellido,
+                Genero = dto.Genero,
+                FechaNacimiento = dto.FechaNacimiento,
+                Telefono = dto.Telefono,
+                Direccion = dto.Direccion,
+                Localidad = dto.Localidad,
+                CodigoPostal = dto.CodigoPostal,
+                Provincia = dto.Provincia,
+                Pais = dto.Pais,
+                ContactoEmergencia = dto.ContactoEmergencia,
+                Email = dto.Email,
+                FechaRegistro = dto.FechaRegistro
+            };
         }
 
         public async Task<bool> DeleteAsync(int id)
