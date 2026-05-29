@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Usuario;
+using Aplication.DTOs.Request.Usuario;
 using Aplication.DTOs.Response.Usuario;
 using System;
 using System.Collections.Generic;
@@ -14,5 +14,6 @@ namespace Aplication.Interfaces.IUsuario
         Task<UsuarioAdminResponse> CreateUsuarioAdmin(CreateUsuarioAdminRequest usuario);
         Task<UsuarioProfesorResponse> CreateUsuarioProfesor(CreateUsuarioProfesorRequest usuario);
         Task<UsuarioLogginResponse> LogginUsuario(LoginRequest loginRequest);
+        Task<bool> ChangePassword(ChangePasswordRequest request);
     }
 }

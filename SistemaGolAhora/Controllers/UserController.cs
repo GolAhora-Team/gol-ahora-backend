@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Usuario;
+using Aplication.DTOs.Request.Usuario;
 using Aplication.Interfaces.IUsuario;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,6 +65,20 @@ namespace SistemaGolAhora.Controllers
             try
             {
                 var response = await _usuarioService.LogginUsuario(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            try
+            {
+                var response = await _usuarioService.ChangePassword(request);
                 return Ok(response);
             }
             catch (Exception ex)
