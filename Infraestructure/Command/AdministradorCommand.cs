@@ -70,6 +70,11 @@ namespace Infraestructure.Command
             var admin = await _context.Administradores.FindAsync(id);
             if (admin == null) return null;
 
+            admin.Nombre = string.IsNullOrEmpty(request.Nombre) ? admin.Nombre : request.Nombre;
+            admin.Apellido = string.IsNullOrEmpty(request.Apellido) ? admin.Apellido : request.Apellido;
+            admin.Dni = request.Dni > 0 ? request.Dni : admin.Dni;
+            admin.Genero = string.IsNullOrEmpty(request.Genero) ? admin.Genero : request.Genero;
+            admin.FechaNacimiento = request.FechaNacimiento != default ? request.FechaNacimiento : admin.FechaNacimiento;
             admin.Telefono = request.Telefono;
             admin.Direccion = request.Direccion;
             admin.Localidad = request.Localidad;
