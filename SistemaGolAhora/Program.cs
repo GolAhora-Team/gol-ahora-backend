@@ -150,6 +150,11 @@ builder.Services.AddScoped<IUsuarioQuery, UsuarioQuery>();
 builder.Services.AddScoped<IUsuarioMapper, UsuarioMapper>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
+// Reporte
+builder.Services.AddScoped<Aplication.Interfaces.IReporte.IReporteCommand, Infraestructure.Command.ReporteCommand>();
+builder.Services.AddScoped<Aplication.Interfaces.IReporte.IReporteQuery, Infraestructure.Querys.ReporteQuery>();
+builder.Services.AddScoped<Aplication.Interfaces.IReporte.IReporteService, Aplication.UseCase.Reportes.ReporteService>();
+
 // CORS configuration
 builder.Services.AddCors(options =>
 {
@@ -162,6 +167,21 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Auto-migrate database on startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error applying migrations: {ex.Message}");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

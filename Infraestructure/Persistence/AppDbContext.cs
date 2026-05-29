@@ -43,6 +43,9 @@ public class AppDbContext : DbContext
     public DbSet<Factura> Facturas { get; set; }
     public DbSet<Pago> Pagos { get; set; }
 
+    // 🔹 REPORTES
+    public DbSet<Reporte> Reportes { get; set; }
+
     // 🔥 CONFIGURACIONES
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
