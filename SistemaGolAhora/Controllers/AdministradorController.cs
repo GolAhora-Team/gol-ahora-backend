@@ -18,6 +18,20 @@ namespace SistemaGolAhora.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var admins = await _services.GetAllAsync();
+                return Ok(admins);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         [HttpPut("{id}/simple")]
         public async Task<IActionResult> UpdateSimple(int id, [FromBody] UpdateAdministradorSimpleRequest request)
         {
