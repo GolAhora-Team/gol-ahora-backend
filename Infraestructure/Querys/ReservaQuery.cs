@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IReserva;
+using Aplication.Interfaces.IReserva;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -33,12 +33,14 @@ namespace Infraestructure.Querys
         int canchaId,
         DateTime fecha,
         TimeSpan horaInicio,
-        TimeSpan horaFin)
+        TimeSpan horaFin,
+        int? excludeReservaId = null)
         {
             return await _context.Reservas.AnyAsync(r =>
                 r.CanchaId == canchaId &&
                 r.Fecha.Date == fecha.Date &&
                 r.Estado != EstadoReserva.Cancelada &&
+                (!excludeReservaId.HasValue || r.Id != excludeReservaId.Value) &&
                 (
                     horaInicio < r.HoraFin &&
                     horaFin > r.HoraInicio

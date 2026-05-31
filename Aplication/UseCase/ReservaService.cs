@@ -190,7 +190,7 @@ namespace Aplication.UseCase
             }
 
             // Validar disponibilidad de la cancha
-            var hasConflict = await _reservaQuery.ExisteReservaEnHorario(request.CanchaId, request.Fecha, request.HoraInicio, request.HoraFin);
+            var hasConflict = await _reservaQuery.ExisteReservaEnHorario(request.CanchaId, request.Fecha, request.HoraInicio, request.HoraFin, id);
             if (hasConflict)
             {
                 throw new ExceptionBadRequest("La cancha no está disponible en el horario seleccionado.");
@@ -208,6 +208,7 @@ namespace Aplication.UseCase
             reserva.HoraInicio = request.HoraInicio;
             reserva.HoraFin = request.HoraFin;
             reserva.CanchaId = request.CanchaId;
+            reserva.Cancha = await _canchaQuery.GetCanchaById(request.CanchaId);
             await _reservaCommand.UpdateReserva(reserva);
 
             return new ReservaResponse

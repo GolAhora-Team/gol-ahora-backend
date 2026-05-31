@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +19,7 @@ namespace Aplication.Interfaces.IReserva
                 int canchaId,
                 DateTime fecha,
                 TimeSpan horaInicio,
-                TimeSpan horaFin);
+                TimeSpan horaFin,
+                int? excludeReservaId = null);
     }
 }
