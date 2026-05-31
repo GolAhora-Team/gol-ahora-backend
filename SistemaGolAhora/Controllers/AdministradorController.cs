@@ -32,6 +32,21 @@ namespace SistemaGolAhora.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var admin = await _services.GetByIdAsync(id);
+                if (admin == null) return NotFound(new { mensaje = "Administrador o Personal no encontrado" });
+                return Ok(admin);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         [HttpPut("{id}/simple")]
         public async Task<IActionResult> UpdateSimple(int id, [FromBody] UpdateAdministradorSimpleRequest request)
         {
