@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Jugador;
+using Aplication.DTOs.Request.Jugador;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.IJugador;
 using Domain.Entities;
@@ -18,6 +18,7 @@ namespace Aplication.Mappers
             {
                 Numero = jugador.Numero,
                 Posicion = jugador.Posicion,
+                ClienteId = jugador.ClienteId,
                 EquipoId = jugador.EquipoId
             };
         }
