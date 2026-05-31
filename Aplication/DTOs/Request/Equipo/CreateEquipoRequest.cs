@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +14,6 @@ namespace Aplication.DTOs.Request.Equipo
 
         public string Descripcion { get; set; }
 
-        public int CompeticionId { get; set; }
+        public int? CompeticionId { get; set; }
     }
 }
