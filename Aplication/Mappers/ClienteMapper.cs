@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Cliente;
+using Aplication.DTOs.Request.Cliente;
 using Aplication.Interfaces.ICliente;
 using Aplication.Response;
 using Domain.Entities;
@@ -30,7 +30,8 @@ namespace Aplication.Mappers
                 ContactoEmergencia = cliente.ContactoEmergencia,
                 Email = cliente.Email,
                 ObraSocial = cliente.ObraSocial,
-                AptoFisico = cliente.AptoFisico
+                AptoFisico = cliente.AptoFisico,
+                EsSocioActivo = cliente.EsSocioActivo
             };
         }
 
@@ -52,7 +53,11 @@ namespace Aplication.Mappers
                 Pais = cliente.Pais,
                 ContactoEmergencia = cliente.ContactoEmergencia,
                 Email = cliente.Email,
-                ObraSocial = cliente.ObraSocial
+                ObraSocial = cliente.ObraSocial,
+                AptoFisico = cliente.AptoFisico,
+                EsSocioActivo = cliente.EsSocioActivo,
+                FechaAlta = cliente.FechaAlta,
+                FechaBaja = cliente.FechaBaja
             };
         }
     }
