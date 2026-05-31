@@ -19,7 +19,8 @@ namespace Aplication.Mappers
                 Numero = jugador.Numero,
                 Posicion = jugador.Posicion,
                 ClienteId = jugador.ClienteId,
-                EquipoId = jugador.EquipoId
+                EquipoId = jugador.EquipoId,
+                EquipoNombre = ""
             };
         }
 
@@ -36,14 +37,15 @@ namespace Aplication.Mappers
                 ClienteId = jugador.ClienteId,
                 EquipoId = jugador.EquipoId,
                 EquipoNombre = jugador.EquipoNombre,
-                Sanciones = jugador.Sanciones.Select(s => new SancionResponse
+                Sanciones = jugador.Sanciones?.Select(s => new SancionResponse
                 {
                     Id = s.Id,
                     Fecha = s.Fecha,
                     Tarjeta = s.Tarjeta,
                     JugadorId = s.JugadorId
-                }).ToList()
+                }).ToList() ?? new List<SancionResponse>()
             };
         }
     }
 }
+
