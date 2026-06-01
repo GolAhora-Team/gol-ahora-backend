@@ -21,6 +21,7 @@ namespace Infraestructure.Querys
                 .Include(e => e.Profesor)
                 .Include(e => e.Cancha)
                 .Include(e => e.Clientes)
+                    .ThenInclude(ce => ce.Cliente)
                 .ToListAsync();
         }
 
@@ -30,6 +31,7 @@ namespace Infraestructure.Querys
                 .Include(e => e.Profesor)
                 .Include(e => e.Cancha)
                 .Include(e => e.Clientes)
+                    .ThenInclude(ce => ce.Cliente)
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
     }

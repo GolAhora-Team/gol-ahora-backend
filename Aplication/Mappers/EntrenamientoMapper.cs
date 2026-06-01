@@ -2,6 +2,8 @@ using Aplication.DTOs.Request.Entrenamiento;
 using Aplication.DTOs.Response.Entrenamiento;
 using Aplication.Interfaces.IEntrenamiento;
 using Domain.Entities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Aplication.Mappers
 {
@@ -28,7 +30,21 @@ namespace Aplication.Mappers
                 Fecha = entrenamiento.Fecha,
                 CupoMaximo = entrenamiento.CupoMaximo,
                 ProfesorId = entrenamiento.ProfesorId,
-                CanchaId = entrenamiento.CanchaId
+                CanchaId = entrenamiento.CanchaId,
+                Profesor = entrenamiento.Profesor != null ? new EntrenamientoProfesorResponse
+                {
+                    Id = entrenamiento.Profesor.Id,
+                    Nombre = entrenamiento.Profesor.Nombre,
+                    Apellido = entrenamiento.Profesor.Apellido
+                } : null,
+                Clientes = entrenamiento.Clientes != null ? entrenamiento.Clientes
+                    .Where(c => c.Cliente != null)
+                    .Select(c => new EntrenamientoClienteResponse
+                    {
+                        Id = c.Cliente.Id,
+                        Nombre = c.Cliente.Nombre,
+                        Apellido = c.Cliente.Apellido
+                    }).ToList() : new List<EntrenamientoClienteResponse>()
             };
         }
     }
