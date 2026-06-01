@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IClases;
+using Aplication.Interfaces.IClases;
 using Domain.Exceptions;
 using Aplication.DTOs.Request.Clase;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +26,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (ExceptionBadRequest ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -61,7 +61,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (ExceptionBadRequest ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
             catch (ExceptionNotFound ex)
             {
@@ -93,7 +93,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (ExceptionBadRequest ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
             catch (ExceptionNotFound ex)
             {
@@ -111,7 +111,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (ExceptionBadRequest ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
             catch (ExceptionNotFound ex)
             {

@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Reserva;
+using Aplication.DTOs.Request.Reserva;
 using Aplication.DTOs.Response.Reserva;
 using Aplication.Interfaces.IReserva;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +29,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -44,7 +44,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -63,7 +63,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -82,7 +82,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -101,7 +101,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
     }

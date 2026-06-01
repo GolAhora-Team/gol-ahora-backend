@@ -27,7 +27,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -41,7 +41,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -55,7 +55,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -69,7 +69,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -83,7 +83,7 @@ namespace SistemaGolAhora.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
     }
