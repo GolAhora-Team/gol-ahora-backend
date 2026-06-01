@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +38,8 @@ namespace Aplication.DTOs.Request.Cliente
 
         public string ObraSocial { get; set; }
 
-        public bool AptoFisico { get; set; }        
+        public bool AptoFisico { get; set; }
+
+        public bool EsSocioActivo { get; set; }
     }
 }

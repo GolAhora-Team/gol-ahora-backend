@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Jugador;
+using Aplication.DTOs.Request.Jugador;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.IJugador;
 using Domain.Entities;
@@ -18,7 +18,9 @@ namespace Aplication.Mappers
             {
                 Numero = jugador.Numero,
                 Posicion = jugador.Posicion,
-                EquipoId = jugador.EquipoId
+                ClienteId = jugador.ClienteId,
+                EquipoId = jugador.EquipoId,
+                EquipoNombre = ""
             };
         }
 
@@ -35,14 +37,15 @@ namespace Aplication.Mappers
                 ClienteId = jugador.ClienteId,
                 EquipoId = jugador.EquipoId,
                 EquipoNombre = jugador.EquipoNombre,
-                Sanciones = jugador.Sanciones.Select(s => new SancionResponse
+                Sanciones = jugador.Sanciones?.Select(s => new SancionResponse
                 {
                     Id = s.Id,
                     Fecha = s.Fecha,
                     Tarjeta = s.Tarjeta,
                     JugadorId = s.JugadorId
-                }).ToList()
+                }).ToList() ?? new List<SancionResponse>()
             };
         }
     }
 }
+

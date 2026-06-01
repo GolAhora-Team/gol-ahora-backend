@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +28,7 @@ namespace Domain.Entities
         public ICollection<EquipoJugador> Jugadores { get; set; }
 
         // 🔗 Competición
-        public int CompeticionId { get; set; }
-        public Competicion Competicion { get; set; }
+        public int? CompeticionId { get; set; }
+        public Competicion? Competicion { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -12,8 +12,7 @@ namespace Aplication.DTOs.Request.Jugador
     {
         public int Numero { get; set; }       
         public int Posicion { get; set; }
-               
-    
+        public int ClienteId { get; set; }        
         public int EquipoId { get; set; }        
     }
 }

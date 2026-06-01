@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs;
+using Aplication.DTOs;
 using Aplication.DTOs.Request.Jugador;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.IJugador;
@@ -71,6 +71,7 @@ namespace Aplication.UseCase
 
             jugadorOriginal.Numero = request.Numero;
             jugadorOriginal.Posicion = request.Posicion;
+            jugadorOriginal.ClienteId = request.ClienteId;
             jugadorOriginal.EquipoId = request.EquipoId;
 
             await _command.UpdateJugador(jugadorOriginal);
