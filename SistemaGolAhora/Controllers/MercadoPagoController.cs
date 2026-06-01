@@ -11,9 +11,8 @@ namespace SistemaGolAhora.Controllers
     {
         public MercadoPagoController()
         {
-            // Token de prueba genérico para desarrolladores de Mercado Pago.
-            // Para producción, se debe reemplazar por un token de producción y colocarlo en appsettings.json.
-            MercadoPagoConfig.AccessToken = "TEST-4008272993876356-021015-8914ba14fb96a096c4293c6ebf2d7253-1678128330"; 
+            // Token proporcionado por el usuario
+            MercadoPagoConfig.AccessToken = "APP_USR-3447691466274967-060117-86028c62ab417279b1562a4ae99ce8ad-3443332308"; 
         }
 
         [HttpPost("create-preference")]
