@@ -14,6 +14,9 @@ namespace Aplication.DTOs.Request.Equipo
 
         public string Descripcion { get; set; }
 
+        public string ColorPrimario { get; set; }
+        public string ColorSecundario { get; set; }
+
         public int? CompeticionId { get; set; }
     }
 }

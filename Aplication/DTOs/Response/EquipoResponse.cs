@@ -16,6 +16,9 @@ namespace Aplication.DTOs.Response
 
         public string Descripcion { get; set; }
 
+        public string ColorPrimario { get; set; }
+        public string ColorSecundario { get; set; }
+
         public int CantPuntos { get; set; }
 
         public int PartidosJugados { get; set; }

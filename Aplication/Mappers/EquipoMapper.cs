@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Equipo;
+using Aplication.DTOs.Request.Equipo;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.IEquipo;
 using Domain.Entities;
@@ -19,6 +19,8 @@ namespace Aplication.Mappers
                 Nombre = equipo.Nombre,
                 CantidadMaxJugadores = equipo.CantidadMaxJugadores,
                 Descripcion = equipo.Descripcion,
+                ColorPrimario = equipo.ColorPrimario ?? "#ffffff",
+                ColorSecundario = equipo.ColorSecundario ?? "#ffffff",
                 CompeticionId = equipo.CompeticionId
             };
         }
@@ -31,6 +33,8 @@ namespace Aplication.Mappers
                 Nombre = equipo.Nombre,
                 CantidadMaxJugadores = equipo.CantidadMaxJugadores,
                 Descripcion = equipo.Descripcion,
+                ColorPrimario = equipo.ColorPrimario ?? "#ffffff",
+                ColorSecundario = equipo.ColorSecundario ?? "#ffffff",
                 CompeticionId = equipo.CompeticionId
             };
         }

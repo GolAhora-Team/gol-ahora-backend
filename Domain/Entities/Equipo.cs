@@ -16,6 +16,9 @@ namespace Domain.Entities
 
         public string Descripcion { get; set; }
 
+        public string ColorPrimario { get; set; } = "#ffffff";
+        public string ColorSecundario { get; set; } = "#ffffff";
+
         public int CantPuntos { get; set; }
 
         public int PartidosJugados { get; set; }

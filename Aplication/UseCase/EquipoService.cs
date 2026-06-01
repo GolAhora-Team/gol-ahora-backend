@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Cliente;
+using Aplication.DTOs.Request.Cliente;
 using Aplication.DTOs.Request.Equipo;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.ICliente;
@@ -75,6 +75,8 @@ namespace Aplication.UseCase
             equipoOriginal.Nombre = request.Nombre;
             equipoOriginal.CantidadMaxJugadores = request.CantidadMaxJugadores;
             equipoOriginal.Descripcion = request.Descripcion;
+            equipoOriginal.ColorPrimario = request.ColorPrimario ?? equipoOriginal.ColorPrimario;
+            equipoOriginal.ColorSecundario = request.ColorSecundario ?? equipoOriginal.ColorSecundario;
             equipoOriginal.CompeticionId = request.CompeticionId;
 
             await _command.UpdateEquipo(equipoOriginal);
