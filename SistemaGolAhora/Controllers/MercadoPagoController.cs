@@ -34,10 +34,10 @@ namespace SistemaGolAhora.Controllers
                     },
                     BackUrls = new PreferenceBackUrlsRequest
                     {
-                        // En local, podrías poner localhost. Para dev/prod, la URL de tu app.
-                        Success = "https://golahora.runasp.net",
-                        Failure = "https://golahora.runasp.net",
-                        Pending = "https://golahora.runasp.net"
+                        // Se usa la URL proporcionada por el frontend, o una por defecto
+                        Success = request.ReturnUrl ?? "https://golahora.runasp.net",
+                        Failure = request.ReturnUrl ?? "https://golahora.runasp.net",
+                        Pending = request.ReturnUrl ?? "https://golahora.runasp.net"
                     },
                     AutoReturn = "approved",
                 };
@@ -60,5 +60,6 @@ namespace SistemaGolAhora.Controllers
     {
         public string Title { get; set; }
         public decimal Price { get; set; }
+        public string? ReturnUrl { get; set; }
     }
 }
