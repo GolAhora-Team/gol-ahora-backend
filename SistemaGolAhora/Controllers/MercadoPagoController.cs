@@ -34,10 +34,10 @@ namespace SistemaGolAhora.Controllers
                     },
                     BackUrls = new PreferenceBackUrlsRequest
                     {
-                        // Se usa la URL proporcionada por el frontend, o una por defecto
-                        Success = request.ReturnUrl ?? "https://golahora.runasp.net",
-                        Failure = request.ReturnUrl ?? "https://golahora.runasp.net",
-                        Pending = request.ReturnUrl ?? "https://golahora.runasp.net"
+                        // FORZAMOS A QUE USE EL DOMINIO REAL PARA EVITAR RECHAZOS POR LOCALHOST
+                        Success = "https://golahora.runasp.net",
+                        Failure = "https://golahora.runasp.net",
+                        Pending = "https://golahora.runasp.net"
                     },
                     AutoReturn = "approved",
                 };
@@ -45,9 +45,8 @@ namespace SistemaGolAhora.Controllers
                 var client = new PreferenceClient();
                 Preference preference = await client.CreateAsync(requestMP);
 
-                // Retornamos el InitPoint que es la URL a la que el frontend debe redirigir al usuario.
-                // Usar SandboxInitPoint si quieres forzar el entorno de sandbox, o InitPoint que se adapta al token.
-                return Ok(new { initPoint = preference.SandboxInitPoint ?? preference.InitPoint });
+                // Usamos DIRECTAMENTE InitPoint. SandboxInitPoint puede fallar con tokens APP_USR
+                return Ok(new { initPoint = preference.InitPoint });
             }
             catch (System.Exception ex)
             {
