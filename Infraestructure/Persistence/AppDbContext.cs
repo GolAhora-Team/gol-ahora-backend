@@ -78,10 +78,10 @@ public class AppDbContext : DbContext
         );
 
         modelBuilder.Entity<Usuario>().HasData(
-            new Usuario { Id = 1, PersonaId = 1, Email = "admin", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Administrador },
-            new Usuario { Id = 2, PersonaId = 2, Email = "personal", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Administrador },
-            new Usuario { Id = 3, PersonaId = 3, Email = "cliente", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Cliente },
-            new Usuario { Id = 4, PersonaId = 4, Email = "profe", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Profesor }
+            new Usuario { Id = 1, PersonaId = 1, Username = "admin", Email = "admin@golahora.com", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Administrador },
+            new Usuario { Id = 2, PersonaId = 2, Username = "personal", Email = "personal@golahora.com", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Administrador },
+            new Usuario { Id = 3, PersonaId = 3, Username = "cliente", Email = "cliente@golahora.com", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Cliente },
+            new Usuario { Id = 4, PersonaId = 4, Username = "profe", Email = "profe@golahora.com", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Profesor }
         );
     }
 }

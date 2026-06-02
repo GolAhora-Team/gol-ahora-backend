@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,8 @@ namespace Domain.Entities
     public class Usuario
     {
         public int Id { get; set; }
+
+        public string Username { get; set; }
 
         public string Email { get; set; }
 

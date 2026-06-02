@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Admin;
+using Aplication.DTOs.Request.Admin;
 
 namespace Aplication.DTOs.Request.Usuario
 {
@@ -6,6 +6,7 @@ namespace Aplication.DTOs.Request.Usuario
     {
         public string Email { get; set; }
         public string Password { get; set; }
+        public string Username { get; set; }
         public CreateAdminRequest Admin { get; set; }
     }
 }

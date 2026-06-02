@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IUsuario;
+using Aplication.Interfaces.IUsuario;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,9 +23,34 @@ namespace Infraestructure.Querys
             return await _context.Usuarios.Include(s => s.Persona).ToListAsync();
         }
 
-        public async Task<Usuario?> GetByEmailPassword(string email, string password)
+        public async Task<Usuario?> GetByIdentifierAndPassword(string identifier, string password)
         {
-            return await _context.Usuarios.Where(u => u.Email == email && u.PasswordHash == password).FirstOrDefaultAsync();
+            return await _context.Usuarios
+                .Include(u => u.Persona)
+                .Where(u => 
+                    (u.Username == identifier || 
+                     u.Email == identifier || 
+                     u.Persona.Email == identifier || 
+                     u.Persona.Dni.ToString() == identifier) 
+                    && u.PasswordHash == password)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<string>> CheckUniqueness(int dni, string email, string username)
+        {
+            var takenFields = new List<string>();
+
+            bool dniTaken = await _context.Personas.AnyAsync(p => p.Dni == dni);
+            if (dniTaken) takenFields.Add("DNI");
+
+            bool emailTaken = await _context.Usuarios.AnyAsync(u => u.Email == email) || 
+                              await _context.Personas.AnyAsync(p => p.Email == email);
+            if (emailTaken) takenFields.Add("Email");
+
+            bool usernameTaken = await _context.Usuarios.AnyAsync(u => u.Username == username);
+            if (usernameTaken) takenFields.Add("Username");
+
+            return takenFields;
         }
 
         public async Task<Usuario?> GetById(int id)

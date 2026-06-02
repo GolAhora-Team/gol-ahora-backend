@@ -86,5 +86,19 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpGet("check-availability")]
+        public async Task<IActionResult> CheckAvailability([FromQuery] int dni, [FromQuery] string email, [FromQuery] string username)
+        {
+            try
+            {
+                var takenFields = await _usuarioService.CheckAvailability(dni, email, username);
+                return Ok(takenFields);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

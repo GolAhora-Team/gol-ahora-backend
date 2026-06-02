@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Usuario;
+using Aplication.DTOs.Request.Usuario;
 using Aplication.DTOs.Response.Usuario;
 using Aplication.Interfaces.IUsuario;
 using Domain.Entities;
@@ -17,6 +17,7 @@ namespace Aplication.Mappers
             return new Usuario
             {
                 Email = request.Email,
+                Username = request.Username,
                 PasswordHash = request.Password,
                 TipoUsuario = Domain.Enums.TipoUsuario.Cliente,
                 PersonaId = personaId
@@ -28,6 +29,7 @@ namespace Aplication.Mappers
             return new Usuario
             {
                 Email = request.Email,
+                Username = request.Username,
                 PasswordHash = request.Password,
                 TipoUsuario = Domain.Enums.TipoUsuario.Administrador,
                 PersonaId = personaId
@@ -39,6 +41,7 @@ namespace Aplication.Mappers
             return new Usuario
             {
                 Email = request.Email,
+                Username = request.Username,
                 PasswordHash = request.Password,
                 TipoUsuario = Domain.Enums.TipoUsuario.Profesor,
                 PersonaId = personaId

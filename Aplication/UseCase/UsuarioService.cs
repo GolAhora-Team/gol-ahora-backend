@@ -89,7 +89,7 @@ namespace Aplication.UseCase
 
         public async Task<UsuarioLogginResponse> LogginUsuario(LoginRequest loginRequest)
         {
-            var usuarioEntity = await _usuarioQuery.GetByEmailPassword(loginRequest.Email, loginRequest.Password);
+            var usuarioEntity = await _usuarioQuery.GetByIdentifierAndPassword(loginRequest.Email, loginRequest.Password);
             if (usuarioEntity == null)
             {
                 throw new ExceptionNotFound("Usuario no encontrado.");
@@ -167,6 +167,11 @@ namespace Aplication.UseCase
             await _usuariocommand.Update(usuario);
 
             return true;
+        }
+
+        public async Task<List<string>> CheckAvailability(int dni, string email, string username)
+        {
+            return await _usuarioQuery.CheckUniqueness(dni, email, username);
         }
     }
 }
