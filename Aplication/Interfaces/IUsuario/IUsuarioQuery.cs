@@ -13,7 +13,7 @@ namespace Aplication.Interfaces.IUsuario
         Task<List<Usuario>> GetAll();
         Task<Usuario?> GetByIdentifierAndPassword(string identifier, string password);
         Task<List<string>> CheckUniqueness(int dni, string email, string username);
-        Task<Usuario?> GetByEmailPassword(string email, string password);
+
         Task<Usuario?> GetByEmail(string email);
     }
 }
