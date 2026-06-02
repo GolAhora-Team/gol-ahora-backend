@@ -11,8 +11,8 @@ namespace SistemaGolAhora.Controllers
     {
         public MercadoPagoController()
         {
-            // Token proporcionado por el usuario
-            MercadoPagoConfig.AccessToken = "APP_USR-3447691466274967-060117-86028c62ab417279b1562a4ae99ce8ad-3443332308"; 
+            // Token de la nueva cuenta VENDEDORA de prueba
+            MercadoPagoConfig.AccessToken = "APP_USR-8827220724965081-060211-5262bca461db2a832b7cfa1ee3dd428c-3442109685"; 
         }
 
         [HttpPost("create-preference")]
