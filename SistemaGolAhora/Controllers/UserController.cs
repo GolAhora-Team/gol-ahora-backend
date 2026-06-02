@@ -100,5 +100,24 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        public class ForgotPasswordRequestDto
+        {
+            public string Email { get; set; }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
+        {
+            try
+            {
+                var success = await _usuarioService.ForgotPassword(request.Email);
+                return Ok(new { success, message = "Correo de recuperación enviado exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

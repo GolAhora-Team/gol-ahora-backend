@@ -53,6 +53,11 @@ namespace Infraestructure.Querys
             return takenFields;
         }
 
+        public async Task<Usuario?> GetByEmail(string email)
+        {
+            return await _context.Usuarios.Where(u => u.Email == email).FirstOrDefaultAsync();
+        }
+
         public async Task<Usuario?> GetById(int id)
         {
             return await _context.Usuarios.Include(s => s.Persona).FirstOrDefaultAsync(u => u.Id == id);

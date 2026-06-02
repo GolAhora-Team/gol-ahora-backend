@@ -16,5 +16,6 @@ namespace Aplication.Interfaces.IUsuario
         Task<UsuarioLogginResponse> LogginUsuario(LoginRequest loginRequest);
         Task<bool> ChangePassword(ChangePasswordRequest request);
         Task<List<string>> CheckAvailability(int dni, string email, string username);
+        Task<bool> ForgotPassword(string email);
     }
 }

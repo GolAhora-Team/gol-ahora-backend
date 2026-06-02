@@ -28,7 +28,7 @@ using Aplication.Interfaces.IEntrenamiento;
 using Aplication.UseCase.Entrenamientos;
 using Aplication.UseCase.Canchas;
 using Aplication.Interfaces.ISancion;
-
+//
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

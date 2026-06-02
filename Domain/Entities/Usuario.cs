@@ -19,6 +19,10 @@ namespace Domain.Entities
 
         public TipoUsuario TipoUsuario { get; set; }
 
+        // Recuperación de Contraseña
+        public string? ResetToken { get; set; }
+        public DateTime? ResetTokenExpires { get; set; }
+
         // 🔗 relación 1:1
         public int PersonaId { get; set; }
         public Persona Persona { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260602185704_AddResetTokenToUsuario")]
+    partial class AddResetTokenToUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -296,15 +299,7 @@ namespace Infraestructure.Migrations
                     b.Property<int>("CantidadMaxJugadores")
                         .HasColumnType("int");
 
-                    b.Property<string>("ColorPrimario")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ColorSecundario")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CompeticionId")
+                    b.Property<int>("CompeticionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
@@ -625,28 +620,6 @@ namespace Infraestructure.Migrations
                     b.ToTable("Precios");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Reporte", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Html")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Reportes");
-                });
-
             modelBuilder.Entity("Domain.Entities.Reserva", b =>
                 {
                     b.Property<int>("Id")
@@ -738,10 +711,6 @@ namespace Infraestructure.Migrations
                     b.Property<int>("TipoUsuario")
                         .HasColumnType("int");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -751,44 +720,6 @@ namespace Infraestructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "admin@golahora.com",
-                            PasswordHash = "1234",
-                            PersonaId = 1,
-                            TipoUsuario = 3,
-                            Username = "admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "personal@golahora.com",
-                            PasswordHash = "1234",
-                            PersonaId = 2,
-                            TipoUsuario = 3,
-                            Username = "personal"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "cliente@golahora.com",
-                            PasswordHash = "1234",
-                            PersonaId = 3,
-                            TipoUsuario = 1,
-                            Username = "cliente"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Email = "profe@golahora.com",
-                            PasswordHash = "1234",
-                            PersonaId = 4,
-                            TipoUsuario = 2,
-                            Username = "profe"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Administrador", b =>
@@ -811,50 +742,6 @@ namespace Infraestructure.Migrations
                         });
 
                     b.HasDiscriminator().HasValue("Administrador");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Apellido = "Principal",
-                            CodigoPostal = "1000",
-                            ContactoEmergencia = "1100000000",
-                            Direccion = "Calle Falsa 123",
-                            Dni = 11111111,
-                            Email = "admin@golahora.com",
-                            FechaNacimiento = new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FechaRegistro = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Genero = "Masculino",
-                            Localidad = "CABA",
-                            Nombre = "Admin",
-                            Pais = "Argentina",
-                            Provincia = "Buenos Aires",
-                            Telefono = "1100000001",
-                            FechaAlta = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Identificador = 100,
-                            PuedeFacturar = true
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Apellido = "Staff",
-                            CodigoPostal = "1000",
-                            ContactoEmergencia = "1100000000",
-                            Direccion = "Avenida Siempreviva 742",
-                            Dni = 22222222,
-                            Email = "personal@golahora.com",
-                            FechaNacimiento = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FechaRegistro = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Genero = "Femenino",
-                            Localidad = "CABA",
-                            Nombre = "Personal",
-                            Pais = "Argentina",
-                            Provincia = "Buenos Aires",
-                            Telefono = "1100000002",
-                            FechaAlta = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Identificador = 101,
-                            PuedeFacturar = false
-                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Cliente", b =>
@@ -879,30 +766,6 @@ namespace Infraestructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasDiscriminator().HasValue("Cliente");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 3,
-                            Apellido = "Cliente",
-                            CodigoPostal = "1000",
-                            ContactoEmergencia = "1100000000",
-                            Direccion = "San Martin 456",
-                            Dni = 33333333,
-                            Email = "cliente@golahora.com",
-                            FechaNacimiento = new DateTime(1995, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FechaRegistro = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Genero = "Masculino",
-                            Localidad = "CABA",
-                            Nombre = "Juan",
-                            Pais = "Argentina",
-                            Provincia = "Buenos Aires",
-                            Telefono = "1100000003",
-                            AptoFisico = true,
-                            EsSocioActivo = true,
-                            FechaAlta = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ObraSocial = "OSDE"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Profesor", b =>
@@ -920,28 +783,6 @@ namespace Infraestructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasDiscriminator().HasValue("Profesor");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 4,
-                            Apellido = "Profe",
-                            CodigoPostal = "1000",
-                            ContactoEmergencia = "1100000000",
-                            Direccion = "Belgrano 789",
-                            Dni = 44444444,
-                            Email = "profe@golahora.com",
-                            FechaNacimiento = new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FechaRegistro = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Genero = "Masculino",
-                            Localidad = "CABA",
-                            Nombre = "Carlos",
-                            Pais = "Argentina",
-                            Provincia = "Buenos Aires",
-                            Telefono = "1100000004",
-                            Certificacion = "AFA Nivel 2",
-                            Especialidad = "Fútbol 11 y Preparación Física"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Asistencia", b =>
@@ -1043,7 +884,8 @@ namespace Infraestructure.Migrations
                     b.HasOne("Domain.Entities.Competicion", "Competicion")
                         .WithMany("Equipos")
                         .HasForeignKey("CompeticionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Competicion");
                 });
@@ -1089,7 +931,7 @@ namespace Infraestructure.Migrations
                     b.HasOne("Domain.Entities.Equipo", "Equipo")
                         .WithMany()
                         .HasForeignKey("EquipoId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cliente");

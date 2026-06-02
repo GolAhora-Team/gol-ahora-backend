@@ -5,6 +5,8 @@ using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IProfesor;
 using Aplication.Interfaces.IUsuario;
 using Domain.Exceptions;
+using System.Net;
+using System.Net.Mail;
 
 namespace Aplication.UseCase
 {
@@ -190,6 +192,52 @@ namespace Aplication.UseCase
         public async Task<List<string>> CheckAvailability(int dni, string email, string username)
         {
             return await _usuarioQuery.CheckUniqueness(dni, email, username);
+        }
+
+
+        public async Task<bool> ForgotPassword(string email)
+        {
+            var usuarioEntity = await _usuarioQuery.GetByEmail(email);
+            if (usuarioEntity == null)
+            {
+                // Por seguridad es mejor no revelar si el email existe o no, pero seguiremos el patrón de la app.
+                throw new ExceptionNotFound("Usuario no encontrado con ese correo.");
+            }
+
+            // Generar token y expiración
+            var token = Guid.NewGuid().ToString();
+            usuarioEntity.ResetToken = token;
+            usuarioEntity.ResetTokenExpires = DateTime.UtcNow.AddHours(1);
+
+            await _usuariocommand.Update(usuarioEntity);
+
+            // Enviar email
+            try
+            {
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential("complejogolahora@gmail.com", "tgcf xugs czdh ekpx"),
+                    EnableSsl = true,
+                };
+
+                var frontendUrl = $"http://localhost:8081/NuevaClave?token={token}";
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress("complejogolahora@gmail.com", "Complejo Gol Ahora"),
+                    Subject = "Recuperación de Contraseña",
+                    Body = $"Hola,\n\nHas solicitado restablecer tu contraseña. Por favor, haz clic en el siguiente enlace:\n\n{frontendUrl}\n\nSi no solicitaste este cambio, puedes ignorar este correo.\n\nEste enlace expira en 1 hora.",
+                    IsBodyHtml = false,
+                };
+                mailMessage.To.Add(email);
+
+                await smtpClient.SendMailAsync(mailMessage);
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Ocurrió un error al enviar el correo de recuperación.");
+            }
         }
     }
 }
