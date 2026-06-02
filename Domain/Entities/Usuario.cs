@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +16,10 @@ namespace Domain.Entities
         public string PasswordHash { get; set; }
 
         public TipoUsuario TipoUsuario { get; set; }
+
+        // Recuperación de Contraseña
+        public string? ResetToken { get; set; }
+        public DateTime? ResetTokenExpires { get; set; }
 
         // 🔗 relación 1:1
         public int PersonaId { get; set; }

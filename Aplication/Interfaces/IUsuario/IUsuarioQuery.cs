@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +12,6 @@ namespace Aplication.Interfaces.IUsuario
         Task<Usuario?> GetById(int id);
         Task<List<Usuario>> GetAll();
         Task<Usuario?> GetByEmailPassword(string email, string password);
+        Task<Usuario?> GetByEmail(string email);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IUsuario;
+using Aplication.Interfaces.IUsuario;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,6 +26,11 @@ namespace Infraestructure.Querys
         public async Task<Usuario?> GetByEmailPassword(string email, string password)
         {
             return await _context.Usuarios.Where(u => u.Email == email && u.PasswordHash == password).FirstOrDefaultAsync();
+        }
+
+        public async Task<Usuario?> GetByEmail(string email)
+        {
+            return await _context.Usuarios.Where(u => u.Email == email).FirstOrDefaultAsync();
         }
 
         public async Task<Usuario?> GetById(int id)

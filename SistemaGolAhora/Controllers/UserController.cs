@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Usuario;
+using Aplication.DTOs.Request.Usuario;
 using Aplication.Interfaces.IUsuario;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,6 +70,25 @@ namespace SistemaGolAhora.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        public class ForgotPasswordRequestDto
+        {
+            public string Email { get; set; }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
+        {
+            try
+            {
+                var success = await _usuarioService.ForgotPassword(request.Email);
+                return Ok(new { success, message = "Correo de recuperación enviado exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }
