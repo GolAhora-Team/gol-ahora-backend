@@ -41,6 +41,7 @@ namespace SistemaGolAhora.Controllers
                         // Volvemos a usar la URL dinámica que manda el frontend (ej. tu Vercel)
                         Success = request.ReturnUrl ?? "https://golahora.runasp.net",
                         Failure = request.ReturnUrl ?? "https://golahora.runasp.net",
+                        Pending = request.ReturnUrl ?? "https://golahora.runasp.net"
                     },
                     AutoReturn = "approved",
                     ExternalReference = extRef
