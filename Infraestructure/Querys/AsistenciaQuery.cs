@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IAsistencia;
+using Aplication.Interfaces.IAsistencia;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +26,13 @@ namespace Infraestructure.Querys
         public async Task<Asistencia?> GetAsistenciaById(int id)
         {
             return await _context.Asistencias.FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<List<Asistencia>> GetAsistenciasPorClaseYFecha(int claseId, DateTime fecha)
+        {
+            return await _context.Asistencias
+                .Where(a => a.ClaseId == claseId && a.Fecha.Date == fecha.Date)
+                .ToListAsync();
         }
     }
 }

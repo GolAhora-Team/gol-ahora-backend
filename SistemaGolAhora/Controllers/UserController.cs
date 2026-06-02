@@ -119,5 +119,32 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            try
+            {
+                await _usuarioService.ResetPassword(request);
+                return Ok(new { success = true, message = "Contraseña restablecida exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("apto-medico")]
+        public async Task<IActionResult> UploadAptoMedico([FromBody] UploadAptoMedicoRequest request)
+        {
+            try
+            {
+                await _usuarioService.UploadAptoMedico(request);
+                return Ok(new { success = true, message = "Apto médico subido exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

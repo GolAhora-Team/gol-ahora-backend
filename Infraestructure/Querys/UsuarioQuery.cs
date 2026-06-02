@@ -63,6 +63,11 @@ namespace Infraestructure.Querys
             return await _context.Usuarios.Where(u => u.Email == email && u.PasswordHash == password).FirstOrDefaultAsync();
         }
 
+        public async Task<Usuario?> GetByResetToken(string token)
+        {
+            return await _context.Usuarios.Where(u => u.ResetToken == token).FirstOrDefaultAsync();
+        }
+
         public async Task<Usuario?> GetById(int id)
         {
             return await _context.Usuarios.Include(s => s.Persona).FirstOrDefaultAsync(u => u.Id == id);

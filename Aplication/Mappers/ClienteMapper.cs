@@ -31,7 +31,8 @@ namespace Aplication.Mappers
                 Email = cliente.Email,
                 ObraSocial = cliente.ObraSocial,
                 AptoFisico = cliente.AptoFisico,
-                EsSocioActivo = cliente.EsSocioActivo
+                EsSocioActivo = cliente.EsSocioActivo,
+                FechaAlta = DateTime.UtcNow
             };
         }
 

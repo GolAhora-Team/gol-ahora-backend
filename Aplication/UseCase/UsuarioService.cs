@@ -255,5 +255,68 @@ namespace Aplication.UseCase
                 throw new Exception("Ocurrió un error al enviar el correo de recuperación.");
             }
         }
+
+        public async Task ResetPassword(ResetPasswordRequest request)
+        {
+            var usuario = await _usuarioQuery.GetByResetToken(request.Token);
+            if (usuario == null)
+            {
+                throw new ExceptionNotFound("Token inválido o expirado.");
+            }
+
+            if (usuario.ResetTokenExpires < DateTime.UtcNow)
+            {
+                throw new ExceptionBadRequest("El token de recuperación ha expirado.");
+            }
+
+            if (usuario.PasswordHash == request.NewPassword)
+            {
+                throw new ExceptionBadRequest("La nueva contraseña no puede ser igual a la anterior.");
+            }
+
+            usuario.PasswordHash = request.NewPassword;
+            usuario.ResetToken = null;
+            usuario.ResetTokenExpires = null;
+
+            await _usuariocommand.Update(usuario);
+        }
+
+        public async Task UploadAptoMedico(UploadAptoMedicoRequest request)
+        {
+            if (string.IsNullOrEmpty(request.ArchivoBase64))
+            {
+                throw new ExceptionBadRequest("No se ha proporcionado ningún archivo.");
+            }
+
+            var base64Data = request.ArchivoBase64;
+            if (base64Data.Contains(","))
+            {
+                base64Data = base64Data.Split(',')[1];
+            }
+            var sizeInBytes = (base64Data.Length * 3) / 4;
+
+            if (sizeInBytes > 2 * 1024 * 1024)
+            {
+                throw new ExceptionBadRequest("El tamaño del archivo no puede exceder los 2MB.");
+            }
+
+            if (request.FechaFin <= request.FechaInicio)
+            {
+                throw new ExceptionBadRequest("La fecha de fin debe ser posterior a la fecha de inicio.");
+            }
+
+            var cliente = await _clientesQuery.GetClienteById(request.ClienteId);
+            if (cliente == null)
+            {
+                throw new ExceptionNotFound("Cliente no encontrado.");
+            }
+
+            cliente.AptoMedicoArchivo = Convert.FromBase64String(base64Data);
+            cliente.AptoMedicoFechaInicio = request.FechaInicio;
+            cliente.AptoMedicoFechaFin = request.FechaFin;
+            cliente.AptoFisico = true;
+
+            await _clienteCommand.UpdateCliente(cliente);
+        }
     }
 }
