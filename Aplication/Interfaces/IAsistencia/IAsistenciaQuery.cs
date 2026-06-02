@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +14,7 @@ namespace Aplication.Interfaces.IAsistencia
         Task<bool> AsistenciaExists(int id);
 
         Task<List<Asistencia>> GetAllAsistencias();
+        
+        Task<List<Asistencia>> GetAsistenciasPorClaseYFecha(int claseId, DateTime fecha);
     }
 }

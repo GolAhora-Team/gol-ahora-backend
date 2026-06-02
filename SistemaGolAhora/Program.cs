@@ -126,6 +126,8 @@ builder.Services.AddScoped<IFacturaMapper, FacturaMapper>();
 // Asistencia
 builder.Services.AddScoped<IAsistenciaCommand, AsistneciaCommand>();
 builder.Services.AddScoped<IAsistenciaQuery, AsistenciaQuery>();
+builder.Services.AddScoped<IAsistenciaService, AsistenciaService>();
+builder.Services.AddScoped<IAsistenciaMapper, AsistenciaMapper>();
 
 // Clases
 builder.Services.AddScoped<IClaseCommand, ClaseCommand>();

@@ -15,5 +15,6 @@ namespace Aplication.Interfaces.IUsuario
         Task<List<string>> CheckUniqueness(int dni, string email, string username);
         Task<Usuario?> GetByEmailPassword(string email, string password);
         Task<Usuario?> GetByEmail(string email);
+        Task<Usuario?> GetByResetToken(string token);
     }
 }

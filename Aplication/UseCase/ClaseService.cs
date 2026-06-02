@@ -186,6 +186,17 @@ namespace Aplication.UseCase
             {
                 throw new ExceptionNotFound("Cliente no encontrado");
             }
+
+            // Validación de Apto Médico
+            if (clienteExiste.AptoMedicoArchivo == null || clienteExiste.AptoMedicoArchivo.Length == 0)
+            {
+                throw new ExceptionBadRequest("El cliente no posee un apto médico cargado.");
+            }
+            if (!clienteExiste.AptoMedicoFechaFin.HasValue || clienteExiste.AptoMedicoFechaFin.Value < DateTime.UtcNow)
+            {
+                throw new ExceptionBadRequest("El apto médico del cliente se encuentra vencido.");
+            }
+
             if (claseExistente.Asistencias.Count >= claseExistente.CapacidadMax)
             {
                 throw new ExceptionBadRequest("La clase ha alcanzado su capacidad máxima.");
