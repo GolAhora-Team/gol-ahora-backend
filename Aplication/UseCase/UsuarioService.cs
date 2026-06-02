@@ -46,6 +46,12 @@ namespace Aplication.UseCase
                 throw new ExceptionBadRequest("El DNI no puede ser negativo.");
             }
 
+            var availability = await CheckAvailability(usuario.Cliente.Dni, usuario.Email, usuario.Username);
+            if (availability.Any())
+            {
+                throw new ExceptionBadRequest($"Los siguientes datos ya están en uso: {string.Join(", ", availability)}");
+            }
+
             var clienteEntity = _clientemapper.CreateCliente(usuario.Cliente);
             await _clienteCommand.InsertCliente(clienteEntity);
 
@@ -62,6 +68,12 @@ namespace Aplication.UseCase
                 throw new ExceptionBadRequest("El DNI no puede ser negativo.");
             }
 
+            var availability = await CheckAvailability(usuario.Admin.Dni, usuario.Email, usuario.Username);
+            if (availability.Any())
+            {
+                throw new ExceptionBadRequest($"Los siguientes datos ya están en uso: {string.Join(", ", availability)}");
+            }
+
             var adminEntity = _adminMapper.CreateAdminToRequest(usuario.Admin);
             await _adminCommand.CreateAsync(adminEntity);
 
@@ -76,6 +88,12 @@ namespace Aplication.UseCase
             if (usuario.request.Dni < 0)
             {
                 throw new ExceptionBadRequest("El DNI no puede ser negativo.");
+            }
+
+            var availability = await CheckAvailability(usuario.request.Dni, usuario.Email, usuario.Username);
+            if (availability.Any())
+            {
+                throw new ExceptionBadRequest($"Los siguientes datos ya están en uso: {string.Join(", ", availability)}");
             }
 
             var profesorEntity = _profesorMapper.CreateProfesorToProfesorRequest(usuario.request);
