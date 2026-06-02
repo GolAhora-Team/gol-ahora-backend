@@ -34,10 +34,10 @@ namespace SistemaGolAhora.Controllers
                     },
                     BackUrls = new PreferenceBackUrlsRequest
                     {
-                        // FORZAMOS A QUE USE EL DOMINIO REAL PARA EVITAR RECHAZOS POR LOCALHOST
-                        Success = "https://golahora.runasp.net",
-                        Failure = "https://golahora.runasp.net",
-                        Pending = "https://golahora.runasp.net"
+                        // Volvemos a usar la URL dinámica que manda el frontend (ej. tu Vercel)
+                        Success = request.ReturnUrl ?? "https://golahora.runasp.net",
+                        Failure = request.ReturnUrl ?? "https://golahora.runasp.net",
+                        Pending = request.ReturnUrl ?? "https://golahora.runasp.net"
                     },
                     AutoReturn = "approved",
                 };
