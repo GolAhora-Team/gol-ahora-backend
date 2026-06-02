@@ -91,6 +91,25 @@ namespace Infraestructure.Command
             profesor.ContactoEmergencia = request.ContactoEmergencia;
             profesor.Email = request.Email;
 
+            if (!string.IsNullOrEmpty(request.CertificadoBase64))
+            {
+                var base64Data = request.CertificadoBase64;
+                if (base64Data.Contains(","))
+                {
+                    base64Data = base64Data.Split(',')[1];
+                }
+                
+                var sizeInBytes = (base64Data.Length * 3) / 4;
+                if (sizeInBytes > 4 * 1024 * 1024)
+                {
+                    throw new Domain.Exceptions.ExceptionBadRequest("El certificado excede el límite máximo de 4 MB.");
+                }
+
+                profesor.CertificadoArchivo = Convert.FromBase64String(base64Data);
+                profesor.CertificadoFechaInicio = request.CertificadoFechaInicio;
+                profesor.CertificadoFechaFin = request.CertificadoFechaFin;
+            }
+
             await _context.SaveChangesAsync();
 
             return _mapper.CreateProfesorResponse(profesor);
@@ -132,7 +151,10 @@ namespace Infraestructure.Command
             if (profesor is null) return false;
 
             // Lógica de validación según tu dominio
-            return !string.IsNullOrEmpty(profesor.Certificacion);
+            bool tieneCertificado = profesor.CertificadoArchivo != null && profesor.CertificadoArchivo.Length > 0;
+            bool estaVigente = profesor.CertificadoFechaFin.HasValue && profesor.CertificadoFechaFin.Value >= DateTime.UtcNow;
+
+            return tieneCertificado && estaVigente;
         }
     }
 }

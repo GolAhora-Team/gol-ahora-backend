@@ -98,6 +98,22 @@ namespace Aplication.UseCase
                 throw new ExceptionBadRequest($"Los siguientes datos ya están en uso: {string.Join(", ", availability)}");
             }
 
+            if (!string.IsNullOrEmpty(usuario.request.CertificadoBase64))
+            {
+                var base64Data = usuario.request.CertificadoBase64;
+                if (base64Data.Contains(","))
+                {
+                    base64Data = base64Data.Split(',')[1];
+                }
+                // Validar tamaño: máximo 4MB
+                // Fórmula aproximada de base64 a bytes: (longitud base64 * 3) / 4
+                var sizeInBytes = (base64Data.Length * 3) / 4;
+                if (sizeInBytes > 4 * 1024 * 1024)
+                {
+                    throw new ExceptionBadRequest("El certificado excede el límite máximo de 4 MB.");
+                }
+            }
+
             var profesorEntity = _profesorMapper.CreateProfesorToProfesorRequest(usuario.request);
             await _profesorCommand.CreateProfesor(profesorEntity);
 

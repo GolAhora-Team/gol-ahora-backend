@@ -77,9 +77,25 @@ namespace Aplication.Mappers
             {
                 return null;
             }
+
+            byte[]? certificadoBytes = null;
+            if (!string.IsNullOrEmpty(request.CertificadoBase64))
+            {
+                // Extraer el tipo MIME y los datos base64 si están en el formato "data:application/pdf;base64,..."
+                var base64Data = request.CertificadoBase64;
+                if (base64Data.Contains(","))
+                {
+                    base64Data = base64Data.Split(',')[1];
+                }
+                certificadoBytes = Convert.FromBase64String(base64Data);
+            }
+
             return new Profesor
             {
                 Certificacion = request.Certificacion,
+                CertificadoArchivo = certificadoBytes,
+                CertificadoFechaInicio = request.CertificadoFechaInicio,
+                CertificadoFechaFin = request.CertificadoFechaFin,
                 Especialidad = request.Especialidad,
                 Dni = request.Dni,
                 Nombre = request.Nombre,

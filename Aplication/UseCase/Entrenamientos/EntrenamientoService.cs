@@ -18,6 +18,7 @@ namespace Aplication.UseCase.Entrenamientos
         private readonly IEntrenamientoQuery _entrenamientoQuery;
         private readonly IEntrenamientoMapper _entrenamientoMapper;
         private readonly IProfesorQuery _profesorQuery;
+        private readonly IProfesorCommand _profesorCommand;
         private readonly IClientesQuery _clienteQuery;
 
         public EntrenamientoService(
@@ -25,12 +26,14 @@ namespace Aplication.UseCase.Entrenamientos
             IEntrenamientoQuery entrenamientoQuery,
             IEntrenamientoMapper entrenamientoMapper,
             IProfesorQuery profesorQuery,
+            IProfesorCommand profesorCommand,
             IClientesQuery clienteQuery)
         {
             _entrenamientoCommand = entrenamientoCommand;
             _entrenamientoQuery = entrenamientoQuery;
             _entrenamientoMapper = entrenamientoMapper;
             _profesorQuery = profesorQuery;
+            _profesorCommand = profesorCommand;
             _clienteQuery = clienteQuery;
         }
 
@@ -49,6 +52,12 @@ namespace Aplication.UseCase.Entrenamientos
             if (profesorExistente == null)
             {
                 throw new ExceptionNotFound("Profesor no encontrado.");
+            }
+
+            bool esValido = await _profesorCommand.ValidarCertificadoAsync(request.ProfesorId);
+            if (!esValido)
+            {
+                throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
             }
 
             var nuevoEntrenamiento = _entrenamientoMapper.CreateRequestToEntrenamiento(request);
@@ -85,6 +94,12 @@ namespace Aplication.UseCase.Entrenamientos
             if (profesorExistente == null)
             {
                 throw new ExceptionNotFound("Profesor no encontrado.");
+            }
+
+            bool esValido = await _profesorCommand.ValidarCertificadoAsync(request.ProfesorId);
+            if (!esValido)
+            {
+                throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
             }
 
             if (request.CupoMaximo <= 0)
