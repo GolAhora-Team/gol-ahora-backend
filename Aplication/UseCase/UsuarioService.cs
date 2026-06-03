@@ -247,10 +247,10 @@ namespace Aplication.UseCase
   <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
 </head>
 <body style=""margin:0;padding:0;background-color:#004d1a;font-family:Arial,Helvetica,sans-serif;"">
-  <table role=""presentation"" width=""100%"" cellpadding=""0"" cellspacing=""0"" style=""background-color:#004d1a;padding:40px 0;"">
+  <table role=""presentation"" width=""100%"" cellpadding=""0"" cellspacing=""0"" style=""background:linear-gradient(135deg, #004d1a 0%, #00290e 100%);background-color:#004d1a;padding:40px 0;"">
     <tr>
       <td align=""center"">
-        <table role=""presentation"" width=""480"" cellpadding=""0"" cellspacing=""0"" style=""max-width:480px;width:100%;border-radius:30px;overflow:hidden;border:2px solid rgba(255,255,255,0.3);background-color:#006400;position:relative;"">
+        <table role=""presentation"" width=""480"" cellpadding=""0"" cellspacing=""0"" style=""max-width:480px;width:100%;border-radius:35px;overflow:hidden;border:1.5px solid rgba(255,255,255,0.15);background-color:#02591e;position:relative;"">
           <!-- Líneas de cancha decorativas -->
           <tr>
             <td style=""height:0;position:relative;"">
@@ -285,10 +285,15 @@ namespace Aplication.UseCase
                       Hacé clic en el botón de abajo para crear una nueva contraseña.
                     </p>
                     <!-- Botón -->
-                    <div style=""text-align:center;margin-bottom:25px;"">
-                      <a href=""{frontendUrl}"" target=""_blank"" style=""display:inline-block;background:linear-gradient(135deg,#ffb300,#ff9100);color:#000000;font-size:16px;font-weight:900;text-decoration:none;padding:16px 40px;border-radius:15px;letter-spacing:0.5px;"">
+                    <div style=""text-align:center;margin-bottom:15px;"">
+                      <a href=""{frontendUrl}"" target=""_blank"" style=""display:inline-block;background:linear-gradient(135deg,#ffb300,#ff9100);background-color:#ffb300;color:#000000;font-size:16px;font-weight:900;text-decoration:none;padding:16px 40px;border-radius:15px;letter-spacing:0.5px;border:1px solid #e6a100;box-shadow:0 4px 10px rgba(0,0,0,0.1);"">
                         RESTABLECER CONTRASEÑA
                       </a>
+                    </div>
+                    <!-- Raw URL -->
+                    <div style=""text-align:center;margin-bottom:25px;padding:0 15px;"">
+                      <p style=""color:#64748b;font-size:11px;margin:0 0 5px 0;"">O copiá y pegá este enlace en tu navegador:</p>
+                      <p style=""color:#009b3a;font-size:11px;word-break:break-all;margin:0;""><a href=""{frontendUrl}"" style=""color:#009b3a;text-decoration:underline;"">{frontendUrl}</a></p>
                     </div>
                     <!-- Info -->
                     <div style=""background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 15px;margin-bottom:20px;"">
