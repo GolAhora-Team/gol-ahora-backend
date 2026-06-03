@@ -82,6 +82,7 @@ namespace Infraestructure.Command
             admin.Provincia = request.Provincia;
             admin.Pais = request.Pais;
             admin.ContactoEmergencia = request.ContactoEmergencia;
+            admin.ObraSocial = request.ObraSocial;
             admin.Email = request.Email;
 
             await _context.SaveChangesAsync();

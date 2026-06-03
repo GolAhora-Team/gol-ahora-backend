@@ -10,8 +10,6 @@ namespace Domain.Entities
     {
         public bool EsSocioActivo { get; set; }
 
-        public string ObraSocial { get; set; }
-
         public bool AptoFisico { get; set; }
 
         public DateTime FechaAlta { get; set; }

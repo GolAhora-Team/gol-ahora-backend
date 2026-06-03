@@ -86,6 +86,7 @@ namespace Infraestructure.Command
             profesor.Apellido = request.Apellido;
             profesor.Dni = request.Dni;
             profesor.Genero = request.Genero;
+            profesor.ObraSocial = request.ObraSocial;
             profesor.FechaNacimiento = request.FechaNacimiento;
             profesor.Telefono = request.Telefono;
             profesor.Direccion = request.Direccion;
