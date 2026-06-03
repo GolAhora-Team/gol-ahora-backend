@@ -23,6 +23,8 @@ namespace Domain.Entities
         public string? ResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; }
 
+        public DateTime? UltimaVistaNotificaciones { get; set; }
+
         // 🔗 relación 1:1
         public int PersonaId { get; set; }
         public Persona Persona { get; set; }

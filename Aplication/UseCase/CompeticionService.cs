@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Competición;
+using Aplication.DTOs.Request.Competición;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.ICompeticion;
 using Domain.Entities;
@@ -16,12 +16,14 @@ namespace Aplication.UseCase
         private readonly ICompeticionMapper _mapper;
         private readonly ICompeticionCommand _command;
         private readonly ICompeticionQuery _query;
+        private readonly Aplication.Interfaces.INotificacionService _notificacionService;
 
-        public CompeticionService(ICompeticionMapper mapper, ICompeticionCommand command, ICompeticionQuery query)
+        public CompeticionService(ICompeticionMapper mapper, ICompeticionCommand command, ICompeticionQuery query, Aplication.Interfaces.INotificacionService notificacionService)
         {
             _mapper = mapper;
             _command = command;
             _query = query;
+            _notificacionService = notificacionService;
         }
 
         public async Task<CompeticionResponse> CreateCompeticion(CompeticionRequest request)
@@ -40,6 +42,12 @@ namespace Aplication.UseCase
 
             competicion.Estado = EstadoCompeticion.EnInscripcion;
             await _command.InsertCompeticion(competicion);
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"Nueva competición abierta: {competicion.Nombre} ({competicion.Tipo}).", 
+                "ADMIN,PERSONAL,CLIENTE", 
+                "Competicion"
+            );
 
             competicion = await _query.GetCompeticionById(competicion.Id);
             return _mapper.CreateCompeticionResponse(competicion);

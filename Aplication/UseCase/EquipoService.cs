@@ -18,12 +18,14 @@ namespace Aplication.UseCase
         private readonly IEquipoCommand _command;
         private readonly IEquipoQuery _query;
         private readonly IEquipoMapper _mapper;
+        private readonly Aplication.Interfaces.INotificacionService _notificacionService;
 
-        public EquipoService(IEquipoCommand command, IEquipoQuery query, IEquipoMapper mapper)
+        public EquipoService(IEquipoCommand command, IEquipoQuery query, IEquipoMapper mapper, Aplication.Interfaces.INotificacionService notificacionService)
         {
             _command = command;
             _query = query;
             _mapper = mapper;
+            _notificacionService = notificacionService;
         }
 
         public async Task<EquipoResponse> CreateEquipo(CreateEquipoRequest request)
@@ -31,6 +33,12 @@ namespace Aplication.UseCase
             var equipo = _mapper.CreateEquipo(request);
 
             await _command.InsertEquipo(equipo);
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"Nuevo equipo registrado: {equipo.Nombre}", 
+                "ADMIN,PERSONAL", 
+                "Equipo"
+            );
 
             equipo = await _query.GetEquipoById(equipo.Id);
             return _mapper.CreateEquipoResponse(equipo);

@@ -16,5 +16,8 @@ namespace Aplication.Interfaces.IUsuario
 
         Task<Usuario?> GetByEmail(string email);
         Task<Usuario?> GetByResetToken(string token);
+        
+        Task<List<Usuario>> GetUsersByRoles(List<string> roles);
+        Task<Usuario?> GetUsuarioByPersonaId(int personaId);
     }
 }

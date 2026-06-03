@@ -69,7 +69,32 @@ namespace Infraestructure.Querys
 
         public async Task<Usuario?> GetByResetToken(string token)
         {
-            return await _context.Usuarios.Where(u => u.ResetToken == token).FirstOrDefaultAsync();
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.ResetToken == token && u.ResetTokenExpires > DateTime.UtcNow);
+        }
+
+        public async Task<List<Usuario>> GetUsersByRoles(List<string> roles)
+        {
+            var rolesEnum = new List<Domain.Enums.TipoUsuario>();
+            foreach (var rol in roles)
+            {
+                if (Enum.TryParse<Domain.Enums.TipoUsuario>(rol.Trim().ToUpper() == "ADMIN" ? "Administrador" : 
+                    rol.Trim().Substring(0, 1).ToUpper() + rol.Trim().Substring(1).ToLower(), out var enumValue))
+                {
+                    rolesEnum.Add(enumValue);
+                }
+            }
+
+            return await _context.Usuarios
+                .Where(u => rolesEnum.Contains(u.TipoUsuario))
+                .ToListAsync();
+        }
+
+        public async Task<Usuario?> GetUsuarioByPersonaId(int personaId)
+        {
+            return await _context.Usuarios
+                .Include(u => u.Persona)
+                .FirstOrDefaultAsync(u => u.Persona.Id == personaId);
         }
 
         public async Task<Usuario?> GetById(int id)

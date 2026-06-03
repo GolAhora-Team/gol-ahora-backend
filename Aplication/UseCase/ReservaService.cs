@@ -3,6 +3,7 @@ using Aplication.DTOs.Response.Reserva;
 using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IReserva;
+using Aplication.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
@@ -20,13 +21,15 @@ namespace Aplication.UseCase
         private readonly ICanchaQuery _canchaQuery;
         private readonly IClientesQuery _clienteQuery;
         private readonly IReservaCommand _reservaCommand;
+        private readonly INotificacionService _notificacionService;
 
-        public ReservaService(IReservaQuery reservaQuery, IReservaCommand reservaCommand, ICanchaQuery canchaQuery, IClientesQuery clienteQuery)
+        public ReservaService(IReservaQuery reservaQuery, IReservaCommand reservaCommand, ICanchaQuery canchaQuery, IClientesQuery clienteQuery, INotificacionService notificacionService)
         {
             _reservaQuery = reservaQuery;
             _reservaCommand = reservaCommand;
             _canchaQuery = canchaQuery;
             _clienteQuery = clienteQuery;
+            _notificacionService = notificacionService;
         }
 
         public async Task<CreateReservaResponse> CrearReserva(CreateReservaRequest request)
@@ -71,6 +74,13 @@ namespace Aplication.UseCase
 
             // Crear la reserva
             await _reservaCommand.InsertReserva(reserva);
+
+            var cliente = await _clienteQuery.GetClienteById(request.ClienteId);
+            await _notificacionService.CrearNotificacionGeneral(
+                $"Reserva confirmada por {cliente?.Nombre} {cliente?.Apellido} para la cancha ID {reserva.CanchaId} el {reserva.Fecha:dd/MM/yyyy}.", 
+                "ADMIN,PERSONAL", 
+                "Reserva"
+            );
 
             return new CreateReservaResponse
             {

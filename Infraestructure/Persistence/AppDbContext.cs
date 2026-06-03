@@ -46,6 +46,9 @@ public class AppDbContext : DbContext
     // 🔹 REPORTES
     public DbSet<Reporte> Reportes { get; set; }
 
+    // 🔹 NOTIFICACIONES
+    public DbSet<Notificacion> Notificaciones { get; set; }
+
     // 🔥 CONFIGURACIONES
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

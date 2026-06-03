@@ -1,5 +1,7 @@
 using Aplication.DTOs.Request.Cliente;
+using Aplication.Interfaces;
 using Aplication.Interfaces.ICliente;
+using Aplication.Interfaces.INotificacion;
 using Aplication.Response;
 using Domain.Entities;
 using System;
@@ -16,12 +18,14 @@ namespace Aplication.UseCase.Clientes
         private readonly IClientesCommand _command;
         private readonly IClientesQuery _query;
         private readonly IClienteMapper _mapper;
+        private readonly INotificacionService _notificacionService;
 
-        public ClientesService(IClientesCommand command, IClientesQuery query, IClienteMapper mapper)
+        public ClientesService(IClientesCommand command, IClientesQuery query, IClienteMapper mapper, INotificacionService notificacionService)
         {
             _command = command;
             _query = query;
             _mapper = mapper;
+            _notificacionService = notificacionService;
         }
 
         public async Task<ClienteResponse> CreateCliente(CreateClienteRequest request)
@@ -63,7 +67,18 @@ namespace Aplication.UseCase.Clientes
             clienteOriginal.Email = request.Email;
             clienteOriginal.ObraSocial = request.ObraSocial;
             clienteOriginal.AptoFisico = request.AptoFisico;
+            bool eraSocio = clienteOriginal.EsSocioActivo;
+
             clienteOriginal.EsSocioActivo = request.EsSocioActivo;
+
+            if (!eraSocio && request.EsSocioActivo)
+            {
+                await _notificacionService.CrearNotificacionGeneral($"El alumno {clienteOriginal.Nombre} {clienteOriginal.Apellido} ha pagado para ser socio.", "ADMIN,PERSONAL", "General");
+            }
+            else if (eraSocio && !request.EsSocioActivo)
+            {
+                await _notificacionService.CrearNotificacionGeneral($"El alumno {clienteOriginal.Nombre} {clienteOriginal.Apellido} ha dejado de ser socio.", "ADMIN,PERSONAL", "General");
+            }
 
             await _command.UpdateCliente(clienteOriginal);
 

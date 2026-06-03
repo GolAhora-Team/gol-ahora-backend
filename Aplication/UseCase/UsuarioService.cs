@@ -4,6 +4,7 @@ using Aplication.Interfaces.IAdmin;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IProfesor;
 using Aplication.Interfaces.IUsuario;
+using Aplication.Interfaces;
 using Domain.Exceptions;
 using System.Net;
 using System.Net.Mail;
@@ -24,8 +25,22 @@ namespace Aplication.UseCase
         private readonly IProfesorCommand _profesorCommand;
         private readonly IProfesorMapper _profesorMapper;
         private readonly IProfesorQuery _profesorQuery;
+        private readonly INotificacionService _notificacionService;
 
-        public UsuarioService(IUsuarioCommand usuariocommand, IUsuarioMapper usuariomapper, IClienteMapper clientemapper, IClientesCommand clienteCommand, IAdminMapper adminMapper, IAdminCommand adminCommand, IProfesorMapper profesorMapper, IProfesorCommand profesorCommand, IUsuarioQuery usuarioQuery, IProfesorQuery profesorQuery, IClientesQuery clientesQuery, IAdminQuery adminQuery)
+        public UsuarioService(
+            IUsuarioCommand usuariocommand, 
+            IUsuarioMapper usuariomapper, 
+            IClienteMapper clientemapper, 
+            IClientesCommand clienteCommand, 
+            IAdminMapper adminMapper, 
+            IAdminCommand adminCommand, 
+            IProfesorMapper profesorMapper, 
+            IProfesorCommand profesorCommand, 
+            IUsuarioQuery usuarioQuery, 
+            IProfesorQuery profesorQuery, 
+            IClientesQuery clientesQuery, 
+            IAdminQuery adminQuery,
+            INotificacionService notificacionService)
         {
             _usuariocommand = usuariocommand;
             _usuariomapper = usuariomapper;
@@ -39,6 +54,7 @@ namespace Aplication.UseCase
             _profesorQuery = profesorQuery;
             _clientesQuery = clientesQuery;
             _adminQuery = adminQuery;
+            _notificacionService = notificacionService;
         }
 
         public async Task<UsuarioClienteResponse> CreateUsuarioCliente(CreateUsuarioClienteRequest usuario)
@@ -59,6 +75,21 @@ namespace Aplication.UseCase
 
             var usuarioEntity = _usuariomapper.CreateUsuario(usuario, clienteEntity.Id);
             await _usuariocommand.Create(usuarioEntity);
+
+            if (clienteEntity.AptoFisico == false)
+            {
+                await _notificacionService.CrearNotificacionUsuario(
+                    "Te falta cargar el apto físico para inscribirte a torneos o ligas.", 
+                    usuarioEntity.Id, 
+                    "Documentacion"
+                );
+            }
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"Nuevo cliente registrado: {clienteEntity.Nombre} {clienteEntity.Apellido}", 
+                "ADMIN,PERSONAL", 
+                "NuevoRegistro"
+            );
 
             return _usuariomapper.CreateUsuarioResponse(usuarioEntity.Id, clienteEntity.Nombre, clienteEntity.Apellido);
         }
@@ -119,6 +150,21 @@ namespace Aplication.UseCase
 
             var usuarioEntity = _usuariomapper.CreateUsuario(usuario, profesorEntity.Id);
             await _usuariocommand.Create(usuarioEntity);
+
+            if (profesorEntity.CertificadoArchivo == null || profesorEntity.CertificadoArchivo.Length == 0)
+            {
+                await _notificacionService.CrearNotificacionUsuario(
+                    "Te falta cargar el certificado para poder dar clases.", 
+                    usuarioEntity.Id, 
+                    "Documentacion"
+                );
+            }
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"Nuevo profesor registrado: {profesorEntity.Nombre} {profesorEntity.Apellido}", 
+                "ADMIN,PERSONAL", 
+                "NuevoRegistro"
+            );
 
             return _usuariomapper.CreateUsuarioProfesorResponse(usuarioEntity.Id, profesorEntity.Nombre, profesorEntity.Apellido, profesorEntity.Especialidad);
         }
@@ -417,6 +463,12 @@ namespace Aplication.UseCase
             cliente.AptoFisico = true;
 
             await _clienteCommand.UpdateCliente(cliente);
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"El alumno {cliente.Nombre} {cliente.Apellido} ha cargado su apto físico.",
+                "ADMIN,PERSONAL",
+                "Documentacion"
+            );
         }
     }
 }

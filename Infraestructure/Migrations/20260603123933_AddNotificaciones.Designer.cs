@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260603123933_AddNotificaciones")]
+    partial class AddNotificaciones
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -426,18 +429,18 @@ namespace Infraestructure.Migrations
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Leida")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Mensaje")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RolesDestino")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UsuarioDestinoId")
+                    b.Property<int?>("UsuarioDestinoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1154,9 +1157,7 @@ namespace Infraestructure.Migrations
                 {
                     b.HasOne("Domain.Entities.Usuario", "UsuarioDestino")
                         .WithMany()
-                        .HasForeignKey("UsuarioDestinoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UsuarioDestinoId");
 
                     b.Navigation("UsuarioDestino");
                 });

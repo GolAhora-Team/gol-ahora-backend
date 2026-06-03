@@ -157,6 +157,11 @@ builder.Services.AddScoped<Aplication.Interfaces.IReporte.IReporteCommand, Infra
 builder.Services.AddScoped<Aplication.Interfaces.IReporte.IReporteQuery, Infraestructure.Querys.ReporteQuery>();
 builder.Services.AddScoped<Aplication.Interfaces.IReporte.IReporteService, Aplication.UseCase.Reportes.ReporteService>();
 
+// Notificaciones
+builder.Services.AddScoped<Aplication.Interfaces.INotificacion.INotificacionCommand, Infraestructure.Command.NotificacionCommand>();
+builder.Services.AddScoped<Aplication.Interfaces.INotificacion.INotificacionQuery, Infraestructure.Querys.NotificacionQuery>();
+builder.Services.AddScoped<Aplication.Interfaces.INotificacionService, Aplication.UseCase.NotificacionService>();
+
 // CORS configuration
 builder.Services.AddCors(options =>
 {

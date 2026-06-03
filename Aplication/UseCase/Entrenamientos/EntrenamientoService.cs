@@ -20,6 +20,8 @@ namespace Aplication.UseCase.Entrenamientos
         private readonly IProfesorQuery _profesorQuery;
         private readonly IProfesorCommand _profesorCommand;
         private readonly IClientesQuery _clienteQuery;
+        private readonly Aplication.Interfaces.INotificacionService _notificacionService;
+        private readonly Aplication.Interfaces.IUsuario.IUsuarioQuery _usuarioQuery;
 
         public EntrenamientoService(
             IEntrenamientoCommand entrenamientoCommand,
@@ -27,7 +29,9 @@ namespace Aplication.UseCase.Entrenamientos
             IEntrenamientoMapper entrenamientoMapper,
             IProfesorQuery profesorQuery,
             IProfesorCommand profesorCommand,
-            IClientesQuery clienteQuery)
+            IClientesQuery clienteQuery,
+            Aplication.Interfaces.INotificacionService notificacionService,
+            Aplication.Interfaces.IUsuario.IUsuarioQuery usuarioQuery)
         {
             _entrenamientoCommand = entrenamientoCommand;
             _entrenamientoQuery = entrenamientoQuery;
@@ -35,6 +39,8 @@ namespace Aplication.UseCase.Entrenamientos
             _profesorQuery = profesorQuery;
             _profesorCommand = profesorCommand;
             _clienteQuery = clienteQuery;
+            _notificacionService = notificacionService;
+            _usuarioQuery = usuarioQuery;
         }
 
         public async Task<EntrenamientoResponse> CrearEntrenamiento(EntrenamientoCreateRequest request)
@@ -62,6 +68,12 @@ namespace Aplication.UseCase.Entrenamientos
 
             var nuevoEntrenamiento = _entrenamientoMapper.CreateRequestToEntrenamiento(request);
             await _entrenamientoCommand.InsertEntrenamiento(nuevoEntrenamiento);
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"Nuevo entrenamiento abierto: {nuevoEntrenamiento.Nombre} el {nuevoEntrenamiento.Fecha:dd/MM/yyyy}.", 
+                "ADMIN,PERSONAL,CLIENTE", 
+                "Entrenamiento"
+            );
 
             return _entrenamientoMapper.EntrenamientoToResponse(nuevoEntrenamiento);
         }
@@ -188,6 +200,22 @@ namespace Aplication.UseCase.Entrenamientos
             
             entrenamientoExistente.Clientes.Add(nuevoClienteEntrenamiento);
             await _entrenamientoCommand.UpdateEntrenamiento(entrenamientoExistente);
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"El alumno {clienteExiste.Nombre} {clienteExiste.Apellido} se ha inscrito al entrenamiento {entrenamientoExistente.Nombre}.", 
+                "ADMIN,PERSONAL", 
+                "Inscripcion"
+            );
+
+            var profesorUsuario = await _usuarioQuery.GetUsuarioByPersonaId(entrenamientoExistente.ProfesorId);
+            if (profesorUsuario != null)
+            {
+                await _notificacionService.CrearNotificacionUsuario(
+                    $"El alumno {clienteExiste.Nombre} {clienteExiste.Apellido} se ha inscrito a tu entrenamiento {entrenamientoExistente.Nombre}.", 
+                    profesorUsuario.Id, 
+                    "Inscripcion"
+                );
+            }
 
             return new EntrenamientoShortResponse
             {

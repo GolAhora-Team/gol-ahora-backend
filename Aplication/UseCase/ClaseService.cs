@@ -21,8 +21,10 @@ namespace Aplication.UseCase
         private readonly IProfesorQuery _profesorQuery;
         private readonly IProfesorCommand _profesorCommand;
         private readonly IClientesQuery _clienteQuery;
+        private readonly Aplication.Interfaces.INotificacionService _notificacionService;
+        private readonly Aplication.Interfaces.IUsuario.IUsuarioQuery _usuarioQuery;
 
-        public ClaseService(IClaseCommand claseCommand, IClaseQuery claseQuery, IClaseMapper claseMapper, IProfesorQuery profesorQuery, IProfesorCommand profesorCommand, IClientesQuery clienteQuery)
+        public ClaseService(IClaseCommand claseCommand, IClaseQuery claseQuery, IClaseMapper claseMapper, IProfesorQuery profesorQuery, IProfesorCommand profesorCommand, IClientesQuery clienteQuery, Aplication.Interfaces.INotificacionService notificacionService, Aplication.Interfaces.IUsuario.IUsuarioQuery usuarioQuery)
         {
             _claseCommand = claseCommand;
             _claseQuery = claseQuery;
@@ -30,6 +32,8 @@ namespace Aplication.UseCase
             _profesorQuery = profesorQuery;
             _profesorCommand = profesorCommand;
             _clienteQuery = clienteQuery;
+            _notificacionService = notificacionService;
+            _usuarioQuery = usuarioQuery;
         }
         public async Task<ClaseCreateResponse> CrearClase(ClaseCreateRequest clase)
         {
@@ -61,6 +65,12 @@ namespace Aplication.UseCase
 
             var nuevaClase = _claseMapper.createClasetoRequest(clase);
             await _claseCommand.InsertClase(nuevaClase);
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"Nueva clase programada: {nuevaClase.Nombre} el {nuevaClase.Fecha:dd/MM/yyyy}.", 
+                "ADMIN,PERSONAL,CLIENTE", 
+                "Clase"
+            );
 
             return _claseMapper.ClaseCreateResponse(nuevaClase);
         }
@@ -214,6 +224,23 @@ namespace Aplication.UseCase
             };
             claseExistente.Asistencias.Add(nuevaAsistencia);
             await _claseCommand.UpdateClase(claseExistente);
+
+            await _notificacionService.CrearNotificacionGeneral(
+                $"El alumno {clienteExiste.Nombre} {clienteExiste.Apellido} se ha inscrito a la clase {claseExistente.Nombre}.", 
+                "ADMIN,PERSONAL", 
+                "Inscripcion"
+            );
+
+            var profesorUsuario = await _usuarioQuery.GetUsuarioByPersonaId(claseExistente.ProfesorId);
+            if (profesorUsuario != null)
+            {
+                await _notificacionService.CrearNotificacionUsuario(
+                    $"El alumno {clienteExiste.Nombre} {clienteExiste.Apellido} se ha inscrito a tu clase {claseExistente.Nombre}.", 
+                    profesorUsuario.Id, 
+                    "Inscripcion"
+                );
+            }
+
             return new ClaseShortResponse
             {
                 Id = claseExistente.Id,

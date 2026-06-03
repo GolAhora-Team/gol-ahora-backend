@@ -1,6 +1,8 @@
 using Aplication.DTOs;
 using Aplication.DTOs.Request.Profesor;
 using Aplication.DTOs.Response.Profesor;
+using Aplication.Interfaces;
+using Aplication.Interfaces.INotificacion;
 using Aplication.Interfaces.IProfesor;
 using System;
 using System.Collections.Generic;
@@ -14,11 +16,13 @@ namespace Aplication.UseCase
     {
         private readonly IProfesorQuery _query;
         private readonly IProfesorCommand _command;
+        private readonly INotificacionService _notificacionService;
 
-        public ProfesorService(IProfesorQuery query, IProfesorCommand command)
+        public ProfesorService(IProfesorQuery query, IProfesorCommand command, INotificacionService notificacionService)
         {
             _query = query;
             _command = command;
+            _notificacionService = notificacionService;
         }
 
         // ── Queries ────────────────────────────────
@@ -45,7 +49,18 @@ namespace Aplication.UseCase
             => await _command.UpdateAsync(id, dto);
 
         public async Task<ProfesorResponse?> UpdateSimpleAsync(int id, UpdateProfesorSimpleRequest request)
-            => await _command.UpdateSimpleAsync(id, request);
+        {
+            var result = await _command.UpdateSimpleAsync(id, request);
+            if (result != null && !string.IsNullOrEmpty(request.CertificadoBase64))
+            {
+                await _notificacionService.CrearNotificacionGeneral(
+                    $"El profesor {result.Nombre} {result.Apellido} ha cargado su certificado.",
+                    "ADMIN,PERSONAL",
+                    "Documentacion"
+                );
+            }
+            return result;
+        }
 
         public async Task<bool> DeleteAsync(int id)
             => await _command.DeleteAsync(id);
