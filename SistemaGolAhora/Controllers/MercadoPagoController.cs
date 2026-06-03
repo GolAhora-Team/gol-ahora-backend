@@ -1,8 +1,3 @@
-using MercadoPago.Client.Preference;
-using MercadoPago.Config;
-using MercadoPago.Resource.Preference;
-using MercadoPago.Client.Payment;
-using MercadoPago.Client.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SistemaGolAhora.Controllers
@@ -13,8 +8,6 @@ namespace SistemaGolAhora.Controllers
     {
         public MercadoPagoController()
         {
-            // Token de la nueva cuenta VENDEDORA de prueba
-            MercadoPagoConfig.AccessToken = "APP_USR-8827220724965081-060211-5262bca461db2a832b7cfa1ee3dd428c-3442109685"; 
         }
 
         [HttpPost("create-preference")]
@@ -24,34 +17,49 @@ namespace SistemaGolAhora.Controllers
             {
                 var extRef = Guid.NewGuid().ToString();
 
-                var requestMP = new PreferenceRequest
+                var body = new
                 {
-                    Items = new List<PreferenceItemRequest>
+                    items = new[]
                     {
-                        new PreferenceItemRequest
+                        new
                         {
-                            Title = request.Title,
-                            Quantity = 1,
-                            CurrencyId = "ARS",
-                            UnitPrice = request.Price,
+                            title = request.Title,
+                            quantity = 1,
+                            currency_id = "ARS",
+                            unit_price = request.Price
                         }
                     },
-                    BackUrls = new PreferenceBackUrlsRequest
+                    back_urls = new
                     {
-                        // Volvemos a usar la URL dinámica que manda el frontend (ej. tu Vercel)
-                        Success = request.ReturnUrl ?? "https://golahora.runasp.net",
-                        Failure = request.ReturnUrl ?? "https://golahora.runasp.net",
-                        Pending = request.ReturnUrl ?? "https://golahora.runasp.net"
+                        success = request.ReturnUrl ?? "https://golahora.runasp.net",
+                        failure = request.ReturnUrl ?? "https://golahora.runasp.net",
+                        pending = request.ReturnUrl ?? "https://golahora.runasp.net"
                     },
-                    AutoReturn = "approved",
-                    ExternalReference = extRef
+                    auto_return = "approved",
+                    external_reference = extRef
                 };
 
-                var client = new PreferenceClient();
-                Preference preference = await client.CreateAsync(requestMP);
+                using var httpClient = new System.Net.Http.HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "APP_USR-8827220724965081-060211-5262bca461db2a832b7cfa1ee3dd428c-3442109685");
+                
+                var content = new System.Net.Http.StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync("https://api.mercadopago.com/checkout/preferences", content);
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorJson = await response.Content.ReadAsStringAsync();
+                    return BadRequest(new { mensaje = "Error de MP API: " + errorJson });
+                }
 
-                // Usamos DIRECTAMENTE InitPoint. SandboxInitPoint puede fallar con tokens APP_USR
-                return Ok(new { initPoint = preference.InitPoint, externalReference = extRef });
+                var json = await response.Content.ReadAsStringAsync();
+                var result = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(json);
+                
+                if (result.TryGetProperty("init_point", out var initPoint))
+                {
+                    return Ok(new { initPoint = initPoint.GetString(), externalReference = extRef });
+                }
+                
+                return BadRequest(new { mensaje = "La API de MP no devolvió el init_point." });
             }
             catch (System.Exception ex)
             {
@@ -65,7 +73,7 @@ namespace SistemaGolAhora.Controllers
             try
             {
                 using var httpClient = new System.Net.Http.HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", MercadoPagoConfig.AccessToken);
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "APP_USR-8827220724965081-060211-5262bca461db2a832b7cfa1ee3dd428c-3442109685");
                 
                 var response = await httpClient.GetAsync($"https://api.mercadopago.com/v1/payments/search?external_reference={externalReference}");
                 if (!response.IsSuccessStatusCode)
