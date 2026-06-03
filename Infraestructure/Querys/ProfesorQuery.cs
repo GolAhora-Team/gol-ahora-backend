@@ -71,5 +71,11 @@ namespace Infraestructure.Querys
      //           .Where(p => p.claseId == claseId)
                 .Select(p => MapToDto(p))
                 .ToListAsync();
+
+        public async Task<byte[]?> GetCertificadoAsync(int profesorId)
+        {
+            var p = await _context.Profesores.FindAsync(profesorId);
+            return p?.CertificadoArchivo;
+        }
     }
 }

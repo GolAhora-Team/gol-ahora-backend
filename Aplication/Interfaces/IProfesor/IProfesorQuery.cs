@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs;
+using Aplication.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +14,6 @@ namespace Aplication.Interfaces.IProfesor
         Task<ProfesorDto?> GetByDniAsync(int dni);
         Task<IEnumerable<ProfesorDto>> GetByEspecialidadAsync(string especialidad);
         Task<IEnumerable<ProfesorDto>> GetByClaseAsync(int claseId);
+        Task<byte[]?> GetCertificadoAsync(int profesorId);
     }
 }

@@ -26,5 +26,6 @@ namespace Aplication.Interfaces.IProfesor
         Task<bool> AsignarClaseAsync(int profesorId, int claseId);
         Task<bool> AsignarEntrenamientoAsync(int profesorId, int entrenamientoId);
         Task<bool> ValidarCertificadoAsync(int profesorId);
+        Task<byte[]?> GetCertificado(int profesorId);
     }
 }

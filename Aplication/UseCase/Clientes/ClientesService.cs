@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Cliente;
+using Aplication.DTOs.Request.Cliente;
 using Aplication.Interfaces.ICliente;
 using Aplication.Response;
 using Domain.Entities;
@@ -79,6 +79,12 @@ namespace Aplication.UseCase.Clientes
                 throw new Exception("El cliente no existe");
 
             return _mapper.CreateClienteResponse(cliente);
+        }
+
+        public async Task<byte[]?> GetAptoMedico(int clienteId)
+        {
+            var cliente = await _query.GetClienteById(clienteId);
+            return cliente?.AptoMedicoArchivo;
         }
                 
         public async Task<ClienteResponse> DeleteCliente(int id)

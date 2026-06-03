@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Cliente;
+using Aplication.DTOs.Request.Cliente;
 using Aplication.Response;
 using Domain.Entities;
 using System;
@@ -16,5 +16,6 @@ namespace Aplication.Interfaces.ICliente
         Task<ClienteResponse> DeleteCliente(int clienteId);
         Task<List<ClienteResponse>> GetAll();
         Task<ClienteResponse> GetClienteById(int clienteId);
+        Task<byte[]?> GetAptoMedico(int clienteId);
     }
 }

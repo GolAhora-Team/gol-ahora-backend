@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Cliente;
+using Aplication.DTOs.Request.Cliente;
 using Aplication.Interfaces.ICliente;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -58,6 +58,30 @@ namespace SistemaGolAhora.Controllers
             {
                 var response = await _services.UpdateCliente(id, request);
                 return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpGet("{id}/apto-medico/descargar")]
+        public async Task<IActionResult> DownloadAptoMedico(int id)
+        {
+            try
+            {
+                var bytes = await _services.GetAptoMedico(id);
+                if (bytes == null || bytes.Length == 0)
+                    return NotFound(new { mensaje = "El cliente no posee un apto médico." });
+
+                // Detectamos pdf por la firma o asumimos image/jpeg por defecto
+                string contentType = "application/pdf";
+                if (bytes.Length > 4 && bytes[0] != 0x25 && bytes[1] != 0x50 && bytes[2] != 0x44 && bytes[3] != 0x46)
+                {
+                    contentType = "image/jpeg";
+                }
+
+                return File(bytes, contentType);
             }
             catch (Exception ex)
             {

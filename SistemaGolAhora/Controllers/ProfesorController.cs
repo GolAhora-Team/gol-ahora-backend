@@ -65,6 +65,29 @@ namespace SistemaGolAhora.Controllers
             }
         }
 
+        [HttpGet("{id}/certificado/descargar")]
+        public async Task<IActionResult> DownloadCertificado(int id)
+        {
+            try
+            {
+                var bytes = await _services.GetCertificado(id);
+                if (bytes == null || bytes.Length == 0)
+                    return NotFound(new { mensaje = "El profesor no posee un certificado." });
+
+                string contentType = "application/pdf";
+                if (bytes.Length > 4 && bytes[0] != 0x25 && bytes[1] != 0x50 && bytes[2] != 0x44 && bytes[3] != 0x46)
+                {
+                    contentType = "image/jpeg";
+                }
+
+                return File(bytes, contentType);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

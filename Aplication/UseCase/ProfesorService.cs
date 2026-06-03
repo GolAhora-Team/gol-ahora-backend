@@ -58,5 +58,8 @@ namespace Aplication.UseCase
 
         public async Task<bool> ValidarCertificadoAsync(int profesorId)
             => await _command.ValidarCertificadoAsync(profesorId);
+
+        public async Task<byte[]?> GetCertificado(int profesorId)
+            => await _query.GetCertificadoAsync(profesorId);
     }
 }
