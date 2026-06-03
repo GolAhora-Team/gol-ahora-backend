@@ -58,7 +58,10 @@ namespace Aplication.Mappers
                 AptoFisico = cliente.AptoFisico,
                 EsSocioActivo = cliente.EsSocioActivo,
                 FechaAlta = cliente.FechaAlta,
-                FechaBaja = cliente.FechaBaja
+                FechaBaja = cliente.FechaBaja,
+                AptoMedicoFechaInicio = cliente.AptoMedicoFechaInicio,
+                AptoMedicoFechaFin = cliente.AptoMedicoFechaFin,
+                TieneAptoMedicoArchivo = cliente.AptoMedicoArchivo != null && cliente.AptoMedicoArchivo.Length > 0
             };
         }
     }

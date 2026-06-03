@@ -8,6 +8,11 @@ namespace Aplication.DTOs.Request.Profesor
 {
     public class UpdateProfesorSimpleRequest
     {
+        public string Nombre { get; set; }
+        public string Apellido { get; set; }
+        public int Dni { get; set; }
+        public string Genero { get; set; }
+        public DateTime FechaNacimiento { get; set; }
         public string Telefono { get; set; }
         public string Direccion { get; set; }
         public string Localidad { get; set; }

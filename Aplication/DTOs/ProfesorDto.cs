@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,5 +32,8 @@ namespace Aplication.DTOs
         public string ContactoEmergencia { get; set; }
         public string Email { get; set; }
         public DateTime FechaRegistro { get; set; }
+        public DateTime? CertificadoFechaInicio { get; set; }
+        public DateTime? CertificadoFechaFin { get; set; }
+        public bool TieneCertificado { get; set; }
     }
 }

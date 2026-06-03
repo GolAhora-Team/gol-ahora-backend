@@ -82,6 +82,11 @@ namespace Infraestructure.Command
             var profesor = await _context.Profesores.FindAsync(id);
             if (profesor is null) return null;
 
+            profesor.Nombre = request.Nombre;
+            profesor.Apellido = request.Apellido;
+            profesor.Dni = request.Dni;
+            profesor.Genero = request.Genero;
+            profesor.FechaNacimiento = request.FechaNacimiento;
             profesor.Telefono = request.Telefono;
             profesor.Direccion = request.Direccion;
             profesor.Localidad = request.Localidad;

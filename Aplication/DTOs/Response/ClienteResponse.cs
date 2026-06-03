@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,5 +45,8 @@ namespace Aplication.Response
         public DateTime? FechaBaja { get; set; }
 
         public bool EsSocioActivo { get; set; }
+        public DateTime? AptoMedicoFechaInicio { get; set; }
+        public DateTime? AptoMedicoFechaFin { get; set; }
+        public bool TieneAptoMedicoArchivo { get; set; }
     }
 }

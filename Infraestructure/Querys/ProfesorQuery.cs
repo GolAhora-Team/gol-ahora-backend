@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs;
+using Aplication.DTOs;
 using Aplication.Interfaces.IProfesor;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -36,7 +36,10 @@ namespace Infraestructure.Querys
             Pais = p.Pais,
             ContactoEmergencia = p.ContactoEmergencia,
             Email = p.Email,
-            FechaRegistro = p.FechaRegistro
+            FechaRegistro = p.FechaRegistro,
+            CertificadoFechaInicio = p.CertificadoFechaInicio,
+            CertificadoFechaFin = p.CertificadoFechaFin,
+            TieneCertificado = p.CertificadoArchivo != null && p.CertificadoArchivo.Length > 0
         };
 
         public async Task<IEnumerable<ProfesorDto>> GetAllAsync()

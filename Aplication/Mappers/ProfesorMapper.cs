@@ -38,7 +38,10 @@ namespace Aplication.Mappers
                 Pais = profesor.Pais,
                 ContactoEmergencia = profesor.ContactoEmergencia,
                 Email = profesor.Email,
-                FechaRegistro = profesor.FechaRegistro
+                FechaRegistro = profesor.FechaRegistro,
+                CertificadoFechaInicio = profesor.CertificadoFechaInicio,
+                CertificadoFechaFin = profesor.CertificadoFechaFin,
+                TieneCertificado = profesor.CertificadoArchivo != null && profesor.CertificadoArchivo.Length > 0
             };
         }
 
@@ -67,7 +70,10 @@ namespace Aplication.Mappers
                 Pais = dto.Pais,
                 ContactoEmergencia = dto.ContactoEmergencia,
                 Email = dto.Email,
-                FechaRegistro = dto.FechaRegistro
+                FechaRegistro = dto.FechaRegistro,
+                CertificadoFechaInicio = dto.CertificadoFechaInicio,
+                CertificadoFechaFin = dto.CertificadoFechaFin,
+                TieneCertificado = dto.TieneCertificado
             };
         }
 
