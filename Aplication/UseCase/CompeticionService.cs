@@ -28,14 +28,20 @@ namespace Aplication.UseCase
 
         public async Task<CompeticionResponse> CreateCompeticion(CompeticionRequest request)
         {
-            if (request.Tipo == TipoCompeticion.Torneo && request.CantidadEquipos != 16)
+            if (request.Tipo == TipoCompeticion.Torneo && 
+                request.CantidadEquipos != 4 && 
+                request.CantidadEquipos != 8 && 
+                request.CantidadEquipos != 16)
             {                
-                throw new Exception("Los torneos de eliminación directa solo admiten formato de Octavos de Final (16 equipos).");
+                throw new Exception("Los torneos de eliminación directa admiten formato de Semifinal (4 equipos), Cuartos de Final (8 equipos) u Octavos de Final (16 equipos).");
             }
 
-            if (request.Tipo == TipoCompeticion.Liga && request.CantidadEquipos != 20)
+            if (request.Tipo == TipoCompeticion.Liga && 
+                request.CantidadEquipos != 4 && 
+                request.CantidadEquipos != 8 && 
+                request.CantidadEquipos != 20)
             {
-                throw new Exception("Por el momento, las ligas deben ser de 20 equipos");
+                throw new Exception("Por el momento, las ligas deben ser de 4, 8 o 20 equipos.");
             }
 
             var competicion = _mapper.CreateCompeticion(request);

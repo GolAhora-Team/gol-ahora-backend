@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.ICompeticion;
+using Aplication.Interfaces.ICompeticion;
 using Aplication.Interfaces.IEquipo;
 using Domain.Entities;
 using Domain.Enums;
@@ -22,7 +22,9 @@ namespace Infraestructure.Querys
 
         public async Task<Competicion> GetCompeticionById(int idCompeticion)
         {
-            var competicion = await _context.Competiciones.FindAsync(idCompeticion);
+            var competicion = await _context.Competiciones
+                .Include(c => c.Equipos)
+                .FirstOrDefaultAsync(c => c.Id == idCompeticion);
 
             return competicion;
         }
@@ -30,7 +32,9 @@ namespace Infraestructure.Querys
 
         public async Task<IEnumerable<Competicion>> GetListCompeticion()
         {
-            return await _context.Competiciones.ToListAsync();
+            return await _context.Competiciones
+                .Include(c => c.Equipos)
+                .ToListAsync();
         }
 
         public async Task<Competicion?> GetCompeticionConEquipos(int competicionId)

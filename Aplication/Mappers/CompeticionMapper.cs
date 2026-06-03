@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Competición;
+using Aplication.DTOs.Request.Competición;
 using Aplication.DTOs.Request.Equipo;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.ICompeticion;
@@ -32,7 +32,9 @@ namespace Aplication.Mappers
                 Nombre = competicion.Nombre,
                 Tipo = competicion.Tipo,
                 Descripcion = competicion.Descripcion,
-                CantidadEquipos = competicion.CantidadEquipos
+                CantidadEquipos = competicion.CantidadEquipos,
+                Estado = competicion.Estado,
+                CantInscriptos = competicion.Equipos?.Count ?? 0
             };
         }
     }

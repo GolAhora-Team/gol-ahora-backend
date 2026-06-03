@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +20,7 @@ namespace Aplication.DTOs.Response
         public int CantidadEquipos { get; set; }
 
         public EstadoCompeticion Estado { get; set; }
+
+        public int CantInscriptos { get; set; }
     }
 }
