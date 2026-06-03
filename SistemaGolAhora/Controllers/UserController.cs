@@ -146,5 +146,54 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("seed-julian")]
+        public async Task<IActionResult> SeedJulian([FromServices] AppDbContext context)
+        {
+            try
+            {
+                var email = "juliannicolasantunes@gmail.com";
+                var persona = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync(
+                    context.Personas, p => p.Email == email);
+                
+                if (persona == null)
+                {
+                    return BadRequest(new { message = "No se encontró ninguna Persona con el correo juliannicolasantunes@gmail.com en la base de datos." });
+                }
+
+                var usuarioExistente = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync(
+                    context.Usuarios, u => u.PersonaId == persona.Id);
+
+                if (usuarioExistente != null)
+                {
+                    if (usuarioExistente.Email != email)
+                    {
+                        usuarioExistente.Email = email;
+                        context.Usuarios.Update(usuarioExistente);
+                        await context.SaveChangesAsync();
+                        return Ok(new { message = "El usuario ya existía en la tabla Usuarios pero con otro email. Se actualizó al correo correcto.", username = usuarioExistente.Username, email = usuarioExistente.Email, id = usuarioExistente.Id });
+                    }
+                    return Ok(new { message = "El usuario ya existe en la tabla Usuarios con el email correcto.", username = usuarioExistente.Username, email = usuarioExistente.Email, id = usuarioExistente.Id });
+                }
+
+                var nuevoUsuario = new Domain.Entities.Usuario
+                {
+                    Username = "julianantunes",
+                    Email = email,
+                    PasswordHash = "1234",
+                    PersonaId = persona.Id,
+                    TipoUsuario = Domain.Enums.TipoUsuario.Cliente
+                };
+
+                context.Usuarios.Add(nuevoUsuario);
+                await context.SaveChangesAsync();
+
+                return Ok(new { message = "Usuario creado y enlazado con éxito.", username = nuevoUsuario.Username, email = nuevoUsuario.Email, id = nuevoUsuario.Id });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message, detail = ex.ToString() });
+            }
+        }
     }
 }

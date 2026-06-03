@@ -55,12 +55,16 @@ namespace Infraestructure.Querys
 
         public async Task<Usuario?> GetByEmail(string email)
         {
-            return await _context.Usuarios.Where(u => u.Email == email).FirstOrDefaultAsync();
+            if (string.IsNullOrWhiteSpace(email)) return null;
+            var cleanEmail = email.Trim();
+            return await _context.Usuarios.Where(u => u.Email.Trim() == cleanEmail).FirstOrDefaultAsync();
         }
 
         public async Task<Usuario?> GetByEmailPassword(string email, string password)
         {
-            return await _context.Usuarios.Where(u => u.Email == email && u.PasswordHash == password).FirstOrDefaultAsync();
+            if (string.IsNullOrWhiteSpace(email)) return null;
+            var cleanEmail = email.Trim();
+            return await _context.Usuarios.Where(u => u.Email.Trim() == cleanEmail && u.PasswordHash == password).FirstOrDefaultAsync();
         }
 
         public async Task<Usuario?> GetByResetToken(string token)
