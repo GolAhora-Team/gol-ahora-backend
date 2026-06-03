@@ -238,12 +238,97 @@ namespace Aplication.UseCase
                 };
 
                 var frontendUrl = $"https://gol-ahora-git-develop-javifl-proyects.vercel.app/NuevaClave?token={token}";
+
+                var htmlBody = $@"
+<!DOCTYPE html>
+<html lang=""es"">
+<head>
+  <meta charset=""UTF-8"">
+  <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+</head>
+<body style=""margin:0;padding:0;background-color:#004d1a;font-family:Arial,Helvetica,sans-serif;"">
+  <table role=""presentation"" width=""100%"" cellpadding=""0"" cellspacing=""0"" style=""background-color:#004d1a;padding:40px 0;"">
+    <tr>
+      <td align=""center"">
+        <table role=""presentation"" width=""480"" cellpadding=""0"" cellspacing=""0"" style=""max-width:480px;width:100%;border-radius:30px;overflow:hidden;border:2px solid rgba(255,255,255,0.3);background-color:#006400;position:relative;"">
+          <!-- Líneas de cancha decorativas -->
+          <tr>
+            <td style=""height:0;position:relative;"">
+              <div style=""position:absolute;top:0;left:20%;right:20%;height:40px;border-bottom:2px solid rgba(255,255,255,0.2);border-left:2px solid rgba(255,255,255,0.2);border-right:2px solid rgba(255,255,255,0.2);""></div>
+            </td>
+          </tr>
+          <!-- Header -->
+          <tr>
+            <td align=""center"" style=""padding:50px 30px 20px 30px;"">
+              <p style=""color:#ffffff;font-size:14px;font-weight:300;letter-spacing:3px;margin:0 0 5px 0;"">Complejo</p>
+              <h1 style=""color:#ffffff;font-size:42px;font-weight:900;letter-spacing:-1px;margin:0;"">GOL AHORA</h1>
+              <div style=""display:inline-block;background-color:#ffb300;padding:4px 14px;border-radius:4px;margin-top:8px;"">
+                <span style=""color:#000000;font-size:10px;font-weight:900;letter-spacing:1px;"">RECUPERACIÓN DE CONTRASEÑA</span>
+              </div>
+            </td>
+          </tr>
+          <!-- Card blanca -->
+          <tr>
+            <td align=""center"" style=""padding:0 25px 40px 25px;"">
+              <table role=""presentation"" width=""100%"" cellpadding=""0"" cellspacing=""0"" style=""background-color:#ffffff;border-radius:25px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.3);"">
+                <tr>
+                  <td style=""padding:35px 30px;"">
+                    <!-- Icono -->
+                    <div style=""text-align:center;margin-bottom:20px;"">
+                      <div style=""display:inline-block;width:60px;height:60px;border-radius:50%;background-color:#f0fdf4;line-height:60px;text-align:center;"">
+                        <span style=""font-size:30px;"">🔑</span>
+                      </div>
+                    </div>
+                    <p style=""color:#1e293b;font-size:18px;font-weight:700;text-align:center;margin:0 0 10px 0;"">¡Hola!</p>
+                    <p style=""color:#475569;font-size:14px;line-height:22px;text-align:center;margin:0 0 25px 0;"">
+                      Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong style=""color:#009b3a;"">Complejo Gol Ahora</strong>. 
+                      Hacé clic en el botón de abajo para crear una nueva contraseña.
+                    </p>
+                    <!-- Botón -->
+                    <div style=""text-align:center;margin-bottom:25px;"">
+                      <a href=""{frontendUrl}"" target=""_blank"" style=""display:inline-block;background:linear-gradient(135deg,#ffb300,#ff9100);color:#000000;font-size:16px;font-weight:900;text-decoration:none;padding:16px 40px;border-radius:15px;letter-spacing:0.5px;"">
+                        RESTABLECER CONTRASEÑA
+                      </a>
+                    </div>
+                    <!-- Info -->
+                    <div style=""background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 15px;margin-bottom:20px;"">
+                      <p style=""color:#16a34a;font-size:12px;font-weight:600;margin:0;text-align:center;"">
+                        ⏱ Este enlace expira en 1 hora por seguridad.
+                      </p>
+                    </div>
+                    <p style=""color:#94a3b8;font-size:12px;text-align:center;margin:0 0 15px 0;"">
+                      Si no solicitaste este cambio, podés ignorar este correo. Tu contraseña no será modificada.
+                    </p>
+                    <!-- Línea divisoria -->
+                    <hr style=""border:none;border-top:1px solid #e2e8f0;margin:20px 0;"" />
+                    <p style=""color:#cbd5e1;font-size:11px;text-align:center;margin:0;"">
+                      Complejo Gol Ahora · Sistema de Gestión Deportiva<br/>
+                      S.A. CUIT: 30-12345678-3
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Líneas de cancha decorativas inferiores -->
+          <tr>
+            <td style=""height:40px;position:relative;"">
+              <div style=""position:absolute;bottom:0;left:20%;right:20%;height:40px;border-top:2px solid rgba(255,255,255,0.2);border-left:2px solid rgba(255,255,255,0.2);border-right:2px solid rgba(255,255,255,0.2);""></div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>";
+
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress("complejogolahora@gmail.com", "Complejo Gol Ahora"),
-                    Subject = "Recuperación de Contraseña",
-                    Body = $"Hola,\n\nHas solicitado restablecer tu contraseña. Por favor, haz clic en el siguiente enlace:\n\n{frontendUrl}\n\nSi no solicitaste este cambio, puedes ignorar este correo.\n\nEste enlace expira en 1 hora.",
-                    IsBodyHtml = false,
+                    Subject = "Recuperación de Contraseña - Complejo Gol Ahora",
+                    Body = htmlBody,
+                    IsBodyHtml = true,
                 };
                 mailMessage.To.Add(email);
 
