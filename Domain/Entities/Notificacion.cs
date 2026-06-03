@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -9,6 +10,7 @@ namespace Domain.Entities
         public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
         public int UsuarioDestinoId { get; set; }
+        [JsonIgnore]
         public Usuario? UsuarioDestino { get; set; }
 
         public string Tipo { get; set; } = "General";
