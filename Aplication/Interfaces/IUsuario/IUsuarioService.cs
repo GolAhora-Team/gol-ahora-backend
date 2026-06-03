@@ -18,6 +18,7 @@ namespace Aplication.Interfaces.IUsuario
         Task<List<string>> CheckAvailability(int dni, string email, string username);
         Task<bool> ForgotPassword(string email);
         Task ResetPassword(ResetPasswordRequest request);
+        Task<bool> ValidateResetToken(string token);
         Task UploadAptoMedico(UploadAptoMedicoRequest request);
     }
 }

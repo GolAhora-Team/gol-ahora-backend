@@ -133,6 +133,20 @@ namespace SistemaGolAhora.Controllers
             }
         }
 
+        [HttpGet("validate-reset-token")]
+        public async Task<IActionResult> ValidateResetToken([FromQuery] string token)
+        {
+            try
+            {
+                var isValid = await _usuarioService.ValidateResetToken(token);
+                return Ok(new { isValid });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPost("apto-medico")]
         public async Task<IActionResult> UploadAptoMedico([FromBody] UploadAptoMedicoRequest request)
         {

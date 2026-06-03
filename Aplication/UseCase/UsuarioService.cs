@@ -282,6 +282,15 @@ namespace Aplication.UseCase
             await _usuariocommand.Update(usuario);
         }
 
+        public async Task<bool> ValidateResetToken(string token)
+        {
+            if (string.IsNullOrEmpty(token)) return false;
+            var usuario = await _usuarioQuery.GetByResetToken(token);
+            if (usuario == null) return false;
+            if (usuario.ResetTokenExpires < DateTime.UtcNow) return false;
+            return true;
+        }
+
         public async Task UploadAptoMedico(UploadAptoMedicoRequest request)
         {
             if (string.IsNullOrEmpty(request.ArchivoBase64))
