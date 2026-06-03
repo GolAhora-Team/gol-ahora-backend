@@ -237,7 +237,7 @@ namespace Aplication.UseCase
                     EnableSsl = true,
                 };
 
-                var frontendUrl = $"http://localhost:8081/NuevaClave?token={token}";
+                var frontendUrl = $"https://gol-ahora-git-develop-javifl-proyects.vercel.app/NuevaClave?token={token}";
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress("complejogolahora@gmail.com", "Complejo Gol Ahora"),
@@ -250,9 +250,10 @@ namespace Aplication.UseCase
                 await smtpClient.SendMailAsync(mailMessage);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Ocurrió un error al enviar el correo de recuperación.");
+                Console.WriteLine("Error enviando email de recuperacion: " + ex.ToString());
+                throw new Exception("Error al enviar el correo de recuperación: " + ex.Message);
             }
         }
 
