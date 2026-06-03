@@ -336,11 +336,7 @@ namespace Aplication.UseCase
                         RESTABLECER CONTRASEÑA
                       </a>
                     </div>
-                    <!-- Raw URL -->
-                    <div style=""text-align:center;margin-bottom:25px;padding:0 15px;"">
-                      <p style=""color:#64748b;font-size:11px;margin:0 0 5px 0;"">O copiá y pegá este enlace en tu navegador:</p>
-                      <p style=""color:#009b3a;font-size:11px;word-break:break-all;margin:0;""><a href=""{frontendUrl}"" style=""color:#009b3a;text-decoration:underline;"">{frontendUrl}</a></p>
-                    </div>
+
                     <!-- Info -->
                     <div style=""background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 15px;margin-bottom:20px;"">
                       <p style=""color:#16a34a;font-size:12px;font-weight:600;margin:0;text-align:center;"">
