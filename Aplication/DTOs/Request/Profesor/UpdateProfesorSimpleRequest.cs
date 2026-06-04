@@ -23,7 +23,7 @@ namespace Aplication.DTOs.Request.Profesor
         public string Pais { get; set; }
         public string ContactoEmergencia { get; set; }
         public string Email { get; set; }
-        public IFormFile? CertificadoArchivo { get; set; }
+        public string? CertificadoBase64 { get; set; }
         public DateTime? CertificadoFechaInicio { get; set; }
         public DateTime? CertificadoFechaVencimiento { get; set; }
         public string? Especialidad { get; set; }

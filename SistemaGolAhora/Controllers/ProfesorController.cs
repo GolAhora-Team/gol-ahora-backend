@@ -51,7 +51,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpPut("{id}/simple")]
-        public async Task<IActionResult> UpdateSimple(int id, [FromForm] UpdateProfesorSimpleRequest request)
+        public async Task<IActionResult> UpdateSimple(int id, UpdateProfesorSimpleRequest request)
         {
             try
             {

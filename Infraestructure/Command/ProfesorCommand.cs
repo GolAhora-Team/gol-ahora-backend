@@ -101,9 +101,10 @@ namespace Infraestructure.Command
             if (request.Especialidad != null) profesor.Especialidad = request.Especialidad;
             if (request.Certificacion != null) profesor.Certificacion = request.Certificacion;
 
-            if (request.CertificadoArchivo != null && request.CertificadoArchivo.Length > 0)
+            if (!string.IsNullOrEmpty(request.CertificadoBase64))
             {
-                if (request.CertificadoArchivo.Length > 4 * 1024 * 1024)
+                var fileBytes = Convert.FromBase64String(request.CertificadoBase64);
+                if (fileBytes.Length > 4 * 1024 * 1024)
                 {
                     throw new Domain.Exceptions.ExceptionBadRequest("El certificado excede el límite máximo de 4 MB.");
                 }
@@ -114,16 +115,22 @@ namespace Infraestructure.Command
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(request.CertificadoArchivo.FileName);
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                var uniqueFileName = Guid.NewGuid().ToString() + ".pdf"; 
+                if (fileBytes.Length > 4 && fileBytes[0] == 0xFF && fileBytes[1] == 0xD8)
                 {
-                    await request.CertificadoArchivo.CopyToAsync(fileStream);
+                    uniqueFileName = Guid.NewGuid().ToString() + ".jpg";
+                }
+                else if (fileBytes.Length > 4 && fileBytes[0] == 0x89 && fileBytes[1] == 0x50 && fileBytes[2] == 0x4E && fileBytes[3] == 0x47)
+                {
+                    uniqueFileName = Guid.NewGuid().ToString() + ".png";
                 }
 
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                await File.WriteAllBytesAsync(filePath, fileBytes);
+
                 profesor.CertificadoUrl = $"/certificados/profesores/{uniqueFileName}";
-                profesor.CertificadoNombreArchivo = request.CertificadoArchivo.FileName;
+                profesor.CertificadoNombreArchivo = "Certificado" + Path.GetExtension(uniqueFileName);
                 profesor.CertificadoFechaInicio = request.CertificadoFechaInicio;
                 profesor.CertificadoFechaVencimiento = request.CertificadoFechaVencimiento;
             }
