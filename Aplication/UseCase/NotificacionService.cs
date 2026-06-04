@@ -132,7 +132,7 @@ namespace Aplication.UseCase
                         EquipoNombre = equipo?.Nombre ?? "Equipo Desconocido",
                         EsCapitan = false,
                         EsTitular = false,
-                        Estado = Domain.Enums.EstadoJugador.Habilitado,
+                        Estado = Domain.Enums.EstadoJugador.Disponible,
                         Posicion = 0
                     };
                     await _jugadorCommand.InsertJugador(jugador);
