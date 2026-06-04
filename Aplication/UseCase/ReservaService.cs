@@ -364,6 +364,12 @@ namespace Aplication.UseCase
             reserva.HoraFin = request.HoraFin;
             reserva.CanchaId = request.CanchaId;
             reserva.Cancha = await _canchaQuery.GetCanchaById(request.CanchaId);
+            
+            if (request.FacturaId.HasValue)
+            {
+                reserva.FacturaId = request.FacturaId.Value;
+            }
+
             await _reservaCommand.UpdateReserva(reserva);
 
             return new ReservaResponse

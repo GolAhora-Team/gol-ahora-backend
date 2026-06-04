@@ -1,3 +1,6 @@
+using Aplication.Interfaces.IPago;
+using Aplication.Interfaces.IReserva;
+using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SistemaGolAhora.Controllers
@@ -6,8 +9,21 @@ namespace SistemaGolAhora.Controllers
     [ApiController]
     public class MercadoPagoController : ControllerBase
     {
-        public MercadoPagoController()
+        private readonly IPagoQuery _pagoQuery;
+        private readonly IPagoCommand _pagoCommand;
+        private readonly IReservaQuery _reservaQuery;
+        private readonly IReservaCommand _reservaCommand;
+
+        public MercadoPagoController(
+            IPagoQuery pagoQuery,
+            IPagoCommand pagoCommand,
+            IReservaQuery reservaQuery,
+            IReservaCommand reservaCommand)
         {
+            _pagoQuery = pagoQuery;
+            _pagoCommand = pagoCommand;
+            _reservaQuery = reservaQuery;
+            _reservaCommand = reservaCommand;
         }
 
         [HttpPost("create-preference")]
@@ -15,7 +31,7 @@ namespace SistemaGolAhora.Controllers
         {
             try
             {
-                var extRef = Guid.NewGuid().ToString();
+                var extRef = request.ExternalReference ?? Guid.NewGuid().ToString();
 
                 var body = new
                 {
@@ -35,6 +51,7 @@ namespace SistemaGolAhora.Controllers
                         failure = request.ReturnUrl ?? "https://golahora.runasp.net",
                         pending = request.ReturnUrl ?? "https://golahora.runasp.net"
                     },
+                    notification_url = request.WebhookUrl, // IMPORTANTE: Webhook
                     auto_return = "approved",
                     external_reference = extRef
                 };
@@ -104,6 +121,67 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = "Error al verificar pago: " + ex.Message });
             }
         }
+
+        [HttpPost("webhook")]
+        public async Task<IActionResult> Webhook([FromBody] System.Text.Json.JsonElement payload, [FromQuery] string type, [FromQuery] string topic, [FromQuery(Name = "data.id")] string dataId)
+        {
+            // MP manda notificaciones con topic o type == "payment"
+            if ((topic == "payment" || type == "payment") && !string.IsNullOrEmpty(dataId))
+            {
+                try
+                {
+                    // Consultar la API de MP para ver los detalles del pago
+                    using var httpClient = new System.Net.Http.HttpClient();
+                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "APP_USR-8827220724965081-060211-5262bca461db2a832b7cfa1ee3dd428c-3442109685");
+                    
+                    var response = await httpClient.GetAsync($"https://api.mercadopago.com/v1/payments/{dataId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var result = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(json);
+                        
+                        if (result.TryGetProperty("status", out var status) && status.GetString() == "approved")
+                        {
+                            if (result.TryGetProperty("external_reference", out var extRefElement))
+                            {
+                                string extRef = extRefElement.GetString();
+                                // Parseamos el external_reference, por ejemplo si es formato "Reserva_123" o solo el "123"
+                                if (int.TryParse(extRef, out int id) || (extRef.StartsWith("Reserva_") && int.TryParse(extRef.Replace("Reserva_", ""), out id)))
+                                {
+                                    // Marcar Reserva como Confirmada
+                                    var reserva = await _reservaQuery.GetReservaById(id);
+                                    if (reserva != null && reserva.Estado != EstadoReserva.Confirmada)
+                                    {
+                                        reserva.Estado = EstadoReserva.Confirmada;
+                                        await _reservaCommand.UpdateReserva(reserva);
+                                    }
+
+                                    // Marcar el Pago correspondiente como Pagado
+                                    // Asumiendo que facturas de reserva tienen el Pago con el monto.
+                                    if (reserva != null && reserva.FacturaId.HasValue)
+                                    {
+                                        var pagos = await _pagoQuery.GetListPagos();
+                                        var pagoPendiente = pagos.FirstOrDefault(p => p.FacturaId == reserva.FacturaId.Value && p.Estado == EstadoPago.Pendiente);
+                                        if (pagoPendiente != null)
+                                        {
+                                            pagoPendiente.Estado = EstadoPago.Pagado;
+                                            await _pagoCommand.UpdatePago(pagoPendiente);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    // Log error, pero retornar 200 a MP para que no reintente locamente
+                    Console.WriteLine("Error procesando Webhook: " + ex.Message);
+                }
+            }
+
+            return Ok(); // Siempre retornar 200 OK a Mercado Pago
+        }
     }
 
     public class CreatePreferenceRequest
@@ -111,5 +189,7 @@ namespace SistemaGolAhora.Controllers
         public string Title { get; set; }
         public decimal Price { get; set; }
         public string? ReturnUrl { get; set; }
+        public string? WebhookUrl { get; set; }
+        public string? ExternalReference { get; set; }
     }
 }

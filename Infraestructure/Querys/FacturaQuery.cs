@@ -20,18 +20,22 @@ namespace Infraestructure.Querys
 
         public async Task<List<Factura>> GetListFacturas()
         {
-            return await _context.Facturas.ToListAsync();
+            return await _context.Facturas
+                .Include(f => f.Pagos)
+                .ToListAsync();
         }
 
         public async Task<Factura?> GetFacturaById(int id)
         {
             return await _context.Facturas
+                .Include(f => f.Pagos)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Factura>> GetFacturasByClienteId(int clienteId)
         {
             return await _context.Facturas
+                .Include(f => f.Pagos)
                 .Where(f => f.ClienteId == clienteId)
                 .OrderByDescending(f => f.FechaEmision)
                 .ToListAsync();

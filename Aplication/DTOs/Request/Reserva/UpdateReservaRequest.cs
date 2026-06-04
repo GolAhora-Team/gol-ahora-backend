@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +15,7 @@ namespace Aplication.DTOs.Request.Reserva
         public TimeSpan HoraFin { get; set; }
 
         public int CanchaId { get; set; }
+
+        public int? FacturaId { get; set; }
     }
 }
