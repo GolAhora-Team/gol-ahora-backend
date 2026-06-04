@@ -93,7 +93,21 @@ namespace Aplication.Mappers
                 {
                     base64Data = base64Data.Split(',')[1];
                 }
-                certificadoBytes = Convert.FromBase64String(base64Data);
+                
+                int mod4 = base64Data.Length % 4;
+                if (mod4 > 0)
+                {
+                    base64Data += new string('=', 4 - mod4);
+                }
+
+                try
+                {
+                    certificadoBytes = Convert.FromBase64String(base64Data);
+                }
+                catch (FormatException)
+                {
+                    throw new Domain.Exceptions.ExceptionBadRequest("El archivo PDF del certificado está corrupto o tiene un formato inválido.");
+                }
             }
 
             return new Profesor

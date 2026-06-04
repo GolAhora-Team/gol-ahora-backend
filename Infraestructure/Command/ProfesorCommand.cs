@@ -108,15 +108,28 @@ namespace Infraestructure.Command
                     base64Data = base64Data.Split(',')[1];
                 }
                 
+                int mod4 = base64Data.Length % 4;
+                if (mod4 > 0)
+                {
+                    base64Data += new string('=', 4 - mod4);
+                }
+                
                 var sizeInBytes = (base64Data.Length * 3) / 4;
                 if (sizeInBytes > 4 * 1024 * 1024)
                 {
                     throw new Domain.Exceptions.ExceptionBadRequest("El certificado excede el límite máximo de 4 MB.");
                 }
 
-                profesor.CertificadoArchivo = Convert.FromBase64String(base64Data);
-                profesor.CertificadoFechaInicio = request.CertificadoFechaInicio;
-                profesor.CertificadoFechaFin = request.CertificadoFechaFin;
+                try 
+                {
+                    profesor.CertificadoArchivo = Convert.FromBase64String(base64Data);
+                    profesor.CertificadoFechaInicio = request.CertificadoFechaInicio;
+                    profesor.CertificadoFechaFin = request.CertificadoFechaFin;
+                }
+                catch (FormatException ex)
+                {
+                    throw new Domain.Exceptions.ExceptionBadRequest("El archivo PDF del certificado está corrupto o tiene un formato inválido.");
+                }
             }
 
             await _context.SaveChangesAsync();
