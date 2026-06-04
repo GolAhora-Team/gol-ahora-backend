@@ -123,12 +123,32 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpPost("webhook")]
-        public async Task<IActionResult> Webhook([FromBody] System.Text.Json.JsonElement payload, [FromQuery] string type, [FromQuery] string topic, [FromQuery(Name = "data.id")] string dataId)
+        public async Task<IActionResult> Webhook([FromBody] System.Text.Json.JsonElement? payload, [FromQuery] string? type, [FromQuery] string? topic, [FromQuery(Name = "data.id")] string? dataIdQuery, [FromQuery] string? id)
         {
-            // MP manda notificaciones con topic o type == "payment"
-            if ((topic == "payment" || type == "payment") && !string.IsNullOrEmpty(dataId))
+            try
             {
-                try
+                string eventType = type ?? topic ?? string.Empty;
+                string dataId = dataIdQuery ?? id ?? string.Empty;
+
+                if (payload.HasValue && payload.Value.ValueKind == System.Text.Json.JsonValueKind.Object)
+                {
+                    if (string.IsNullOrEmpty(eventType))
+                    {
+                        if (payload.Value.TryGetProperty("type", out var typeProp)) eventType = typeProp.GetString() ?? "";
+                        else if (payload.Value.TryGetProperty("action", out var actionProp)) eventType = actionProp.GetString() ?? "";
+                        else if (payload.Value.TryGetProperty("topic", out var topicProp)) eventType = topicProp.GetString() ?? "";
+                    }
+
+                    if (string.IsNullOrEmpty(dataId))
+                    {
+                        if (payload.Value.TryGetProperty("data", out var dataProp) && dataProp.ValueKind == System.Text.Json.JsonValueKind.Object)
+                        {
+                            if (dataProp.TryGetProperty("id", out var idProp)) dataId = idProp.ToString();
+                        }
+                    }
+                }
+
+                if ((eventType == "payment" || eventType == "payment.created") && !string.IsNullOrEmpty(dataId))
                 {
                     // Consultar la API de MP para ver los detalles del pago
                     using var httpClient = new System.Net.Http.HttpClient();
@@ -144,12 +164,12 @@ namespace SistemaGolAhora.Controllers
                         {
                             if (result.TryGetProperty("external_reference", out var extRefElement))
                             {
-                                string extRef = extRefElement.GetString();
+                                string extRef = extRefElement.GetString() ?? "";
                                 // Parseamos el external_reference, por ejemplo si es formato "Reserva_123" o solo el "123"
-                                if (int.TryParse(extRef, out int id) || (extRef.StartsWith("Reserva_") && int.TryParse(extRef.Replace("Reserva_", ""), out id)))
+                                if (int.TryParse(extRef, out int reservaId) || (extRef.StartsWith("Reserva_") && int.TryParse(extRef.Replace("Reserva_", ""), out reservaId)))
                                 {
                                     // Marcar Reserva como Confirmada
-                                    var reserva = await _reservaQuery.GetReservaById(id);
+                                    var reserva = await _reservaQuery.GetReservaById(reservaId);
                                     if (reserva != null && reserva.Estado != EstadoReserva.Confirmada)
                                     {
                                         reserva.Estado = EstadoReserva.Confirmada;
@@ -157,7 +177,6 @@ namespace SistemaGolAhora.Controllers
                                     }
 
                                     // Marcar el Pago correspondiente como Pagado
-                                    // Asumiendo que facturas de reserva tienen el Pago con el monto.
                                     if (reserva != null && reserva.FacturaId.HasValue)
                                     {
                                         var pagos = await _pagoQuery.GetListPagos();
@@ -173,11 +192,11 @@ namespace SistemaGolAhora.Controllers
                         }
                     }
                 }
-                catch (System.Exception ex)
-                {
-                    // Log error, pero retornar 200 a MP para que no reintente locamente
-                    Console.WriteLine("Error procesando Webhook: " + ex.Message);
-                }
+            }
+            catch (System.Exception ex)
+            {
+                // Log error, pero retornar 200 a MP para que no reintente locamente
+                Console.WriteLine("Error procesando Webhook: " + ex.Message);
             }
 
             return Ok(); // Siempre retornar 200 OK a Mercado Pago
