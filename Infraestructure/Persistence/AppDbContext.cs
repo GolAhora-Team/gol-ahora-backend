@@ -44,6 +44,7 @@ public class AppDbContext : DbContext
     // 🔹 FACTURACIÓN
     public DbSet<Factura> Facturas { get; set; }
     public DbSet<Pago> Pagos { get; set; }
+    public DbSet<Recibo> Recibos { get; set; }
 
     // 🔹 REPORTES
     public DbSet<Reporte> Reportes { get; set; }

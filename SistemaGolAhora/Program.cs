@@ -12,12 +12,14 @@ using Aplication.Interfaces.IPrecio;
 using Aplication.Interfaces.IProfesor;
 using Aplication.Interfaces.IReserva;
 using Aplication.Interfaces.IUsuario;
+using Aplication.Interfaces.IRecibo;
 using Aplication.Mappers;
 using Aplication.UseCase;
 using Aplication.UseCase.Clientes;
 using Aplication.UseCase.Descuentos;
 using Aplication.UseCase.Facturas;
 using Aplication.UseCase.Pagos;
+using Aplication.UseCase.Recibos;
 using Infraestructure.Command;
 using Infraestructure.Querys;
 using Microsoft.EntityFrameworkCore;
@@ -121,6 +123,10 @@ builder.Services.AddScoped<IPagoMapper, PagoMapper>();
 builder.Services.AddScoped<IFacturaService, FacturaService>();
 builder.Services.AddScoped<IFacturaCommand, FacturaCommand>();
 builder.Services.AddScoped<IFacturaQuery, FacturaQuery>();
+
+builder.Services.AddScoped<IReciboService, ReciboService>();
+builder.Services.AddScoped<IReciboCommand, ReciboCommand>();
+builder.Services.AddScoped<IReciboQuery, ReciboQuery>();
 builder.Services.AddScoped<IFacturaMapper, FacturaMapper>();
 
 // Asistencia
