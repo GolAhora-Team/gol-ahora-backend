@@ -215,30 +215,30 @@ namespace SistemaGolAhora.Controllers
         {
             try
             {
-                var usuario = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync(
-                    context.Usuarios.Include(u => u.Persona),
-                    u => u.Username.ToLower() == username.Trim().ToLower());
+                var searchTerm = username.Trim().ToLower();
+                var usuarios = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
+                    context.Usuarios.Include(u => u.Persona)
+                    .Where(u => u.TipoUsuario == Domain.Enums.TipoUsuario.Cliente && 
+                                (u.Username.ToLower().Contains(searchTerm) || 
+                                 (u.Persona != null && (u.Persona.Nombre.ToLower().Contains(searchTerm) || u.Persona.Apellido.ToLower().Contains(searchTerm))))
+                    )
+                    .Take(10)
+                );
 
-                if (usuario == null)
+                if (!usuarios.Any())
                 {
-                    return Ok(new { existe = false });
+                    return Ok(new { resultados = new object[0] });
                 }
 
-                // Solo clientes pueden ser invitados
-                if (usuario.TipoUsuario != Domain.Enums.TipoUsuario.Cliente)
+                var resultados = usuarios.Select(u => new
                 {
-                    return Ok(new { existe = false, mensaje = "El usuario no es de tipo Cliente" });
-                }
+                    usuarioId = u.Id,
+                    clienteId = u.Persona?.Id,
+                    nombre = u.Persona != null ? $"{u.Persona.Nombre} {u.Persona.Apellido}" : u.Username,
+                    username = u.Username
+                }).ToList();
 
-                var persona = usuario.Persona;
-                return Ok(new
-                {
-                    existe = true,
-                    usuarioId = usuario.Id,
-                    clienteId = persona?.Id,
-                    nombre = persona != null ? $"{persona.Nombre} {persona.Apellido}" : usuario.Username,
-                    username = usuario.Username
-                });
+                return Ok(new { resultados });
             }
             catch (Exception ex)
             {
