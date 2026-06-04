@@ -311,6 +311,11 @@ namespace Aplication.UseCase
                 throw new ExceptionNotFound("Usuario no encontrado con ese correo.");
             }
 
+            if (!email.Contains("@") || !email.Contains("."))
+            {
+                throw new ExceptionBadRequest("El correo electrónico registrado para este usuario no es un correo válido para enviar mensajes (Ej: es un nombre de usuario genérico o le falta el @). Por favor contactá al administrador.");
+            }
+
             // Generar token y expiración
             var token = Guid.NewGuid().ToString();
             usuarioEntity.ResetToken = token;
@@ -427,10 +432,18 @@ namespace Aplication.UseCase
                 await smtpClient.SendMailAsync(mailMessage);
                 return true;
             }
+            catch (FormatException)
+            {
+                throw new ExceptionBadRequest("El formato del correo electrónico del usuario es inválido y no puede recibir mensajes.");
+            }
+            catch (SmtpFailedRecipientException)
+            {
+                throw new ExceptionBadRequest("El servidor de correo rechazó la dirección de email (puede que no exista o rebote los mensajes).");
+            }
             catch (Exception ex)
             {
                 Console.WriteLine("Error enviando email de recuperacion: " + ex.ToString());
-                throw new Exception("Error al enviar el correo de recuperación: " + ex.Message);
+                throw new ExceptionBadRequest("Error al enviar el correo de recuperación. Verificá que el email sea válido. Detalle: " + ex.Message);
             }
         }
 

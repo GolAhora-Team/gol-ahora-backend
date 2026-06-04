@@ -56,10 +56,11 @@ namespace Infraestructure.Querys
         public async Task<Usuario?> GetByEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email)) return null;
-            var cleanEmail = email.Trim();
+            var cleanEmail = email.Trim().ToLower();
             return await _context.Usuarios
                 .Include(u => u.Persona)
-                .Where(u => u.Email.Trim() == cleanEmail || u.Persona.Email.Trim() == cleanEmail)
+                .Where(u => (u.Email != null && u.Email.ToLower() == cleanEmail) || 
+                            (u.Persona != null && u.Persona.Email != null && u.Persona.Email.ToLower() == cleanEmail))
                 .FirstOrDefaultAsync();
         }
 
