@@ -369,6 +369,10 @@ namespace Aplication.UseCase
             {
                 reserva.FacturaId = request.FacturaId.Value;
             }
+            if (request.Estado.HasValue)
+            {
+                reserva.Estado = request.Estado.Value;
+            }
 
             await _reservaCommand.UpdateReserva(reserva);
 

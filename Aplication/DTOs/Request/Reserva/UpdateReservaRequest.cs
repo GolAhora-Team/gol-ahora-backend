@@ -17,5 +17,7 @@ namespace Aplication.DTOs.Request.Reserva
         public int CanchaId { get; set; }
 
         public int? FacturaId { get; set; }
+
+        public Domain.Enums.EstadoReserva? Estado { get; set; }
     }
 }
