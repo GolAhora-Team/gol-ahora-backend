@@ -96,6 +96,9 @@ namespace Infraestructure.Command
             profesor.Pais = request.Pais;
             profesor.ContactoEmergencia = request.ContactoEmergencia;
             profesor.Email = request.Email;
+            
+            if (request.Especialidad != null) profesor.Especialidad = request.Especialidad;
+            if (request.Certificacion != null) profesor.Certificacion = request.Certificacion;
 
             if (!string.IsNullOrEmpty(request.CertificadoBase64))
             {

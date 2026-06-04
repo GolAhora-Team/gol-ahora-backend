@@ -25,5 +25,7 @@ namespace Aplication.DTOs.Request.Profesor
         public string? CertificadoBase64 { get; set; }
         public DateTime? CertificadoFechaInicio { get; set; }
         public DateTime? CertificadoFechaFin { get; set; }
+        public string? Especialidad { get; set; }
+        public string? Certificacion { get; set; }
     }
 }
