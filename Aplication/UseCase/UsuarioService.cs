@@ -132,9 +132,25 @@ namespace Aplication.UseCase
 
             var profesorEntity = _profesorMapper.CreateProfesorFromFormRequest(usuario);
 
-            if (usuario.CertificadoArchivo != null && usuario.CertificadoArchivo.Length > 0)
+            if (!string.IsNullOrEmpty(usuario.CertificadoBase64))
             {
-                if (usuario.CertificadoArchivo.Length > 4 * 1024 * 1024)
+                var base64Data = usuario.CertificadoBase64;
+                if (base64Data.Contains(","))
+                {
+                    base64Data = base64Data.Split(',')[1];
+                }
+
+                byte[] fileBytes;
+                try
+                {
+                    fileBytes = Convert.FromBase64String(base64Data);
+                }
+                catch
+                {
+                    throw new ExceptionBadRequest("El certificado no es un Base64 válido.");
+                }
+
+                if (fileBytes.Length > 4 * 1024 * 1024)
                 {
                     throw new ExceptionBadRequest("El certificado excede el límite máximo de 4 MB.");
                 }
@@ -145,16 +161,13 @@ namespace Aplication.UseCase
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(usuario.CertificadoArchivo.FileName);
+                var uniqueFileName = Guid.NewGuid().ToString() + ".pdf";
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await usuario.CertificadoArchivo.CopyToAsync(fileStream);
-                }
+                await File.WriteAllBytesAsync(filePath, fileBytes);
 
                 profesorEntity.CertificadoUrl = $"/certificados/profesores/{uniqueFileName}";
-                profesorEntity.CertificadoNombreArchivo = usuario.CertificadoArchivo.FileName;
+                profesorEntity.CertificadoNombreArchivo = "certificado.pdf";
             }
 
             await _profesorCommand.CreateProfesor(profesorEntity);

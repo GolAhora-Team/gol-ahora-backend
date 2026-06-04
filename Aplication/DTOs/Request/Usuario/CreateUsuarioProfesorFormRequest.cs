@@ -27,7 +27,7 @@ namespace Aplication.DTOs.Request.Usuario
         public string Especialidad { get; set; }
         
         // Campos de Certificado (Archivo)
-        public IFormFile? CertificadoArchivo { get; set; }
+        public string? CertificadoBase64 { get; set; }
         public DateTime? CertificadoFechaInicio { get; set; }
         public DateTime? CertificadoFechaVencimiento { get; set; }
     }
