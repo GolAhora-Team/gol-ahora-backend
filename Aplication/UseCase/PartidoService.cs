@@ -178,6 +178,7 @@ namespace Aplication.UseCase
                         Jornada = jornada + 1,
 
                         Fase = 0,
+                        Arbitro = "Por asignar",
 
                         Fecha = fechaInicio.AddDays(jornada * 7),
                         Hora = cancha != null ? cancha.HoraInicio.Add(TimeSpan.FromHours(canchaIndex)) : new TimeSpan(15, 0, 0)
@@ -217,6 +218,7 @@ namespace Aplication.UseCase
                     EquipoVisitanteId = equipoVisitante.Id,
                     Estado = EstadoPartido.Programado,
                     Fase = faseActual,
+                    Arbitro = "Por asignar",
                     Fecha = fechaInicio,
                     Hora = cancha != null ? cancha.HoraInicio.Add(TimeSpan.FromHours(horasASumar)) : new TimeSpan(14 + horasASumar, 0, 0)
                 };
