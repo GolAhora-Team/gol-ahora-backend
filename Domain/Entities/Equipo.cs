@@ -19,6 +19,9 @@ namespace Domain.Entities
         public string ColorPrimario { get; set; } = "#ffffff";
         public string ColorSecundario { get; set; } = "#ffffff";
 
+        public string? TipoCancha { get; set; }
+        public string? FormacionDefecto { get; set; }
+
         public int CantPuntos { get; set; }
 
         public int PartidosJugados { get; set; }

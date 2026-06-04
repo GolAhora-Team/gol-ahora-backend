@@ -114,6 +114,21 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpPut("{equipoId}/formacion")]
+        [ProducesResponseType(typeof(EquipoResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GuardarFormacion(int equipoId, [FromBody] UpdateFormacionRequest request)
+        {
+            try
+            {
+                var response = await _services.GuardarFormacion(equipoId, request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 
     public class InvitarJugadorRequest

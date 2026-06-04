@@ -28,6 +28,7 @@ namespace Aplication.UseCase
         private readonly IProfesorMapper _profesorMapper;
         private readonly IProfesorQuery _profesorQuery;
         private readonly INotificacionService _notificacionService;
+        private readonly IEmailService _emailService;
 
         public UsuarioService(
             IUsuarioCommand usuariocommand, 
@@ -42,7 +43,8 @@ namespace Aplication.UseCase
             IProfesorQuery profesorQuery, 
             IClientesQuery clientesQuery, 
             IAdminQuery adminQuery,
-            INotificacionService notificacionService)
+            INotificacionService notificacionService,
+            IEmailService emailService)
         {
             _usuariocommand = usuariocommand;
             _usuariomapper = usuariomapper;
@@ -57,6 +59,7 @@ namespace Aplication.UseCase
             _clientesQuery = clientesQuery;
             _adminQuery = adminQuery;
             _notificacionService = notificacionService;
+            _emailService = emailService;
         }
 
         public async Task<UsuarioClienteResponse> CreateUsuarioCliente(CreateUsuarioClienteRequest usuario)
@@ -326,12 +329,6 @@ namespace Aplication.UseCase
             // Enviar email
             try
             {
-                var smtpClient = new SmtpClient("smtp.gmail.com")
-                {
-                    Port = 587,
-                    Credentials = new NetworkCredential("complejogolahora@gmail.com", "tgcf xugs czdh ekpx"),
-                    EnableSsl = true,
-                };
 
                 var frontendUrl = $"https://gol-ahora-git-develop-javifl-proyects.vercel.app/NuevaClave?token={token}";
 
@@ -420,25 +417,8 @@ namespace Aplication.UseCase
 </body>
 </html>";
 
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress("complejogolahora@gmail.com", "Complejo Gol Ahora"),
-                    Subject = "Recuperación de Contraseña - Complejo Gol Ahora",
-                    Body = htmlBody,
-                    IsBodyHtml = true,
-                };
-                mailMessage.To.Add(email);
-
-                await smtpClient.SendMailAsync(mailMessage);
+                await _emailService.SendEmailAsync(email, "Recuperación de Contraseña - Complejo Gol Ahora", htmlBody);
                 return true;
-            }
-            catch (FormatException)
-            {
-                throw new ExceptionBadRequest("El formato del correo electrónico del usuario es inválido y no puede recibir mensajes.");
-            }
-            catch (SmtpFailedRecipientException)
-            {
-                throw new ExceptionBadRequest("El servidor de correo rechazó la dirección de email (puede que no exista o rebote los mensajes).");
             }
             catch (Exception ex)
             {

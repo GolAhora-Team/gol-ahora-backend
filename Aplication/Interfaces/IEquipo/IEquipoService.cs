@@ -19,5 +19,6 @@ namespace Aplication.Interfaces.IEquipo
         Task<EquipoResponse> GetEquipoById(int equipoId);
         Task<List<EquipoResponse>> GetEquiposByClienteId(int clienteId);
         Task InvitarJugador(int equipoId, string username, int invitadoPorUsuarioId);
+        Task<EquipoResponse> GuardarFormacion(int equipoId, UpdateFormacionRequest request);
     }
 }

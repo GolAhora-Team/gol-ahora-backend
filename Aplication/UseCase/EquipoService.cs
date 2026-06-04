@@ -21,14 +21,20 @@ namespace Aplication.UseCase
         private readonly IEquipoMapper _mapper;
         private readonly Aplication.Interfaces.INotificacionService _notificacionService;
         private readonly IUsuarioQuery _usuarioQuery;
+        private readonly Aplication.Interfaces.IEmailService _emailService;
+        private readonly Aplication.Interfaces.IJugador.IJugadorCommand _jugadorCommand;
+        private readonly Aplication.Interfaces.IJugador.IJugadorQuery _jugadorQuery;
 
-        public EquipoService(IEquipoCommand command, IEquipoQuery query, IEquipoMapper mapper, Aplication.Interfaces.INotificacionService notificacionService, IUsuarioQuery usuarioQuery)
+        public EquipoService(IEquipoCommand command, IEquipoQuery query, IEquipoMapper mapper, Aplication.Interfaces.INotificacionService notificacionService, IUsuarioQuery usuarioQuery, Aplication.Interfaces.IEmailService emailService, Aplication.Interfaces.IJugador.IJugadorCommand jugadorCommand, Aplication.Interfaces.IJugador.IJugadorQuery jugadorQuery)
         {
             _command = command;
             _query = query;
             _mapper = mapper;
             _notificacionService = notificacionService;
             _usuarioQuery = usuarioQuery;
+            _emailService = emailService;
+            _jugadorCommand = jugadorCommand;
+            _jugadorQuery = jugadorQuery;
         }
 
         public async Task<EquipoResponse> CreateEquipo(CreateEquipoRequest request)
@@ -125,6 +131,54 @@ namespace Aplication.UseCase
                 equipoId,
                 invitadoPorUsuarioId
             );
+
+            // Enviar correo electrónico
+            if (!string.IsNullOrEmpty(usuarioDestino.Email))
+            {
+                var htmlBody = $@"
+                <html>
+                <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+                    <div style='background-color: #ffffff; padding: 30px; border-radius: 10px; text-align: center;'>
+                        <h2 style='color: #009b3a;'>¡Hola {usuarioDestino.Username}!</h2>
+                        <p style='color: #333; font-size: 16px;'>Te han invitado a unirte al equipo <strong>{equipo.Nombre}</strong> en Complejo Gol Ahora.</p>
+                        <p style='color: #333; font-size: 16px;'>Ingresá a la plataforma y dirígete a tus notificaciones para aceptar o rechazar la invitación.</p>
+                        <br/>
+                        <p style='color: #888; font-size: 12px;'>Complejo Gol Ahora - Sistema de Gestión Deportiva</p>
+                    </div>
+                </body>
+                </html>";
+                await _emailService.SendEmailAsync(usuarioDestino.Email, $"Invitación al equipo {equipo.Nombre} - Complejo Gol Ahora", htmlBody);
+            }
+        }
+
+        public async Task<EquipoResponse> GuardarFormacion(int equipoId, UpdateFormacionRequest request)
+        {
+            var equipo = await _query.GetEquipoById(equipoId);
+            if (equipo == null)
+            {
+                throw new Domain.Exceptions.ExceptionNotFound("El equipo no existe.");
+            }
+
+            equipo.TipoCancha = request.TipoCancha;
+            equipo.FormacionDefecto = request.FormacionDefecto;
+            await _command.UpdateEquipo(equipo);
+
+            if (request.Jugadores != null)
+            {
+                foreach (var reqJugador in request.Jugadores)
+                {
+                    var jugador = await _jugadorQuery.GetJugadorById(reqJugador.JugadorId);
+                    if (jugador != null && jugador.EquipoId == equipoId)
+                    {
+                        jugador.Posicion = reqJugador.Posicion;
+                        jugador.EsTitular = reqJugador.EsTitular;
+                        jugador.EsCapitan = (request.CapitanId.HasValue && jugador.Id == request.CapitanId.Value);
+                        await _jugadorCommand.UpdateJugador(jugador);
+                    }
+                }
+            }
+
+            return _mapper.CreateEquipoResponse(equipo);
         }
     }
 }
