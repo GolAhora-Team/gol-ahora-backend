@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Response;
+using Aplication.DTOs.Response;
 using Aplication.Interfaces.IPartido;
 using Domain.Entities;
 using Domain.Enums;
@@ -53,7 +53,7 @@ namespace Infraestructure.Querys
                 CompeticionNombre = p.Competicion.Nombre,
 
                 GanadorId = p.GanadorId,
-                GanadorNombre = p.Ganador.Nombre
+                GanadorNombre = p.Ganador != null ? p.Ganador.Nombre : null
             })
             .ToListAsync();
         }
@@ -84,7 +84,7 @@ namespace Infraestructure.Querys
                 CompeticionNombre = p.Competicion.Nombre,
 
                 GanadorId = p.GanadorId,
-                GanadorNombre = p.Ganador.Nombre
+                GanadorNombre = p.Ganador != null ? p.Ganador.Nombre : null
             })
             .ToListAsync();
         }
