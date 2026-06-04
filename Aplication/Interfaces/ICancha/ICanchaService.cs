@@ -15,5 +15,6 @@ namespace Aplication.Interfaces.ICancha
         Task<List<CanchaResponse>> GetAll();
         Task<List<CanchaResponse>> GetCanchasActivas();
         Task<List<CanchaResponse>> GetCanchasDisponibles(DateTime fecha, TimeSpan hora);
+        Task UpdatePreciosGlobal(UpdatePreciosRequest request);
     }
 }

@@ -78,5 +78,34 @@ namespace Aplication.UseCase.Canchas
             
             return _mapper.CanchaToResponse(canchaUpdated);
         }
+
+        public async Task UpdatePreciosGlobal(UpdatePreciosRequest request)
+        {
+            var canchas = await _query.GetAllCanchas();
+            foreach (var cancha in canchas)
+            {
+                bool updated = false;
+                if (cancha.TipoCancha == "F5" && request.PrecioF5 > 0)
+                {
+                    cancha.PrecioBase = request.PrecioF5;
+                    updated = true;
+                }
+                else if (cancha.TipoCancha == "F7" && request.PrecioF7 > 0)
+                {
+                    cancha.PrecioBase = request.PrecioF7;
+                    updated = true;
+                }
+                else if (cancha.TipoCancha == "F11" && request.PrecioF11 > 0)
+                {
+                    cancha.PrecioBase = request.PrecioF11;
+                    updated = true;
+                }
+
+                if (updated)
+                {
+                    await _command.UpdateCancha(cancha);
+                }
+            }
+        }
     }
 }

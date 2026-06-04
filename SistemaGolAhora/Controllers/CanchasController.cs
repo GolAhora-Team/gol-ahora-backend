@@ -114,5 +114,19 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpPut("precios")]
+        public async Task<IActionResult> UpdatePrecios([FromBody] UpdatePreciosRequest request)
+        {
+            try
+            {
+                await _services.UpdatePreciosGlobal(request);
+                return Ok(new { mensaje = "Precios actualizados correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }
