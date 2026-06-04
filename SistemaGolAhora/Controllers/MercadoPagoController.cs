@@ -51,7 +51,7 @@ namespace SistemaGolAhora.Controllers
                         failure = request.ReturnUrl ?? "https://golahora.runasp.net",
                         pending = request.ReturnUrl ?? "https://golahora.runasp.net"
                     },
-                    notification_url = request.WebhookUrl, // IMPORTANTE: Webhook
+                    notification_url = !string.IsNullOrEmpty(request.WebhookUrl) ? request.WebhookUrl : "http://golahora.runasp.net/api/MercadoPago/webhook", // IMPORTANTE: Webhook
                     auto_return = "approved",
                     external_reference = extRef
                 };
