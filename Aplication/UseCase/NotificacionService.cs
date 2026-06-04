@@ -2,6 +2,7 @@ using Aplication.Interfaces;
 using Aplication.Interfaces.INotificacion;
 using Aplication.Interfaces.IUsuario;
 using Aplication.Interfaces.IEquipo;
+using Aplication.Interfaces.IJugador;
 using Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +18,16 @@ namespace Aplication.UseCase
         private readonly IUsuarioQuery _usuarioQuery;
         private readonly IUsuarioCommand _usuarioCommand;
         private readonly IEquipoQuery _equipoQuery;
+        private readonly IJugadorCommand _jugadorCommand;
 
-        public NotificacionService(INotificacionCommand command, INotificacionQuery query, IUsuarioQuery usuarioQuery, IUsuarioCommand usuarioCommand, IEquipoQuery equipoQuery)
+        public NotificacionService(INotificacionCommand command, INotificacionQuery query, IUsuarioQuery usuarioQuery, IUsuarioCommand usuarioCommand, IEquipoQuery equipoQuery, IJugadorCommand jugadorCommand)
         {
             _command = command;
             _query = query;
             _usuarioQuery = usuarioQuery;
             _usuarioCommand = usuarioCommand;
             _equipoQuery = equipoQuery;
+            _jugadorCommand = jugadorCommand;
         }
 
         public async Task<Notificacion> CrearNotificacionGeneral(string mensaje, string rolesDestino, string tipo)
@@ -113,11 +116,28 @@ namespace Aplication.UseCase
             notificacion.Leida = true;
             await _command.UpdateNotificacion(notificacion);
 
-            // Notificar al creador del equipo
+            // Notificar al creador del equipo y agregar el jugador
             if (notificacion.InvitadoPorUsuarioId.HasValue && notificacion.EquipoId.HasValue)
             {
                 var equipo = await _equipoQuery.GetEquipoById(notificacion.EquipoId.Value);
                 var usuarioAceptado = await _usuarioQuery.GetById(notificacion.UsuarioDestinoId);
+                
+                if (usuarioAceptado?.Persona != null)
+                {
+                    // Agregar el jugador al equipo
+                    var jugador = new Jugador
+                    {
+                        ClienteId = usuarioAceptado.Persona.Id,
+                        EquipoId = notificacion.EquipoId.Value,
+                        EquipoNombre = equipo?.Nombre ?? "Equipo Desconocido",
+                        EsCapitan = false,
+                        EsTitular = false,
+                        Estado = Domain.Enums.EstadoJugador.Habilitado,
+                        Posicion = 0
+                    };
+                    await _jugadorCommand.InsertJugador(jugador);
+                }
+
                 var nombreAceptado = usuarioAceptado?.Persona != null 
                     ? $"{usuarioAceptado.Persona.Nombre} {usuarioAceptado.Persona.Apellido}" 
                     : usuarioAceptado?.Username ?? "Un usuario";
