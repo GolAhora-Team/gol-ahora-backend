@@ -87,7 +87,7 @@ namespace Aplication.UseCase
                 Fecha = request.Fecha,
                 HoraInicio = request.HoraInicio,
                 HoraFin = request.HoraFin,
-                Estado = EstadoReserva.Confirmada,
+                Estado = request.Estado ?? EstadoReserva.Pendiente,
                 ClienteId = request.ClienteId,
                 CanchaId = request.CanchaId
             };

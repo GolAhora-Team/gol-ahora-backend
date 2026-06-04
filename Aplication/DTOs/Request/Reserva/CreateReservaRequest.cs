@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +17,7 @@ namespace Aplication.DTOs.Request.Reserva
         public int ClienteId { get; set; }
 
         public int CanchaId { get; set; }
+
+        public Domain.Enums.EstadoReserva? Estado { get; set; }
     }
 }
