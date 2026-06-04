@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IPartido;
+using Aplication.Interfaces.IPartido;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -27,6 +27,16 @@ namespace Infraestructure.Command
         {
             _context.Partidos.Update(partido);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeletePartidosPorCompeticion(int competicionId)
+        {
+            var partidos = _context.Partidos.Where(p => p.CompeticionId == competicionId);
+            if (partidos.Any())
+            {
+                _context.Partidos.RemoveRange(partidos);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

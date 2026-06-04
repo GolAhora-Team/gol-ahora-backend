@@ -178,6 +178,9 @@ namespace Aplication.UseCase
                 throw new Exception("No se puede generar el fixture. La liga debe tener un número par de equipos inscritos.");
             }
 
+            // Remove existing matches to prevent duplication if called multiple times
+            await _command.DeletePartidosPorCompeticion(competicion.Id);
+
             var equipos = equiposInscritos.OrderBy(e => Guid.NewGuid()).ToList();
 
             int numEquipos = equipos.Count;
@@ -241,6 +244,9 @@ namespace Aplication.UseCase
         private async Task GenerarFixtureTorneo(Competicion competicion, List<Equipo> equiposInscritos)
         {
             var faseActual = DeterminarFaseTorneo(equiposInscritos.Count);
+
+            // Remove existing matches to prevent duplication if called multiple times
+            await _command.DeletePartidosPorCompeticion(competicion.Id);
 
             var canchasDisponibles = await _canchaQuery.GetListCancha();
             var canchasAptas = canchasDisponibles.Where(c => c.Tipo == competicion.TipoCancha).ToList();

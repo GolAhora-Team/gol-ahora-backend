@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ namespace Aplication.Interfaces.IPartido
     public interface IPartidoCommand
     {
         Task InsertPartidos(List<Partido> partidos);
-        Task UpdatePartido(Partido partido);        
+        Task UpdatePartido(Partido partido);
+        Task DeletePartidosPorCompeticion(int competicionId);
     }
 }
