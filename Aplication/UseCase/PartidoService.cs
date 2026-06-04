@@ -47,6 +47,8 @@ namespace Aplication.UseCase
            
             partido.GolesLocal = request.GolesLocal;
             partido.GolesVisitante = request.GolesVisitante;
+            partido.PenalesLocal = request.PenalesLocal;
+            partido.PenalesVisitante = request.PenalesVisitante;
             partido.GanadorId = request.GanadorId;
             
             partido.Estado = EstadoPartido.Finalizado;

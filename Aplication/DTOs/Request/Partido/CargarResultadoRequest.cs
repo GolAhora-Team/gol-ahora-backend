@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,9 @@ namespace Aplication.DTOs.Request.Partido
     {
         public int GolesLocal { get; set; }
         public int GolesVisitante { get; set; }
+        
+        public int? PenalesLocal { get; set; }
+        public int? PenalesVisitante { get; set; }
         
         public int? GanadorId { get; set; }
     }

@@ -23,6 +23,8 @@ namespace Aplication.Mappers
                 Arbitro = partido.Arbitro,
                 GolesLocal = partido.GolesLocal,
                 GolesVisitante = partido.GolesVisitante,
+                PenalesLocal = partido.PenalesLocal,
+                PenalesVisitante = partido.PenalesVisitante,
                 Estado = partido.Estado,
                 Jornada = partido.Jornada,
                 Fase = partido.Fase,

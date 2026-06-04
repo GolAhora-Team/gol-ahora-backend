@@ -17,6 +17,8 @@ namespace Aplication.DTOs.Response
         public string Arbitro { get; set; }
         public int GolesLocal { get; set; }
         public int GolesVisitante { get; set; }
+        public int? PenalesLocal { get; set; }
+        public int? PenalesVisitante { get; set; }
         public EstadoPartido Estado { get; set; }
         public int Jornada { get; set; }
         public FaseTorneo Fase { get; set; }
