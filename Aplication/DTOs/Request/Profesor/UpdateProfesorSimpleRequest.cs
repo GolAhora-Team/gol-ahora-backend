@@ -28,5 +28,6 @@ namespace Aplication.DTOs.Request.Profesor
         public DateTime? CertificadoFechaVencimiento { get; set; }
         public string? Especialidad { get; set; }
         public string? Certificacion { get; set; }
+        public bool EliminarCertificado { get; set; }
     }
 }

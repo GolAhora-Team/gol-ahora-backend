@@ -101,7 +101,14 @@ namespace Infraestructure.Command
             if (request.Especialidad != null) profesor.Especialidad = request.Especialidad;
             if (request.Certificacion != null) profesor.Certificacion = request.Certificacion;
 
-            if (!string.IsNullOrEmpty(request.CertificadoBase64))
+            if (request.EliminarCertificado)
+            {
+                profesor.CertificadoUrl = null;
+                profesor.CertificadoNombreArchivo = null;
+                profesor.CertificadoFechaInicio = null;
+                profesor.CertificadoFechaVencimiento = null;
+            }
+            else if (!string.IsNullOrEmpty(request.CertificadoBase64))
             {
                 var fileBytes = Convert.FromBase64String(request.CertificadoBase64);
                 if (fileBytes.Length > 4 * 1024 * 1024)
