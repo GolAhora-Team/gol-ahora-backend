@@ -4,11 +4,11 @@ using Aplication.Interfaces.ICancha;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IReserva;
 using Aplication.Interfaces.IPago;
+using Aplication.Interfaces.IFactura;
 using Aplication.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,12 @@ namespace Aplication.UseCase
         private readonly IReservaCommand _reservaCommand;
         private readonly INotificacionService _notificacionService;
         private readonly IPagoCommand _pagoCommand;
-        private readonly AppDbContext _context;
+        private readonly IFacturaQuery _facturaQuery;
+        private readonly IPagoQuery _pagoQuery;
+
+        // Política de cancelación por defecto (se puede sobreescribir desde la BD vía endpoint futuro)
+        private const int HORAS_ANTELACION_MINIMA = 24;
+        private const decimal PORCENTAJE_PENALIZACION = 50;
 
         public ReservaService(
             IReservaQuery reservaQuery,
@@ -34,7 +39,8 @@ namespace Aplication.UseCase
             IClientesQuery clienteQuery,
             INotificacionService notificacionService,
             IPagoCommand pagoCommand,
-            AppDbContext context)
+            IFacturaQuery facturaQuery,
+            IPagoQuery pagoQuery)
         {
             _reservaQuery = reservaQuery;
             _reservaCommand = reservaCommand;
@@ -42,7 +48,8 @@ namespace Aplication.UseCase
             _clienteQuery = clienteQuery;
             _notificacionService = notificacionService;
             _pagoCommand = pagoCommand;
-            _context = context;
+            _facturaQuery = facturaQuery;
+            _pagoQuery = pagoQuery;
         }
 
         public async Task<CreateReservaResponse> CrearReserva(CreateReservaRequest request)
@@ -178,22 +185,20 @@ namespace Aplication.UseCase
             if (reserva.Estado == EstadoReserva.Finalizada)
                 throw new ExceptionBadRequest("La reserva ya finalizó.");
 
-            // Obtener política de cancelaciones
-            var config = await _context.ConfiguracionCancelaciones.FirstOrDefaultAsync();
-            int horasAntelacion = config?.HorasAntelacionMinima ?? 24;
-            decimal porcentajePenalizacion = config?.PorcentajePenalizacion ?? 50;
+            int horasAntelacion = HORAS_ANTELACION_MINIMA;
+            decimal porcentajePenalizacion = PORCENTAJE_PENALIZACION;
 
             // Calcular horas restantes hasta el turno
             var fechaHoraTurno = reserva.Fecha.Date + reserva.HoraInicio;
             var horasRestantes = (fechaHoraTurno - DateTime.Now).TotalHours;
 
-            // Buscar monto original pagado (a través de la factura si existe, o buscar por concepto)
+            // Buscar monto original pagado
             decimal montoOriginal = 0;
+            int? facturaIdEncontrada = reserva.FacturaId;
+
             if (reserva.FacturaId.HasValue)
             {
-                var factura = await _context.Facturas
-                    .Include(f => f.Pagos)
-                    .FirstOrDefaultAsync(f => f.Id == reserva.FacturaId.Value);
+                var factura = await _facturaQuery.GetFacturaById(reserva.FacturaId.Value);
                 if (factura != null)
                 {
                     montoOriginal = factura.Pagos?
@@ -204,13 +209,14 @@ namespace Aplication.UseCase
             else
             {
                 // Buscar factura por clienteId + concepto "Reserva"
-                var factura = await _context.Facturas
-                    .Include(f => f.Pagos)
-                    .Where(f => f.ClienteId == reserva.ClienteId && f.Concepto == "Reserva")
+                var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId);
+                var factura = facturas?
+                    .Where(f => f.Concepto == "Reserva")
                     .OrderByDescending(f => f.FechaEmision)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefault();
                 if (factura != null)
                 {
+                    facturaIdEncontrada = factura.Id;
                     montoOriginal = factura.Pagos?
                         .Where(p => p.Estado == EstadoPago.Pagado)
                         .Sum(p => p.Monto) ?? factura.Total;
@@ -268,11 +274,11 @@ namespace Aplication.UseCase
                 int? facturaId = reserva.FacturaId;
                 if (!facturaId.HasValue)
                 {
-                    // Buscar la factura del cliente con concepto "Reserva"
-                    var factura = await _context.Facturas
-                        .Where(f => f.ClienteId == reserva.ClienteId && f.Concepto == "Reserva")
+                    var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId);
+                    var factura = facturas?
+                        .Where(f => f.Concepto == "Reserva")
                         .OrderByDescending(f => f.FechaEmision)
-                        .FirstOrDefaultAsync();
+                        .FirstOrDefault();
                     facturaId = factura?.Id;
                 }
 
