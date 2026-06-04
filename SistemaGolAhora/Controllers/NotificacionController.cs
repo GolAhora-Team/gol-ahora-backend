@@ -61,5 +61,33 @@ namespace SistemaGolAhora.Controllers
             await _notificacionService.MarcarNotificacionesComoVistas(usuarioId.Value);
             return Ok(new { message = "Notificaciones marcadas como leídas" });
         }
+
+        [HttpPost("{id}/aceptar")]
+        public async Task<IActionResult> AceptarInvitacion(int id)
+        {
+            try
+            {
+                await _notificacionService.AceptarInvitacion(id);
+                return Ok(new { mensaje = "Invitación aceptada correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/rechazar")]
+        public async Task<IActionResult> RechazarInvitacion(int id)
+        {
+            try
+            {
+                await _notificacionService.RechazarInvitacion(id);
+                return Ok(new { mensaje = "Invitación rechazada" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

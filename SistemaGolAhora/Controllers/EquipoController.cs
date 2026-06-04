@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Cliente;
+using Aplication.DTOs.Request.Cliente;
 using Aplication.DTOs.Request.Equipo;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.IEquipo;
@@ -85,5 +85,40 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpGet("por-cliente/{clienteId}")]
+        [ProducesResponseType(typeof(List<EquipoResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByClienteId(int clienteId)
+        {
+            try
+            {
+                var result = await _services.GetEquiposByClienteId(clienteId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpPost("{equipoId}/invitar")]
+        public async Task<IActionResult> InvitarJugador(int equipoId, [FromBody] InvitarJugadorRequest request)
+        {
+            try
+            {
+                await _services.InvitarJugador(equipoId, request.Username, request.InvitadoPorUsuarioId);
+                return Ok(new { mensaje = "Invitación enviada correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+    }
+
+    public class InvitarJugadorRequest
+    {
+        public string Username { get; set; }
+        public int InvitadoPorUsuarioId { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Cliente;
+using Aplication.DTOs.Request.Cliente;
 using Aplication.DTOs.Request.Equipo;
 using Aplication.DTOs.Response;
 using Aplication.Response;
@@ -17,5 +17,7 @@ namespace Aplication.Interfaces.IEquipo
         Task<EquipoResponse> DeleteEquipo(int equipoId);
         Task<List<EquipoResponse>> GetAll();
         Task<EquipoResponse> GetEquipoById(int equipoId);
+        Task<List<EquipoResponse>> GetEquiposByClienteId(int clienteId);
+        Task InvitarJugador(int equipoId, string username, int invitadoPorUsuarioId);
     }
 }

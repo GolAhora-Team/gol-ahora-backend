@@ -26,6 +26,7 @@ namespace Domain.Entities
         public DateTime? FechaFin { get; set; }
         public TipoCancha TipoCancha { get; set; }
         public bool FixtureGenerado { get; set; }
+        public decimal PrecioInscripcion { get; set; } = 50000;
 
         // 🔗 Equipos
         public ICollection<Equipo> Equipos { get; set; }

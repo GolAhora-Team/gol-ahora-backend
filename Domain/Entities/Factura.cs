@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +13,9 @@ namespace Domain.Entities
         public DateTime FechaEmision { get; set; }
 
         public decimal Total { get; set; }
+
+        public string? Concepto { get; set; } // "Membresía Socio", "Inscripción Competencia", "Reserva", "Clase"
+        public string? Descripcion { get; set; } // Detalle descriptivo
 
         // 🔗 Cliente
         public int ClienteId { get; set; }

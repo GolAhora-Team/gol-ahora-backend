@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +11,6 @@ namespace Aplication.Interfaces.IEquipo
     {
         Task<Equipo> GetEquipoById(int idEquipo);
         Task<IEnumerable<Equipo>> GetListEquipos();
+        Task<IEnumerable<Equipo>> GetEquiposByClienteId(int clienteId);
     }
 }

@@ -21,7 +21,8 @@ namespace Aplication.Mappers
                 Descripcion = equipo.Descripcion,
                 ColorPrimario = equipo.ColorPrimario ?? "#ffffff",
                 ColorSecundario = equipo.ColorSecundario ?? "#ffffff",
-                CompeticionId = equipo.CompeticionId
+                CompeticionId = equipo.CompeticionId,
+                CreadoPorClienteId = equipo.CreadoPorClienteId
             };
         }
 
@@ -35,7 +36,9 @@ namespace Aplication.Mappers
                 Descripcion = equipo.Descripcion,
                 ColorPrimario = equipo.ColorPrimario ?? "#ffffff",
                 ColorSecundario = equipo.ColorSecundario ?? "#ffffff",
-                CompeticionId = equipo.CompeticionId
+                CompeticionId = equipo.CompeticionId,
+                CreadoPorClienteId = equipo.CreadoPorClienteId,
+                CreadoPorNombre = equipo.CreadoPorCliente != null ? $"{equipo.CreadoPorCliente.Nombre} {equipo.CreadoPorCliente.Apellido}" : null
             };
         }
     }

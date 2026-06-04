@@ -39,6 +39,12 @@ namespace Infraestructure.Command
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateNotificacion(Notificacion notificacion)
+        {
+            _context.Notificaciones.Update(notificacion);
+            await _context.SaveChangesAsync();
+        }
     }
 }
 
@@ -60,6 +66,11 @@ namespace Infraestructure.Querys
                 .OrderByDescending(n => n.FechaCreacion)
                 .Take(50)
                 .ToListAsync();
+        }
+
+        public async Task<Notificacion?> GetNotificacionById(int id)
+        {
+            return await _context.Notificaciones.FindAsync(id);
         }
     }
 }

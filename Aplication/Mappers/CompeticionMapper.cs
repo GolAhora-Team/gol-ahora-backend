@@ -42,7 +42,8 @@ namespace Aplication.Mappers
                 FechaInicio = competicion.FechaInicio,
                 FechaFin = competicion.FechaFin,
                 TipoCancha = competicion.TipoCancha,
-                FixtureGenerado = competicion.FixtureGenerado
+                FixtureGenerado = competicion.FixtureGenerado,
+                PrecioInscripcion = competicion.PrecioInscripcion
             };
         }
     }

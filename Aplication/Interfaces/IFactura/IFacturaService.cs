@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Factura;
+using Aplication.DTOs.Request.Factura;
 using Aplication.DTOs.Response.Factura;
 using Domain.Entities;
 using System;
@@ -20,5 +20,7 @@ namespace Aplication.Interfaces.IFactura
         Task<FacturaResponse> UpdateFactura(int id, UpdateFacturaRequest request);
 
         Task DeleteFactura(int id);
+
+        Task<List<FacturaResponse>> GetFacturasByClienteId(int clienteId);
     }
 }

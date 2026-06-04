@@ -27,5 +27,6 @@ namespace Aplication.DTOs.Response
         public DateTime? FechaFin { get; set; }
         public TipoCancha TipoCancha { get; set; }
         public bool FixtureGenerado { get; set; }
+        public decimal PrecioInscripcion { get; set; }
     }
 }

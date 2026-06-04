@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IEquipo;
+using Aplication.Interfaces.IEquipo;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,14 +20,26 @@ namespace Infraestructure.Querys
 
         public async Task<Equipo> GetEquipoById(int idEquipo)
         {
-            var equipo = await _context.Equipos.FindAsync(idEquipo);
+            var equipo = await _context.Equipos
+                .Include(e => e.CreadoPorCliente)
+                .FirstOrDefaultAsync(e => e.Id == idEquipo);
 
             return equipo;
         }
 
         public async Task<IEnumerable<Equipo>> GetListEquipos()
         {
-            return await _context.Equipos.ToListAsync();
+            return await _context.Equipos
+                .Include(e => e.CreadoPorCliente)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Equipo>> GetEquiposByClienteId(int clienteId)
+        {
+            return await _context.Equipos
+                .Include(e => e.CreadoPorCliente)
+                .Where(e => e.CreadoPorClienteId == clienteId)
+                .ToListAsync();
         }
     }
 }

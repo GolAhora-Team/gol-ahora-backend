@@ -30,6 +30,10 @@ namespace Domain.Entities
         // 🔗 Jugadores (muchos a muchos)
         public ICollection<EquipoJugador> Jugadores { get; set; }
 
+        // 🔗 Cliente creador
+        public int? CreadoPorClienteId { get; set; }
+        public Cliente? CreadoPorCliente { get; set; }
+
         // 🔗 Competición
         public int? CompeticionId { get; set; }
         public Competicion? Competicion { get; set; }

@@ -28,5 +28,8 @@ namespace Aplication.DTOs.Response
         public int GolesEnContra { get; set; }
 
         public int? CompeticionId { get; set; }
+
+        public int? CreadoPorClienteId { get; set; }
+        public string? CreadoPorNombre { get; set; }
     }
 }

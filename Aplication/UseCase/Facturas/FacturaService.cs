@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IFactura;
+using Aplication.Interfaces.IFactura;
 using Aplication.DTOs.Request.Factura;
 using Aplication.DTOs.Response.Factura;
 using Domain.Entities;
@@ -73,6 +73,13 @@ namespace Aplication.UseCase.Facturas
         public async Task DeleteFactura(int id)
         {
             await _command.RemoveFactura(id);
+        }
+
+        // 🟣 GET BY CLIENTE
+        public async Task<List<FacturaResponse>> GetFacturasByClienteId(int clienteId)
+        {
+            var facturas = await _query.GetFacturasByClienteId(clienteId);
+            return _mapper.CreateFacturaResponseList(facturas);
         }
     }
 }

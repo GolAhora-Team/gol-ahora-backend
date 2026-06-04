@@ -3,6 +3,7 @@ using Aplication.DTOs.Request.Equipo;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IEquipo;
+using Aplication.Interfaces.IUsuario;
 using Aplication.Response;
 using Domain.Entities;
 using System;
@@ -19,13 +20,15 @@ namespace Aplication.UseCase
         private readonly IEquipoQuery _query;
         private readonly IEquipoMapper _mapper;
         private readonly Aplication.Interfaces.INotificacionService _notificacionService;
+        private readonly IUsuarioQuery _usuarioQuery;
 
-        public EquipoService(IEquipoCommand command, IEquipoQuery query, IEquipoMapper mapper, Aplication.Interfaces.INotificacionService notificacionService)
+        public EquipoService(IEquipoCommand command, IEquipoQuery query, IEquipoMapper mapper, Aplication.Interfaces.INotificacionService notificacionService, IUsuarioQuery usuarioQuery)
         {
             _command = command;
             _query = query;
             _mapper = mapper;
             _notificacionService = notificacionService;
+            _usuarioQuery = usuarioQuery;
         }
 
         public async Task<EquipoResponse> CreateEquipo(CreateEquipoRequest request)
@@ -93,6 +96,35 @@ namespace Aplication.UseCase
             return _mapper.CreateEquipoResponse(equipoOriginal);
         }
 
-        
+        public async Task<List<EquipoResponse>> GetEquiposByClienteId(int clienteId)
+        {
+            var equipos = await _query.GetEquiposByClienteId(clienteId);
+            return equipos.Select(equipo => _mapper.CreateEquipoResponse(equipo)).ToList();
+        }
+
+        public async Task InvitarJugador(int equipoId, string username, int invitadoPorUsuarioId)
+        {
+            var equipo = await _query.GetEquipoById(equipoId);
+            if (equipo == null)
+                throw new Exception("El equipo no existe");
+
+            // Buscar usuario por username
+            var usuarioDestino = await _usuarioQuery.GetByUsername(username);
+            if (usuarioDestino == null)
+                throw new Exception("No se encontró un usuario con ese nombre de usuario");
+
+            // Verificar que sea un cliente
+            if (usuarioDestino.TipoUsuario != Domain.Enums.TipoUsuario.Cliente)
+                throw new Exception("El usuario no es de tipo Cliente");
+
+            // Enviar notificación de invitación
+            var mensaje = $"Te han invitado a unirte al equipo \"{equipo.Nombre}\". ¿Querés aceptar?";
+            var notificacion = await _notificacionService.CrearNotificacionInvitacion(
+                mensaje,
+                usuarioDestino.Id,
+                equipoId,
+                invitadoPorUsuarioId
+            );
+        }
     }
 }

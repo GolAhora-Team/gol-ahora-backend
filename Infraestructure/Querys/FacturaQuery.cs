@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Aplication.Interfaces.IFactura;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,6 +27,14 @@ namespace Infraestructure.Querys
         {
             return await _context.Facturas
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<Factura>> GetFacturasByClienteId(int clienteId)
+        {
+            return await _context.Facturas
+                .Where(f => f.ClienteId == clienteId)
+                .OrderByDescending(f => f.FechaEmision)
+                .ToListAsync();
         }
     }
 }

@@ -16,5 +16,11 @@ namespace Domain.Entities
         public string Tipo { get; set; } = "General";
         
         public bool Leida { get; set; } = false;
+
+        // 🔗 Sistema de invitaciones a equipos
+        public bool AccionRequerida { get; set; } = false;
+        public int? EquipoId { get; set; }
+        public string? EstadoAccion { get; set; } // "Pendiente", "Aceptada", "Rechazada"
+        public int? InvitadoPorUsuarioId { get; set; }
     }
 }

@@ -209,5 +209,40 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { message = ex.Message, detail = ex.ToString() });
             }
         }
+        [HttpGet("buscar-username/{username}")]
+        public async Task<IActionResult> BuscarPorUsername(string username, [FromServices] AppDbContext context)
+        {
+            try
+            {
+                var usuario = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync(
+                    context.Usuarios.Include(u => u.Persona),
+                    u => u.Username.ToLower() == username.Trim().ToLower());
+
+                if (usuario == null)
+                {
+                    return Ok(new { existe = false });
+                }
+
+                // Solo clientes pueden ser invitados
+                if (usuario.TipoUsuario != Domain.Enums.TipoUsuario.Cliente)
+                {
+                    return Ok(new { existe = false, mensaje = "El usuario no es de tipo Cliente" });
+                }
+
+                var persona = usuario.Persona;
+                return Ok(new
+                {
+                    existe = true,
+                    usuarioId = usuario.Id,
+                    clienteId = persona?.Id,
+                    nombre = persona != null ? $"{persona.Nombre} {persona.Apellido}" : usuario.Username,
+                    username = usuario.Username
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

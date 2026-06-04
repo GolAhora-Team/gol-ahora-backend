@@ -19,5 +19,6 @@ namespace Aplication.Interfaces.IUsuario
         
         Task<List<Usuario>> GetUsersByRoles(List<string> roles);
         Task<Usuario?> GetUsuarioByPersonaId(int personaId);
+        Task<Usuario?> GetByUsername(string username);
     }
 }

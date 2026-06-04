@@ -105,5 +105,13 @@ namespace Infraestructure.Querys
         {
             return await _context.Usuarios.Include(s => s.Persona).FirstOrDefaultAsync(u => u.Id == id);
         }
+
+        public async Task<Usuario?> GetByUsername(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username)) return null;
+            return await _context.Usuarios
+                .Include(u => u.Persona)
+                .FirstOrDefaultAsync(u => u.Username.ToLower() == username.Trim().ToLower());
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IFactura;
+using Aplication.Interfaces.IFactura;
 using Aplication.DTOs.Request.Factura;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,6 +53,21 @@ namespace SistemaGolAhora.Controllers
         {
             await _service.DeleteFactura(id);
             return Ok();
+        }
+
+        // GET BY CLIENTE
+        [HttpGet("por-cliente/{clienteId}")]
+        public async Task<IActionResult> GetByClienteId(int clienteId)
+        {
+            try
+            {
+                var facturas = await _service.GetFacturasByClienteId(clienteId);
+                return Ok(facturas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
         }
     }
 }
