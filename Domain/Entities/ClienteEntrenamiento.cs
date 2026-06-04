@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +12,6 @@ namespace Domain.Entities
         public Cliente Cliente { get; set; }
         public int EntrenamientoId { get; set; }
         public Entrenamiento Entrenamiento { get; set; }
+        public string? CodigoBarras { get; set; }
     }
 }

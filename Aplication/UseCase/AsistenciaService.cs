@@ -38,66 +38,86 @@ namespace Aplication.UseCase
 
         public async Task<List<AsistenciaResponse>> MarcarAsistencia(MarcarAsistenciaRequest request)
         {
-            var clase = await _claseQuery.GetClaseById(request.ClaseId);
-            if (clase == null)
+            throw new Exception("Metodo deprecado. Utilizar RegistrarAsistenciaManual.");
+        }
+
+        public async Task<bool> RegistrarAsistenciaManual(int actividadId, int clienteId, bool esClase)
+        {
+            return await RegistrarAsistenciaBase(actividadId, clienteId, esClase, "Manual");
+        }
+
+        public async Task<bool> RegistrarAsistenciaCodigoBarras(string codigoBarras, int actividadId, bool esClase)
+        {
+            int clienteId = 0;
+            if (esClase)
             {
-                throw new ExceptionNotFound("Clase no encontrada.");
+                var inscripcion = await _asistenciaQuery.GetInscripcionClaseByBarcodeAsync(actividadId, codigoBarras);
+                if (inscripcion == null)
+                    throw new ExceptionNotFound("No se encontró inscripción para este código de barras en esta clase.");
+                clienteId = inscripcion.ClienteId;
+            }
+            else
+            {
+                var inscripcion = await _asistenciaQuery.GetInscripcionEntrenamientoByBarcodeAsync(actividadId, codigoBarras);
+                if (inscripcion == null)
+                    throw new ExceptionNotFound("No se encontró inscripción para este código de barras en este entrenamiento.");
+                clienteId = inscripcion.ClienteId;
             }
 
-            var asistenciasExistentes = await _asistenciaQuery.GetAsistenciasPorClaseYFecha(request.ClaseId, request.Fecha.Date);
+            return await RegistrarAsistenciaBase(actividadId, clienteId, esClase, "CodigoBarras");
+        }
 
-            // Create a lookup for existing attendance records by ClienteId
-            var existentesDict = asistenciasExistentes.ToDictionary(a => a.ClienteId, a => a);
-            
-            var responses = new List<AsistenciaResponse>();
+        private async Task<bool> RegistrarAsistenciaBase(int actividadId, int clienteId, bool esClase, string metodo)
+        {
+            var hoy = DateTime.UtcNow.Date;
 
-            // Asumimos que los clientes en la lista de presentes deben marcarse como Presente=true.
-            // Si el cliente no está en la lista pero pertenece a la clase, se podría marcar como Presente=false.
-            // Para simplificar, marcaremos los proporcionados como presentes.
-            // Lo ideal sería obtener los Clientes asociados a la Clase/Entrenamiento para marcar ausentes a los que no están en la lista.
-            
-            // Marcar todos los enviados en la request
-            foreach (var clienteId in request.ClientesPresentesIds)
+            if (esClase)
             {
-                if (existentesDict.TryGetValue(clienteId, out var asistencia))
-                {
-                    // Update if already exists and was false
-                    if (!asistencia.Presente)
-                    {
-                        asistencia.Presente = true;
-                        await _asistenciaCommand.UpdateAsistencia(asistencia);
-                    }
-                    responses.Add(_asistenciaMapper.MapToResponse(asistencia));
-                    // Remove from dict to know who is left
-                    existentesDict.Remove(clienteId);
-                }
-                else
-                {
-                    // Create new record
-                    var nuevaAsistencia = new Asistencia
-                    {
-                        ClaseId = request.ClaseId,
-                        ClienteId = clienteId,
-                        Fecha = request.Fecha.Date,
-                        Presente = true
-                    };
-                    await _asistenciaCommand.InsertAsistencia(nuevaAsistencia);
-                    responses.Add(_asistenciaMapper.MapToResponse(nuevaAsistencia));
-                }
-            }
+                var inscripcion = await _asistenciaQuery.GetInscripcionClaseAsync(actividadId, clienteId);
+                
+                if (inscripcion == null)
+                    throw new ExceptionNotFound("El cliente no está inscrito en esta clase.");
 
-            // The remaining in the dict should be marked as not present (if we want to toggle them back)
-            foreach (var kvp in existentesDict)
+                if (inscripcion.Presente && inscripcion.FechaHoraRegistro?.Date == hoy)
+                {
+                    throw new ExceptionBadRequest("La asistencia ya fue registrada para este usuario en el día de hoy.");
+                }
+
+                inscripcion.Presente = true;
+                inscripcion.FechaHoraRegistro = DateTime.UtcNow;
+                inscripcion.MetodoRegistro = metodo;
+                
+                await _asistenciaCommand.UpdateAsistencia(inscripcion);
+                return true;
+            }
+            else
             {
-                if (kvp.Value.Presente)
-                {
-                    kvp.Value.Presente = false;
-                    await _asistenciaCommand.UpdateAsistencia(kvp.Value);
-                }
-                responses.Add(_asistenciaMapper.MapToResponse(kvp.Value));
-            }
+                var inscripcion = await _asistenciaQuery.GetInscripcionEntrenamientoAsync(actividadId, clienteId);
 
-            return responses;
+                if (inscripcion == null)
+                    throw new ExceptionNotFound("El cliente no está inscrito en este entrenamiento.");
+
+                var yaAsistio = await _asistenciaQuery.YaAsistioEntrenamientoAsync(actividadId, clienteId, hoy);
+
+                if (yaAsistio)
+                {
+                    throw new ExceptionBadRequest("La asistencia ya fue registrada para este usuario en el día de hoy.");
+                }
+
+                var nuevaAsistencia = new AsistenciaEntrenamiento
+                {
+                    EntrenamientoId = actividadId,
+                    ClienteId = clienteId,
+                    Presente = true,
+                    Fecha = hoy,
+                    FechaHoraRegistro = DateTime.UtcNow,
+                    MetodoRegistro = metodo,
+                    CodigoBarras = inscripcion.CodigoBarras
+                };
+
+                await _asistenciaCommand.InsertAsistenciaEntrenamiento(nuevaAsistencia);
+                return true;
+            }
         }
     }
 }

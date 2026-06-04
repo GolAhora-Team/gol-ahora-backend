@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +12,6 @@ namespace Aplication.Interfaces.IAsistencia
             Task InsertAsistencia(Asistencia asistencia);
             Task UpdateAsistencia(Asistencia asistencia);
             Task RemoveAsistencia(Asistencia Asistencia);
+            Task InsertAsistenciaEntrenamiento(AsistenciaEntrenamiento asistencia);
     }
 }

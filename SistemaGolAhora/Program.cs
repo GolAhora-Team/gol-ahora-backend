@@ -162,6 +162,10 @@ builder.Services.AddScoped<Aplication.Interfaces.INotificacion.INotificacionComm
 builder.Services.AddScoped<Aplication.Interfaces.INotificacion.INotificacionQuery, Infraestructure.Querys.NotificacionQuery>();
 builder.Services.AddScoped<Aplication.Interfaces.INotificacionService, Aplication.UseCase.NotificacionService>();
 
+// Código de Barras y Reporte PDF
+builder.Services.AddScoped<Aplication.Interfaces.ICodigoBarrasService, Aplication.UseCase.CodigoBarrasService>();
+builder.Services.AddScoped<Aplication.UseCase.Reportes.IReporteProfesorService, Aplication.UseCase.Reportes.ReporteProfesorService>();
+
 // CORS configuration
 builder.Services.AddCors(options =>
 {

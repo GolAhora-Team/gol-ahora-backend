@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Asistencia
+    public class AsistenciaEntrenamiento
     {
         public int Id { get; set; }
 
@@ -20,9 +16,9 @@ namespace Domain.Entities
 
         public string? MetodoRegistro { get; set; } // "Manual" o "CodigoBarras"
 
-        // 🔗 Clase
-        public int ClaseId { get; set; }
-        public Clase Clase { get; set; }
+        // 🔗 Entrenamiento
+        public int EntrenamientoId { get; set; }
+        public Entrenamiento Entrenamiento { get; set; }
 
         // 🔗 Cliente
         public int ClienteId { get; set; }

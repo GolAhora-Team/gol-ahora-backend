@@ -187,10 +187,12 @@ namespace Aplication.UseCase.Entrenamientos
                 throw new ExceptionBadRequest("El cliente ya está inscrito en este entrenamiento.");
             }
 
+            string codigoBarras = $"{clienteExiste.Dni}{DateTime.UtcNow.Year}";
             var nuevoClienteEntrenamiento = new ClienteEntrenamiento
             {
                 EntrenamientoId = entrenamientoId,
-                ClienteId = clienteId
+                ClienteId = clienteId,
+                CodigoBarras = codigoBarras
             };
             
             if (entrenamientoExistente.Clientes == null)

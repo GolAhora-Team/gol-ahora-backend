@@ -215,12 +215,14 @@ namespace Aplication.UseCase
             {
                 throw new ExceptionBadRequest("El cliente ya está inscrito en esta clase.");
             }
+            string codigoBarras = $"{clienteExiste.Dni}{DateTime.UtcNow.Year}";
             var nuevaAsistencia = new Asistencia
             {
                 ClaseId = claseId,
                 ClienteId = clienteId,
                 Fecha = claseExistente.Fecha,
-                Presente = false
+                Presente = false,
+                CodigoBarras = codigoBarras
             };
             claseExistente.Asistencias.Add(nuevaAsistencia);
             await _claseCommand.UpdateClase(claseExistente);

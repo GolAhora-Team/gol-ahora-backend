@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IAsistencia;
+using Aplication.Interfaces.IAsistencia;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -32,6 +32,12 @@ namespace Infraestructure.Command
         public async Task UpdateAsistencia(Asistencia asistencia)
         {
             _context.Asistencias.Update(asistencia);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task InsertAsistenciaEntrenamiento(AsistenciaEntrenamiento asistencia)
+        {
+            await _context.AsistenciaEntrenamientos.AddAsync(asistencia);
             await _context.SaveChangesAsync();
         }
     }

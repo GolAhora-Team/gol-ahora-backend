@@ -29,13 +29,27 @@ namespace SistemaGolAhora.Controllers
             }
         }
 
-        [HttpPost("marcar")]
-        public async Task<IActionResult> MarcarAsistencia([FromBody] MarcarAsistenciaRequest request)
+        [HttpPost("manual")]
+        public async Task<IActionResult> RegistrarAsistenciaManual([FromQuery] int actividadId, [FromQuery] int clienteId, [FromQuery] bool esClase)
         {
             try
             {
-                var response = await _asistenciaService.MarcarAsistencia(request);
-                return Ok(response);
+                var response = await _asistenciaService.RegistrarAsistenciaManual(actividadId, clienteId, esClase);
+                return Ok(new { success = response, mensaje = "Asistencia manual registrada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpPost("barcode")]
+        public async Task<IActionResult> RegistrarAsistenciaCodigoBarras([FromQuery] string codigoBarras, [FromQuery] int actividadId, [FromQuery] bool esClase)
+        {
+            try
+            {
+                var response = await _asistenciaService.RegistrarAsistenciaCodigoBarras(codigoBarras, actividadId, esClase);
+                return Ok(new { success = response, mensaje = "Asistencia por código de barras registrada correctamente." });
             }
             catch (Exception ex)
             {

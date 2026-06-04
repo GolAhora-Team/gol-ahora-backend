@@ -107,5 +107,18 @@ namespace SistemaGolAhora.Controllers
                 return NotFound(new { Message = ex.Message });
             }
         }
+        [HttpGet("{entrenamientoId}/cliente/{clienteId}/pulsera")]
+        public async Task<IActionResult> DownloadPulsera(int entrenamientoId, int clienteId, [FromServices] Aplication.Interfaces.ICodigoBarrasService codigoBarrasService)
+        {
+            try
+            {
+                var pdfBytes = await codigoBarrasService.GenerarPulseraPdfParaActividadAsync(entrenamientoId, clienteId, false);
+                return File(pdfBytes, "application/pdf", $"Pulsera_Entrenamiento_{entrenamientoId}_Cliente_{clienteId}.pdf");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

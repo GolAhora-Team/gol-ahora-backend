@@ -103,5 +103,36 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+        [HttpGet("{id}/reporte")]
+        public async Task<IActionResult> DownloadReporte(int id, [FromServices] Aplication.UseCase.Reportes.IReporteProfesorService reporteService)
+        {
+            try
+            {
+                var profesorDto = await _services.GetByIdAsync(id);
+                if (profesorDto == null) return NotFound(new { mensaje = "Profesor no encontrado" });
+
+                // Mapeamos ProfesorDto a entidad Profesor para pasarla al generador de PDF
+                var profesorEntity = new Domain.Entities.Profesor
+                {
+                    Id = profesorDto.Id,
+                    Dni = profesorDto.Dni,
+                    Nombre = profesorDto.Nombre,
+                    Apellido = profesorDto.Apellido,
+                    Email = profesorDto.Email,
+                    Telefono = profesorDto.Telefono,
+                    Especialidad = profesorDto.Especialidad,
+                    Certificacion = profesorDto.Certificacion,
+                    CertificadoFechaInicio = profesorDto.CertificadoFechaInicio,
+                    CertificadoFechaFin = profesorDto.CertificadoFechaFin
+                };
+
+                var pdfBytes = await reporteService.GenerarReporteProfesorPdfAsync(profesorEntity);
+                return File(pdfBytes, "application/pdf", $"Reporte_Profesor_{profesorDto.Nombre}_{profesorDto.Apellido}.pdf");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }
