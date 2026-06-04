@@ -81,23 +81,23 @@ namespace Aplication.UseCase.Canchas
 
         public async Task UpdatePreciosGlobal(UpdatePreciosRequest request)
         {
-            var canchas = await _query.GetAllCanchas();
+            var canchas = await _query.GetListCancha();
             foreach (var cancha in canchas)
             {
                 bool updated = false;
-                if (cancha.TipoCancha == "F5" && request.PrecioF5 > 0)
+                if (cancha.Tipo == Domain.Enums.TipoCancha.Futbol5 && request.PrecioF5 > 0)
                 {
-                    cancha.PrecioBase = request.PrecioF5;
+                    cancha.PrecioPorHora = request.PrecioF5;
                     updated = true;
                 }
-                else if (cancha.TipoCancha == "F7" && request.PrecioF7 > 0)
+                else if (cancha.Tipo == Domain.Enums.TipoCancha.Futbol7 && request.PrecioF7 > 0)
                 {
-                    cancha.PrecioBase = request.PrecioF7;
+                    cancha.PrecioPorHora = request.PrecioF7;
                     updated = true;
                 }
-                else if (cancha.TipoCancha == "F11" && request.PrecioF11 > 0)
+                else if (cancha.Tipo == Domain.Enums.TipoCancha.Futbol11 && request.PrecioF11 > 0)
                 {
-                    cancha.PrecioBase = request.PrecioF11;
+                    cancha.PrecioPorHora = request.PrecioF11;
                     updated = true;
                 }
 
