@@ -53,6 +53,51 @@ namespace Aplication.UseCase
             
             await _command.UpdatePartido(partido);
             
+            var competicion = await _competicionQuery.GetCompeticionById(partido.CompeticionId);
+            if (competicion != null && competicion.Tipo == TipoCompeticion.Torneo && partido.GanadorId.HasValue && partido.Fase != FaseTorneo.Final)
+            {
+                var partidosFase = await _query.GetPartidosPorFase(partido.CompeticionId, partido.Fase);
+                var partidosList = partidosFase.OrderBy(p => p.Id).ToList();
+                int index = partidosList.FindIndex(p => p.Id == partido.Id);
+                
+                if (index != -1)
+                {
+                    int siblingIndex = index % 2 == 0 ? index + 1 : index - 1;
+                    if (siblingIndex >= 0 && siblingIndex < partidosList.Count)
+                    {
+                        var sibling = partidosList[siblingIndex];
+                        if (sibling.Estado == EstadoPartido.Finalizado && sibling.GanadorId.HasValue)
+                        {
+                            int nextFaseNum = (int)partido.Fase + 1;
+                            var nextFaseMatches = await _query.GetPartidosPorFase(partido.CompeticionId, (FaseTorneo)nextFaseNum);
+                            
+                            bool alreadyCreated = nextFaseMatches.Any(p => 
+                                (p.EquipoLocalId == partido.GanadorId.Value && p.EquipoVisitanteId == sibling.GanadorId.Value) ||
+                                (p.EquipoLocalId == sibling.GanadorId.Value && p.EquipoVisitanteId == partido.GanadorId.Value));
+                                
+                            if (!alreadyCreated)
+                            {
+                                int equipoLocalId = index % 2 == 0 ? partido.GanadorId.Value : sibling.GanadorId.Value;
+                                int equipoVisitanteId = index % 2 == 0 ? sibling.GanadorId.Value : partido.GanadorId.Value;
+                                
+                                var nuevoPartido = new Partido
+                                {
+                                    CompeticionId = partido.CompeticionId,
+                                    EquipoLocalId = equipoLocalId,
+                                    EquipoVisitanteId = equipoVisitanteId,
+                                    Estado = EstadoPartido.Programado,
+                                    Fase = (FaseTorneo)nextFaseNum,
+                                    Arbitro = "Por asignar",
+                                    Fecha = partido.Fecha.AddDays(7),
+                                    Hora = partido.Hora
+                                };
+                                await _command.InsertPartidos(new List<Partido> { nuevoPartido });
+                            }
+                        }
+                    }
+                }
+            }
+            
             return _mapper.CreatePartidoResponse(partido);
         }
 
