@@ -54,9 +54,10 @@ namespace Infraestructure.Querys
         }
 
         public async Task<IEnumerable<ProfesorDto>> GetAllAsync()
-            => await _context.Profesores
-                .Select(p => MapToDto(p))
-                .ToListAsync();
+        {
+            var profesores = await _context.Profesores.ToListAsync();
+            return profesores.Select(p => MapToDto(p)).ToList();
+        }
 
         public async Task<ProfesorDto?> GetByIdAsync(int id)
         {
@@ -72,16 +73,20 @@ namespace Infraestructure.Querys
         }
 
         public async Task<IEnumerable<ProfesorDto>> GetByEspecialidadAsync(string especialidad)
-            => await _context.Profesores
+        {
+            var profesores = await _context.Profesores
                 .Where(p => p.Especialidad == especialidad)
-                .Select(p => MapToDto(p))
                 .ToListAsync();
+            return profesores.Select(p => MapToDto(p)).ToList();
+        }
 
         public async Task<IEnumerable<ProfesorDto>> GetByClaseAsync(int claseId)
-            => await _context.Profesores
+        {
+            var profesores = await _context.Profesores
      //           .Where(p => p.claseId == claseId)
-                .Select(p => MapToDto(p))
                 .ToListAsync();
+            return profesores.Select(p => MapToDto(p)).ToList();
+        }
 
         public async Task<byte[]?> GetCertificadoAsync(int profesorId)
         {
