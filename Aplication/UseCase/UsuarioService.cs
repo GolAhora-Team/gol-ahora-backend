@@ -6,6 +6,7 @@ using Aplication.Interfaces.IProfesor;
 using Aplication.Interfaces.IUsuario;
 using Aplication.Interfaces;
 using Domain.Exceptions;
+using Domain.Entities;
 using System.Net;
 using System.Net.Mail;
 using System.IO;
@@ -132,42 +133,55 @@ namespace Aplication.UseCase
 
             var profesorEntity = _profesorMapper.CreateProfesorFromFormRequest(usuario);
 
-            if (!string.IsNullOrEmpty(usuario.CertificadoBase64))
+            profesorEntity.Certificados = new List<CertificadoProfesor>();
+
+            if (usuario.Certificados != null && usuario.Certificados.Any())
             {
-                var base64Data = usuario.CertificadoBase64;
-                if (base64Data.Contains(","))
-                {
-                    base64Data = base64Data.Split(',')[1];
-                }
-
-                byte[] fileBytes;
-                try
-                {
-                    fileBytes = Convert.FromBase64String(base64Data);
-                }
-                catch
-                {
-                    throw new ExceptionBadRequest("El certificado no es un Base64 válido.");
-                }
-
-                if (fileBytes.Length > 4 * 1024 * 1024)
-                {
-                    throw new ExceptionBadRequest("El certificado excede el límite máximo de 4 MB.");
-                }
-
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "certificados", "profesores");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var uniqueFileName = Guid.NewGuid().ToString() + ".pdf";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                foreach (var certReq in usuario.Certificados)
+                {
+                    if (!string.IsNullOrEmpty(certReq.CertificadoBase64))
+                    {
+                        var base64Data = certReq.CertificadoBase64;
+                        if (base64Data.Contains(","))
+                        {
+                            base64Data = base64Data.Split(',')[1];
+                        }
 
-                await File.WriteAllBytesAsync(filePath, fileBytes);
+                        byte[] fileBytes;
+                        try
+                        {
+                            fileBytes = Convert.FromBase64String(base64Data);
+                        }
+                        catch
+                        {
+                            throw new ExceptionBadRequest("Uno de los certificados no es un Base64 válido.");
+                        }
 
-                profesorEntity.CertificadoUrl = $"/certificados/profesores/{uniqueFileName}";
-                profesorEntity.CertificadoNombreArchivo = "certificado.pdf";
+                        if (fileBytes.Length > 4 * 1024 * 1024)
+                        {
+                            throw new ExceptionBadRequest("Un certificado excede el límite máximo de 4 MB.");
+                        }
+
+                        var uniqueFileName = Guid.NewGuid().ToString() + ".pdf";
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        await File.WriteAllBytesAsync(filePath, fileBytes);
+
+                        profesorEntity.Certificados.Add(new CertificadoProfesor
+                        {
+                            CertificadoUrl = $"/certificados/profesores/{uniqueFileName}",
+                            CertificadoNombreArchivo = "certificado.pdf",
+                            FechaInicio = certReq.CertificadoFechaInicio,
+                            FechaVencimiento = certReq.CertificadoFechaVencimiento
+                        });
+                    }
+                }
             }
 
             await _profesorCommand.CreateProfesor(profesorEntity);
@@ -182,7 +196,7 @@ namespace Aplication.UseCase
             var usuarioEntity = _usuariomapper.CreateUsuario(createUsuarioReq, profesorEntity.Id);
             await _usuariocommand.Create(usuarioEntity);
 
-            if (string.IsNullOrEmpty(profesorEntity.CertificadoUrl))
+            if (profesorEntity.Certificados == null || !profesorEntity.Certificados.Any())
             {
                 await _notificacionService.CrearNotificacionUsuario(
                     "Te falta cargar el certificado para poder dar clases.", 

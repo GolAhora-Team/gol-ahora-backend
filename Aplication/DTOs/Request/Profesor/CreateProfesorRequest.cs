@@ -22,9 +22,7 @@ namespace Aplication.DTOs.Request.Profesor
         public string ContactoEmergencia { get; set; }
         public string Email { get; set; }
         public string Certificacion { get; set; }
-        public string? CertificadoBase64 { get; set; } // Archivo codificado en base64
-        public DateTime? CertificadoFechaInicio { get; set; }
-        public DateTime? CertificadoFechaVencimiento { get; set; }
+        public List<CertificadoRequestDto> Certificados { get; set; } = new List<CertificadoRequestDto>();
         public string Especialidad { get; set; }
     }
 }

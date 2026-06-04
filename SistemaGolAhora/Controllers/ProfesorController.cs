@@ -2,6 +2,7 @@ using Aplication.DTOs.Request.Profesor;
 using Aplication.Interfaces.IProfesor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Entities;
 
 namespace SistemaGolAhora.Controllers
 {
@@ -122,8 +123,14 @@ namespace SistemaGolAhora.Controllers
                     Telefono = profesorDto.Telefono,
                     Especialidad = profesorDto.Especialidad,
                     Certificacion = profesorDto.Certificacion,
-                    CertificadoFechaInicio = profesorDto.CertificadoFechaInicio,
-                    CertificadoFechaVencimiento = profesorDto.CertificadoFechaVencimiento
+                    Certificados = profesorDto.Certificados.Select(c => new CertificadoProfesor
+                    {
+                        Id = c.Id,
+                        CertificadoUrl = c.Url,
+                        CertificadoNombreArchivo = c.NombreArchivo,
+                        FechaInicio = c.FechaInicio,
+                        FechaVencimiento = c.FechaVencimiento
+                    }).ToList()
                 };
 
                 var pdfBytes = await reporteService.GenerarReporteProfesorPdfAsync(profesorEntity);

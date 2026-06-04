@@ -37,12 +37,15 @@ namespace Infraestructure.Querys
             ContactoEmergencia = p.ContactoEmergencia,
             Email = p.Email,
             FechaRegistro = p.FechaRegistro,
-            CertificadoFechaInicio = p.CertificadoFechaInicio,
-            CertificadoFechaVencimiento = p.CertificadoFechaVencimiento,
-            TieneCertificado = !string.IsNullOrEmpty(p.CertificadoUrl),
-            CertificadoUrl = p.CertificadoUrl,
-            CertificadoNombreArchivo = p.CertificadoNombreArchivo,
-            CertificadoEstado = ObtenerEstadoCertificado(p.CertificadoUrl, p.CertificadoFechaVencimiento)
+            Certificados = p.Certificados?.Select(c => new CertificadoProfesorDto
+            {
+                Id = c.Id,
+                Url = c.CertificadoUrl,
+                NombreArchivo = c.CertificadoNombreArchivo,
+                FechaInicio = c.FechaInicio,
+                FechaVencimiento = c.FechaVencimiento,
+                Estado = ObtenerEstadoCertificado(c.CertificadoUrl, c.FechaVencimiento)
+            }).ToList() ?? new List<CertificadoProfesorDto>()
         };
 
         private static string ObtenerEstadoCertificado(string? url, DateTime? fechaVencimiento)
@@ -55,26 +58,26 @@ namespace Infraestructure.Querys
 
         public async Task<IEnumerable<ProfesorDto>> GetAllAsync()
         {
-            var profesores = await _context.Profesores.ToListAsync();
+            var profesores = await _context.Profesores.Include(p => p.Certificados).ToListAsync();
             return profesores.Select(p => MapToDto(p)).ToList();
         }
 
         public async Task<ProfesorDto?> GetByIdAsync(int id)
         {
-            var p = await _context.Profesores.FindAsync(id);
+            var p = await _context.Profesores.Include(p => p.Certificados).FirstOrDefaultAsync(p => p.Id == id);
             return p is null ? null : MapToDto(p);
         }
 
         public async Task<ProfesorDto?> GetByDniAsync(int dni)
         {
-            var p = await _context.Profesores
+            var p = await _context.Profesores.Include(p => p.Certificados)
                 .FirstOrDefaultAsync(x => x.Dni == dni);
             return p is null ? null : MapToDto(p);
         }
 
         public async Task<IEnumerable<ProfesorDto>> GetByEspecialidadAsync(string especialidad)
         {
-            var profesores = await _context.Profesores
+            var profesores = await _context.Profesores.Include(p => p.Certificados)
                 .Where(p => p.Especialidad == especialidad)
                 .ToListAsync();
             return profesores.Select(p => MapToDto(p)).ToList();
@@ -82,7 +85,7 @@ namespace Infraestructure.Querys
 
         public async Task<IEnumerable<ProfesorDto>> GetByClaseAsync(int claseId)
         {
-            var profesores = await _context.Profesores
+            var profesores = await _context.Profesores.Include(p => p.Certificados)
      //           .Where(p => p.claseId == claseId)
                 .ToListAsync();
             return profesores.Select(p => MapToDto(p)).ToList();
@@ -90,11 +93,12 @@ namespace Infraestructure.Querys
 
         public async Task<byte[]?> GetCertificadoAsync(int profesorId)
         {
-            var p = await _context.Profesores.FindAsync(profesorId);
-            if (p == null || string.IsNullOrEmpty(p.CertificadoUrl)) return null;
+            var p = await _context.Profesores.Include(p => p.Certificados).FirstOrDefaultAsync(x => x.Id == profesorId);
+            var ultimoCertificado = p?.Certificados?.OrderByDescending(c => c.FechaVencimiento).FirstOrDefault();
+            if (p == null || ultimoCertificado == null || string.IsNullOrEmpty(ultimoCertificado.CertificadoUrl)) return null;
 
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            var filePath = Path.Combine(uploadsFolder, p.CertificadoUrl.TrimStart('/'));
+            var filePath = Path.Combine(uploadsFolder, ultimoCertificado.CertificadoUrl.TrimStart('/'));
 
             if (System.IO.File.Exists(filePath))
             {

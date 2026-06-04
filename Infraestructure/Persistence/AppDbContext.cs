@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<Persona> Personas { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Profesor> Profesores { get; set; }
+    public DbSet<CertificadoProfesor> CertificadosProfesores { get; set; }
     public DbSet<Administrador> Administradores { get; set; }
 
     // 🔹 DEPORTIVO

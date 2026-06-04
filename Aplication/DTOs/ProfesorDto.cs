@@ -32,12 +32,8 @@ namespace Aplication.DTOs
         public string ContactoEmergencia { get; set; }
         public string Email { get; set; }
         public DateTime FechaRegistro { get; set; }
-        public DateTime? CertificadoFechaInicio { get; set; }
-        public DateTime? CertificadoFechaVencimiento { get; set; }
-        public bool TieneCertificado { get; set; }
         
-        public string? CertificadoUrl { get; set; }
-        public string? CertificadoNombreArchivo { get; set; }
-        public string? CertificadoEstado { get; set; }
+        public List<CertificadoProfesorDto> Certificados { get; set; } = new List<CertificadoProfesorDto>();
+        public bool TieneCertificado => Certificados.Any();
     }
 }

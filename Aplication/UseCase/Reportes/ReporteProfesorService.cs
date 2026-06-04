@@ -4,6 +4,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Aplication.UseCase.Reportes
@@ -43,9 +44,10 @@ namespace Aplication.UseCase.Reportes
                         col.Item().Text($"Certificación: {profesor.Certificacion}");
                         
                         string validez = "No registra";
-                        if (profesor.CertificadoFechaInicio.HasValue && profesor.CertificadoFechaVencimiento.HasValue)
+                        var ultimoCertificado = profesor.Certificados?.OrderByDescending(c => c.FechaVencimiento).FirstOrDefault();
+                        if (ultimoCertificado != null && ultimoCertificado.FechaInicio.HasValue && ultimoCertificado.FechaVencimiento.HasValue)
                         {
-                            validez = $"{profesor.CertificadoFechaInicio.Value:dd/MM/yyyy} al {profesor.CertificadoFechaVencimiento.Value:dd/MM/yyyy}";
+                            validez = $"{ultimoCertificado.FechaInicio.Value:dd/MM/yyyy} al {ultimoCertificado.FechaVencimiento.Value:dd/MM/yyyy}";
                         }
                         col.Item().Text($"Validez Certificado: {validez}");
                     });

@@ -51,7 +51,7 @@ namespace Aplication.UseCase
         public async Task<ProfesorResponse?> UpdateSimpleAsync(int id, UpdateProfesorSimpleRequest request)
         {
             var result = await _command.UpdateSimpleAsync(id, request);
-            if (result != null && !string.IsNullOrEmpty(request.CertificadoBase64))
+            if (result != null && request.Certificados != null && request.Certificados.Any(c => !string.IsNullOrEmpty(c.CertificadoBase64)))
             {
                 await _notificacionService.CrearNotificacionGeneral(
                     $"El profesor {result.Nombre} {result.Apellido} ha cargado su certificado.",

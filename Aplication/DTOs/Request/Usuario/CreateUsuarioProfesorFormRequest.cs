@@ -26,9 +26,6 @@ namespace Aplication.DTOs.Request.Usuario
         public string Certificacion { get; set; }
         public string Especialidad { get; set; }
         
-        // Campos de Certificado (Archivo)
-        public string? CertificadoBase64 { get; set; }
-        public DateTime? CertificadoFechaInicio { get; set; }
-        public DateTime? CertificadoFechaVencimiento { get; set; }
+        public List<Aplication.DTOs.Request.Profesor.CertificadoRequestDto> Certificados { get; set; } = new List<Aplication.DTOs.Request.Profesor.CertificadoRequestDto>();
     }
 }

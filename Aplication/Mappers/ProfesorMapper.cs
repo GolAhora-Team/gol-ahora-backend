@@ -39,12 +39,15 @@ namespace Aplication.Mappers
                 ContactoEmergencia = profesor.ContactoEmergencia,
                 Email = profesor.Email,
                 FechaRegistro = profesor.FechaRegistro,
-                CertificadoFechaInicio = profesor.CertificadoFechaInicio,
-                CertificadoFechaVencimiento = profesor.CertificadoFechaVencimiento,
-                TieneCertificado = !string.IsNullOrEmpty(profesor.CertificadoUrl),
-                CertificadoUrl = profesor.CertificadoUrl,
-                CertificadoNombreArchivo = profesor.CertificadoNombreArchivo,
-                CertificadoEstado = ObtenerEstadoCertificado(profesor.CertificadoUrl, profesor.CertificadoFechaVencimiento)
+                Certificados = profesor.Certificados?.Select(c => new CertificadoProfesorDto
+                {
+                    Id = c.Id,
+                    Url = c.CertificadoUrl,
+                    NombreArchivo = c.CertificadoNombreArchivo,
+                    FechaInicio = c.FechaInicio,
+                    FechaVencimiento = c.FechaVencimiento,
+                    Estado = ObtenerEstadoCertificado(c.CertificadoUrl, c.FechaVencimiento)
+                }).ToList() ?? new List<CertificadoProfesorDto>()
             };
         }
         
@@ -82,12 +85,7 @@ namespace Aplication.Mappers
                 ContactoEmergencia = dto.ContactoEmergencia,
                 Email = dto.Email,
                 FechaRegistro = dto.FechaRegistro,
-                CertificadoFechaInicio = dto.CertificadoFechaInicio,
-                CertificadoFechaVencimiento = dto.CertificadoFechaVencimiento,
-                TieneCertificado = dto.TieneCertificado,
-                CertificadoUrl = dto.CertificadoUrl,
-                CertificadoNombreArchivo = dto.CertificadoNombreArchivo,
-                CertificadoEstado = dto.CertificadoEstado
+                Certificados = dto.Certificados ?? new List<CertificadoProfesorDto>()
             };
         }
 
@@ -98,37 +96,11 @@ namespace Aplication.Mappers
                 return null;
             }
 
-            byte[]? certificadoBytes = null;
-            if (!string.IsNullOrEmpty(request.CertificadoBase64))
-            {
-                // Extraer el tipo MIME y los datos base64 si están en el formato "data:application/pdf;base64,..."
-                var base64Data = request.CertificadoBase64;
-                if (base64Data.Contains(","))
-                {
-                    base64Data = base64Data.Split(',')[1];
-                }
-                
-                int mod4 = base64Data.Length % 4;
-                if (mod4 > 0)
-                {
-                    base64Data += new string('=', 4 - mod4);
-                }
 
-                try
-                {
-                    certificadoBytes = Convert.FromBase64String(base64Data);
-                }
-                catch (FormatException)
-                {
-                    throw new Domain.Exceptions.ExceptionBadRequest("El archivo PDF del certificado está corrupto o tiene un formato inválido.");
-                }
-            }
 
             return new Profesor
             {
                 Certificacion = request.Certificacion,
-                CertificadoFechaInicio = request.CertificadoFechaInicio,
-                CertificadoFechaVencimiento = request.CertificadoFechaVencimiento,
                 Especialidad = request.Especialidad,
                 Dni = request.Dni,
                 Nombre = request.Nombre,
@@ -152,8 +124,6 @@ namespace Aplication.Mappers
             return new Profesor
             {
                 Certificacion = request.Certificacion,
-                CertificadoFechaInicio = request.CertificadoFechaInicio,
-                CertificadoFechaVencimiento = request.CertificadoFechaVencimiento,
                 Especialidad = request.Especialidad,
                 Dni = request.Dni,
                 Nombre = request.Nombre,
