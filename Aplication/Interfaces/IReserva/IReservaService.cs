@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Reserva;
+using Aplication.DTOs.Request.Reserva;
 using Aplication.DTOs.Response.Reserva;
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,8 @@ namespace Aplication.Interfaces.IReserva
         Task<ReservaResponse> GetReservaById(int id);
 
         Task<List<ReservaResponse>> GetAllReservas();
+
+        Task<CancelacionInfoResponse> GetCancelacionInfo(int reservaId);
 
         Task<ReservaResponse> CancelarReserva(int id);
 

@@ -52,6 +52,9 @@ public class AppDbContext : DbContext
     // 🔹 NOTIFICACIONES
     public DbSet<Notificacion> Notificaciones { get; set; }
 
+    // 🔹 CONFIGURACIONES
+    public DbSet<ConfiguracionCancelaciones> ConfiguracionCancelaciones { get; set; }
+
     // 🔥 CONFIGURACIONES
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -89,5 +92,17 @@ public class AppDbContext : DbContext
             new Usuario { Id = 3, PersonaId = 3, Username = "cliente", Email = "cliente@golahora.com", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Cliente },
             new Usuario { Id = 4, PersonaId = 4, Username = "profe", Email = "profe@golahora.com", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Profesor }
         );
+
+        // 🔥 SEED: Configuración de cancelaciones por defecto
+        modelBuilder.Entity<ConfiguracionCancelaciones>().HasData(
+            new ConfiguracionCancelaciones { Id = 1, HorasAntelacionMinima = 24, PorcentajePenalizacion = 50 }
+        );
+
+        // 🔗 Relación opcional Reserva -> Factura
+        modelBuilder.Entity<Reserva>()
+            .HasOne(r => r.Factura)
+            .WithMany()
+            .HasForeignKey(r => r.FacturaId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

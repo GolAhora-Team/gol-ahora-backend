@@ -67,6 +67,21 @@ namespace SistemaGolAhora.Controllers
             }
         }
 
+        [HttpGet("{id}/cancelacion-info")]
+        [ProducesResponseType(typeof(Aplication.DTOs.Response.Reserva.CancelacionInfoResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ObtenerInfoCancelacion(int id)
+        {
+            try
+            {
+                var response = await _reservaService.GetCancelacionInfo(id);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         [HttpPatch("{id}/cancelar")]
         [ProducesResponseType(typeof(ReservaResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CancelarReserva(int id)

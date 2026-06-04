@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,7 @@ namespace Domain.Enums
     {
         Pendiente = 1,
         Pagado = 2,
-        Cancelado = 3
+        Cancelado = 3,
+        Reintegro = 4
     }
 }

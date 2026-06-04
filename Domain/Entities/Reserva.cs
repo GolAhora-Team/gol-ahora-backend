@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,5 +27,9 @@ namespace Domain.Entities
 
         // 🔥 Estado (te recomiendo ENUM)
         public EstadoReserva Estado { get; set; }
+
+        // 🔗 Factura de pago (opcional, para reintegros y políticas de cancelación)
+        public int? FacturaId { get; set; }
+        public Factura Factura { get; set; }
     }
 }
