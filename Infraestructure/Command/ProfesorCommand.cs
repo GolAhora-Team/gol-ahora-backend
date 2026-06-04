@@ -216,7 +216,7 @@ namespace Infraestructure.Command
             var ultimoCertificado = profesor.Certificados?.OrderByDescending(c => c.FechaVencimiento).FirstOrDefault();
             
             bool tieneCertificado = ultimoCertificado != null && !string.IsNullOrEmpty(ultimoCertificado.CertificadoUrl);
-            bool estaVigente = ultimoCertificado != null && ultimoCertificado.FechaVencimiento.HasValue && ultimoCertificado.FechaVencimiento.Value >= DateTime.UtcNow;
+            bool estaVigente = ultimoCertificado != null && (!ultimoCertificado.FechaVencimiento.HasValue || ultimoCertificado.FechaVencimiento.Value >= DateTime.UtcNow);
 
             return tieneCertificado && estaVigente;
         }
