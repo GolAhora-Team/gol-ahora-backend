@@ -20,7 +20,11 @@ namespace Aplication.Mappers
                 Nombre = competicion.Nombre,
                 Tipo = competicion.Tipo,
                 Descripcion = competicion.Descripcion,                
-                CantidadEquipos = competicion.CantidadEquipos
+                CantidadEquipos = competicion.CantidadEquipos,
+                FechaInicio = competicion.FechaInicio,
+                FechaFin = competicion.FechaFin,
+                TipoCancha = competicion.TipoCancha,
+                FixtureGenerado = competicion.FixtureGenerado
             };
         }
 
@@ -34,7 +38,11 @@ namespace Aplication.Mappers
                 Descripcion = competicion.Descripcion,
                 CantidadEquipos = competicion.CantidadEquipos,
                 Estado = competicion.Estado,
-                CantInscriptos = competicion.Equipos?.Count ?? 0
+                CantInscriptos = competicion.Equipos?.Count ?? 0,
+                FechaInicio = competicion.FechaInicio,
+                FechaFin = competicion.FechaFin,
+                TipoCancha = competicion.TipoCancha,
+                FixtureGenerado = competicion.FixtureGenerado
             };
         }
     }

@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Competición;
+using Aplication.DTOs.Request.Competición;
 using Aplication.DTOs.Request.Equipo;
 using Aplication.Interfaces.ICompeticion;
 using Domain.Entities;
@@ -76,6 +76,20 @@ namespace SistemaGolAhora.Controllers
             {
                 await _services.DeleteCompeticion(id);
                 return Ok(new { mensaje = "Competición eliminada correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}/iniciar")]
+        public async Task<IActionResult> Iniciar(int id)
+        {
+            try
+            {
+                var response = await _services.IniciarCompeticion(id);
+                return Ok(response);
             }
             catch (Exception ex)
             {

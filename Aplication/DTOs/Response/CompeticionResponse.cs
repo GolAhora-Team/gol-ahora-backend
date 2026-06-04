@@ -22,5 +22,10 @@ namespace Aplication.DTOs.Response
         public EstadoCompeticion Estado { get; set; }
 
         public int CantInscriptos { get; set; }
+
+        public DateTime? FechaInicio { get; set; }
+        public DateTime? FechaFin { get; set; }
+        public TipoCancha TipoCancha { get; set; }
+        public bool FixtureGenerado { get; set; }
     }
 }

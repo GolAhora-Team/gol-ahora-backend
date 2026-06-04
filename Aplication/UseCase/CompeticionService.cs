@@ -103,5 +103,21 @@ namespace Aplication.UseCase
             competicionOriginal = await _query.GetCompeticionById(competicionOriginal.Id);
             return _mapper.CreateCompeticionResponse(competicionOriginal);
         }
+
+        public async Task<CompeticionResponse> IniciarCompeticion(int competicionId)
+        {
+            var competicionOriginal = await _query.GetCompeticionById(competicionId);
+
+            if (competicionOriginal == null)
+                throw new Exception("La competición no existe");
+
+            if (!competicionOriginal.FixtureGenerado)
+                throw new Exception("El fixture debe estar generado antes de iniciar la competición.");
+
+            competicionOriginal.Estado = EstadoCompeticion.EnJuego;
+            await _command.UpdateCompeticion(competicionOriginal);
+
+            return _mapper.CreateCompeticionResponse(competicionOriginal);
+        }
     }
 }

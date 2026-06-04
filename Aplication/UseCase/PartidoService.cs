@@ -1,8 +1,9 @@
-﻿using Aplication.DTOs.Request.Partido;
+using Aplication.DTOs.Request.Partido;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.ICompeticion;
 using Aplication.Interfaces.IEquipo;
 using Aplication.Interfaces.IPartido;
+using Aplication.Interfaces.ICancha;
 using Domain.Entities;
 using Domain.Enums;
 using System;
@@ -19,13 +20,23 @@ namespace Aplication.UseCase
         private readonly IPartidoCommand _command;
         private readonly IPartidoQuery _query;
         private readonly ICompeticionQuery _competicionQuery;
+        private readonly ICanchaQuery _canchaQuery;
+        private readonly ICompeticionCommand _competicionCommand;
 
-        public PartidoService(IPartidoMapper mapper, IPartidoCommand command, IPartidoQuery query, ICompeticionQuery competicionQuery)
+        public PartidoService(
+            IPartidoMapper mapper, 
+            IPartidoCommand command, 
+            IPartidoQuery query, 
+            ICompeticionQuery competicionQuery,
+            ICanchaQuery canchaQuery,
+            ICompeticionCommand competicionCommand)
         {
             _mapper = mapper;
             _command = command;
             _query = query;
             _competicionQuery = competicionQuery;
+            _canchaQuery = canchaQuery;
+            _competicionCommand = competicionCommand;
         }
 
         public async Task<PartidoResponse> CargarResultado(int partidoId, CargarResultadoRequest request)
@@ -98,19 +109,22 @@ namespace Aplication.UseCase
                         
             if (competicion.Tipo == TipoCompeticion.Torneo) 
             {
-                await GenerarFixtureTorneo(competicionId, equipos);
+                await GenerarFixtureTorneo(competicion, equipos);
             }
             else if (competicion.Tipo == TipoCompeticion.Liga)
             {
-                await GenerarFixtureLiga(competicionId, equipos);
+                await GenerarFixtureLiga(competicion, equipos);
             }
             else
             {
                 throw new Exception("El tipo de competición no es válido para generar un fixture automáticamente.");
             }
+
+            competicion.FixtureGenerado = true;
+            await _competicionCommand.UpdateCompeticion(competicion);
         }
 
-        private async Task GenerarFixtureLiga(int competicionId, List<Equipo> equiposInscritos)
+        private async Task GenerarFixtureLiga(Competicion competicion, List<Equipo> equiposInscritos)
         {
             if (equiposInscritos.Count % 2 != 0)
             {
@@ -125,8 +139,13 @@ namespace Aplication.UseCase
 
             var partidosNuevos = new List<Partido>();
 
+            var canchasDisponibles = await _canchaQuery.GetListCancha();
+            var canchasAptas = canchasDisponibles.Where(c => c.Tipo == competicion.TipoCancha).ToList();
+            var fechaInicio = competicion.FechaInicio ?? DateTime.Today.AddDays(7);
+
             for (int jornada = 0; jornada < numJornadas; jornada++)
             {
+                int canchaIndex = 0;
                 for (int i = 0; i < partidosPorJornada; i++)
                 {
                     int localIndex = (jornada + i) % (numEquipos - 1);
@@ -147,9 +166,11 @@ namespace Aplication.UseCase
                         equipoVisitante = temp;
                     }
 
+                    var cancha = canchasAptas.Count > 0 ? canchasAptas[canchaIndex % canchasAptas.Count] : null;
+
                     partidosNuevos.Add(new Partido
                     {
-                        CompeticionId = competicionId,
+                        CompeticionId = competicion.Id,
                         EquipoLocalId = equipoLocal.Id,
                         EquipoVisitanteId = equipoVisitante.Id,
                         Estado = EstadoPartido.Programado,
@@ -158,42 +179,51 @@ namespace Aplication.UseCase
 
                         Fase = 0,
 
-                        Fecha = DateTime.Today.AddDays((jornada + 1) * 7),
-                        Hora = new TimeSpan(15, 0, 0)
+                        Fecha = fechaInicio.AddDays(jornada * 7),
+                        Hora = cancha != null ? cancha.HoraInicio.Add(TimeSpan.FromHours(canchaIndex)) : new TimeSpan(15, 0, 0)
                     });
+                    
+                    canchaIndex++;
                 }
             }
 
             await _command.InsertPartidos(partidosNuevos);
         }
 
-        private async Task GenerarFixtureTorneo(int competicionId, List<Equipo> equiposInscritos)
+        private async Task GenerarFixtureTorneo(Competicion competicion, List<Equipo> equiposInscritos)
         {
             var faseActual = DeterminarFaseTorneo(equiposInscritos.Count);
+
+            var canchasDisponibles = await _canchaQuery.GetListCancha();
+            var canchasAptas = canchasDisponibles.Where(c => c.Tipo == competicion.TipoCancha).ToList();
+            var fechaInicio = competicion.FechaInicio ?? DateTime.Today.AddDays(7);
 
             var equiposMezclados = equiposInscritos.OrderBy(e => Guid.NewGuid()).ToList();
 
             var partidosNuevos = new List<Partido>();
             int horasASumar = 0;
+            int canchaIndex = 0;
 
             for (int i = 0; i < equiposMezclados.Count; i += 2)
             {
                 var equipoLocal = equiposMezclados[i];
                 var equipoVisitante = equiposMezclados[i + 1];
+                var cancha = canchasAptas.Count > 0 ? canchasAptas[canchaIndex % canchasAptas.Count] : null;
 
                 var nuevoPartido = new Partido
                 {
-                    CompeticionId = competicionId,
+                    CompeticionId = competicion.Id,
                     EquipoLocalId = equipoLocal.Id,
                     EquipoVisitanteId = equipoVisitante.Id,
                     Estado = EstadoPartido.Programado,
                     Fase = faseActual,
-                    Fecha = DateTime.Today.AddDays(7),
-                    Hora = new TimeSpan(14 + horasASumar, 0, 0)
+                    Fecha = fechaInicio,
+                    Hora = cancha != null ? cancha.HoraInicio.Add(TimeSpan.FromHours(horasASumar)) : new TimeSpan(14 + horasASumar, 0, 0)
                 };
 
                 partidosNuevos.Add(nuevoPartido);
                 horasASumar++;
+                canchaIndex++;
             }
 
             await _command.InsertPartidos(partidosNuevos);

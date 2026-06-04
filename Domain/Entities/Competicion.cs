@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +21,12 @@ namespace Domain.Entities
 
         public EstadoCompeticion Estado { get; set; }
 
+        // Nuevos campos
+        public DateTime? FechaInicio { get; set; }
+        public DateTime? FechaFin { get; set; }
+        public TipoCancha TipoCancha { get; set; }
+        public bool FixtureGenerado { get; set; }
+
         // 🔗 Equipos
         public ICollection<Equipo> Equipos { get; set; }
 
@@ -28,3 +34,4 @@ namespace Domain.Entities
         public ICollection<Partido> Partidos { get; set; }
     }
 }
+

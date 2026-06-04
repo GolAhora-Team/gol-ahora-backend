@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +16,10 @@ namespace Aplication.DTOs.Request.Competición
         public string Descripcion { get; set; }
 
         public int CantidadEquipos { get; set; }
-        
+
+        public DateTime? FechaInicio { get; set; }
+        public DateTime? FechaFin { get; set; }
+        public TipoCancha TipoCancha { get; set; }
+        public bool FixtureGenerado { get; set; }
     }
 }

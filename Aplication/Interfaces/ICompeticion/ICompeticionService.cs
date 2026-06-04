@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Competición;
+using Aplication.DTOs.Request.Competición;
 using Aplication.DTOs.Request.Equipo;
 using Aplication.DTOs.Response;
 using System;
@@ -16,5 +16,6 @@ namespace Aplication.Interfaces.ICompeticion
         Task<CompeticionResponse> DeleteCompeticion(int competicionId);
         Task<List<CompeticionResponse>> GetAll();
         Task<CompeticionResponse> GetCompeticionById(int competicionId);
+        Task<CompeticionResponse> IniciarCompeticion(int competicionId);
     }
 }
