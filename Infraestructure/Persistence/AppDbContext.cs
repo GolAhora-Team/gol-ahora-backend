@@ -22,6 +22,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Equipo> Equipos { get; set; }
     public DbSet<EquipoJugador> EquipoJugadores { get; set; }
+    public DbSet<EquipoFormacion> EquipoFormaciones { get; set; }
+    public DbSet<JugadorFormacion> JugadorFormaciones { get; set; }
 
     public DbSet<Competicion> Competiciones { get; set; }
     public DbSet<Partido> Partidos { get; set; }

@@ -31,5 +31,7 @@ namespace Aplication.DTOs.Response
 
         public int? CreadoPorClienteId { get; set; }
         public string? CreadoPorNombre { get; set; }
+
+        public List<EquipoFormacionResponse> Formaciones { get; set; } = new List<EquipoFormacionResponse>();
     }
 }

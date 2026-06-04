@@ -70,7 +70,6 @@ namespace Aplication.UseCase
                 throw new Exception("El jugador no existe");
 
             jugadorOriginal.Numero = request.Numero;
-            jugadorOriginal.Posicion = request.Posicion;
             jugadorOriginal.ClienteId = request.ClienteId;
             jugadorOriginal.EquipoId = request.EquipoId;
 

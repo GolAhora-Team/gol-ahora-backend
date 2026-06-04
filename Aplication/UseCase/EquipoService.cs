@@ -159,24 +159,45 @@ namespace Aplication.UseCase
                 throw new Domain.Exceptions.ExceptionNotFound("El equipo no existe.");
             }
 
-            equipo.TipoCancha = request.TipoCancha;
-            equipo.FormacionDefecto = request.FormacionDefecto;
-            await _command.UpdateEquipo(equipo);
+            // Find existing formation or create new
+            var formacion = equipo.Formaciones?.FirstOrDefault(f => f.TipoCancha == request.TipoCancha);
+            if (formacion == null)
+            {
+                formacion = new EquipoFormacion
+                {
+                    TipoCancha = request.TipoCancha,
+                    FormacionDefecto = request.FormacionDefecto,
+                    JugadoresPosiciones = new List<JugadorFormacion>()
+                };
+                if (equipo.Formaciones == null) equipo.Formaciones = new List<EquipoFormacion>();
+                equipo.Formaciones.Add(formacion);
+            }
+            else
+            {
+                formacion.FormacionDefecto = request.FormacionDefecto;
+            }
 
+            // Map players
             if (request.Jugadores != null)
             {
+                formacion.JugadoresPosiciones.Clear();
                 foreach (var reqJugador in request.Jugadores)
                 {
                     var jugador = await _jugadorQuery.GetJugadorById(reqJugador.JugadorId);
                     if (jugador != null && jugador.EquipoId == equipoId)
                     {
-                        jugador.Posicion = reqJugador.Posicion;
-                        jugador.EsTitular = reqJugador.EsTitular;
-                        jugador.EsCapitan = (request.CapitanId.HasValue && jugador.Id == request.CapitanId.Value);
-                        await _jugadorCommand.UpdateJugador(jugador);
+                        formacion.JugadoresPosiciones.Add(new JugadorFormacion
+                        {
+                            JugadorId = jugador.Id,
+                            Posicion = reqJugador.Posicion,
+                            EsTitular = reqJugador.EsTitular,
+                            EsCapitan = (request.CapitanId.HasValue && jugador.Id == request.CapitanId.Value)
+                        });
                     }
                 }
             }
+
+            await _command.UpdateEquipo(equipo);
 
             return _mapper.CreateEquipoResponse(equipo);
         }

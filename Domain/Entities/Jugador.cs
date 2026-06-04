@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +13,7 @@ namespace Domain.Entities
 
         public int Numero { get; set; }
 
-        public bool EsCapitan { get; set; }
 
-        public bool EsTitular { get; set; }
-
-        public int Posicion { get; set; }
 
         public EstadoJugador Estado { get; set; }
 
@@ -26,6 +22,8 @@ namespace Domain.Entities
         public Cliente Cliente { get; set; }
         
         public ICollection<Sancion> Sanciones { get; set; }
+
+        public ICollection<JugadorFormacion> FormacionesPosiciones { get; set; }
 
         // 🔗 Equipo (obligatorio)        
         public int EquipoId { get; set; }

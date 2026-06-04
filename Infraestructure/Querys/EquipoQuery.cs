@@ -22,6 +22,8 @@ namespace Infraestructure.Querys
         {
             var equipo = await _context.Equipos
                 .Include(e => e.CreadoPorCliente)
+                .Include(e => e.Formaciones)
+                    .ThenInclude(f => f.JugadoresPosiciones)
                 .FirstOrDefaultAsync(e => e.Id == idEquipo);
 
             return equipo;

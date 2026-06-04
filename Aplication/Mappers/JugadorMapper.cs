@@ -17,7 +17,6 @@ namespace Aplication.Mappers
             return new Jugador
             {
                 Numero = jugador.Numero,
-                Posicion = jugador.Posicion,
                 ClienteId = jugador.ClienteId,
                 EquipoId = jugador.EquipoId,
                 EquipoNombre = ""
@@ -30,9 +29,6 @@ namespace Aplication.Mappers
             {
                 Id = jugador.Id,
                 Numero = jugador.Numero,
-                EsCapitan = jugador.EsCapitan,
-                EsTitular = jugador.EsTitular,
-                Posicion = jugador.Posicion,
                 Estado = jugador.Estado,
                 ClienteId = jugador.ClienteId,
                 EquipoId = jugador.EquipoId,

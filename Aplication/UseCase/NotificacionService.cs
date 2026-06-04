@@ -130,10 +130,7 @@ namespace Aplication.UseCase
                         ClienteId = usuarioAceptado.Persona.Id,
                         EquipoId = notificacion.EquipoId.Value,
                         EquipoNombre = equipo?.Nombre ?? "Equipo Desconocido",
-                        EsCapitan = false,
-                        EsTitular = false,
-                        Estado = Domain.Enums.EstadoJugador.Disponible,
-                        Posicion = 0
+                        Estado = Domain.Enums.EstadoJugador.Disponible
                     };
                     await _jugadorCommand.InsertJugador(jugador);
                 }
