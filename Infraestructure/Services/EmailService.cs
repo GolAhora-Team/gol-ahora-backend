@@ -1,4 +1,5 @@
 using Aplication.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.Net;
 using System.Net.Mail;
@@ -8,20 +9,27 @@ namespace Infraestructure.Services
 {
     public class EmailService : IEmailService
     {
+        private readonly EmailSettings _emailSettings;
+
+        public EmailService(IOptions<EmailSettings> emailSettings)
+        {
+            _emailSettings = emailSettings.Value;
+        }
+
         public async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
         {
             try
             {
-                using var smtpClient = new SmtpClient("smtp.gmail.com")
+                using var smtpClient = new SmtpClient(_emailSettings.SmtpServer)
                 {
-                    Port = 587,
-                    Credentials = new NetworkCredential("complejogolahora@gmail.com", "fdfu uehq fwhq gqxa"),
-                    EnableSsl = true,
+                    Port = _emailSettings.Port,
+                    Credentials = new NetworkCredential(_emailSettings.SenderEmail, _emailSettings.Password),
+                    EnableSsl = _emailSettings.EnableSsl,
                 };
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress("complejogolahora@gmail.com", "Complejo Gol Ahora"),
+                    From = new MailAddress(_emailSettings.SenderEmail, _emailSettings.SenderName),
                     Subject = subject,
                     Body = htmlBody,
                     IsBodyHtml = true,

@@ -189,7 +189,7 @@ namespace Aplication.UseCase
                         formacion.JugadoresPosiciones.Add(new JugadorFormacion
                         {
                             JugadorId = jugador.Id,
-                            Posicion = reqJugador.Posicion,
+                            Posicion = reqJugador.EsTitular ? (reqJugador.Posicion ?? 0) : 0,
                             EsTitular = reqJugador.EsTitular,
                             EsCapitan = (request.CapitanId.HasValue && jugador.Id == request.CapitanId.Value)
                         });

@@ -2,6 +2,7 @@ using Aplication.Interfaces.IPago;
 using Aplication.Interfaces.IReserva;
 using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace SistemaGolAhora.Controllers
 {
@@ -13,17 +14,20 @@ namespace SistemaGolAhora.Controllers
         private readonly IPagoCommand _pagoCommand;
         private readonly IReservaQuery _reservaQuery;
         private readonly IReservaCommand _reservaCommand;
+        private readonly MercadoPagoSettings _mpSettings;
 
         public MercadoPagoController(
             IPagoQuery pagoQuery,
             IPagoCommand pagoCommand,
             IReservaQuery reservaQuery,
-            IReservaCommand reservaCommand)
+            IReservaCommand reservaCommand,
+            IOptions<MercadoPagoSettings> mpSettings)
         {
             _pagoQuery = pagoQuery;
             _pagoCommand = pagoCommand;
             _reservaQuery = reservaQuery;
             _reservaCommand = reservaCommand;
+            _mpSettings = mpSettings.Value;
         }
 
         [HttpPost("create-preference")]
@@ -47,17 +51,17 @@ namespace SistemaGolAhora.Controllers
                     },
                     back_urls = new
                     {
-                        success = request.ReturnUrl ?? "https://golahora.runasp.net",
-                        failure = request.ReturnUrl ?? "https://golahora.runasp.net",
-                        pending = request.ReturnUrl ?? "https://golahora.runasp.net"
+                        success = request.ReturnUrl ?? _mpSettings.DefaultReturnUrl,
+                        failure = request.ReturnUrl ?? _mpSettings.DefaultReturnUrl,
+                        pending = request.ReturnUrl ?? _mpSettings.DefaultReturnUrl
                     },
-                    notification_url = !string.IsNullOrEmpty(request.WebhookUrl) ? request.WebhookUrl : "http://golahora.runasp.net/api/MercadoPago/webhook", // IMPORTANTE: Webhook
+                    notification_url = !string.IsNullOrEmpty(request.WebhookUrl) ? request.WebhookUrl : _mpSettings.WebhookUrl, // Webhook
                     auto_return = "approved",
                     external_reference = extRef
                 };
 
                 using var httpClient = new System.Net.Http.HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "APP_USR-8827220724965081-060211-5262bca461db2a832b7cfa1ee3dd428c-3442109685");
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _mpSettings.AccessToken);
                 
                 var content = new System.Net.Http.StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync("https://api.mercadopago.com/checkout/preferences", content);
@@ -90,7 +94,7 @@ namespace SistemaGolAhora.Controllers
             try
             {
                 using var httpClient = new System.Net.Http.HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "APP_USR-8827220724965081-060211-5262bca461db2a832b7cfa1ee3dd428c-3442109685");
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _mpSettings.AccessToken);
                 
                 var response = await httpClient.GetAsync($"https://api.mercadopago.com/v1/payments/search?external_reference={externalReference}");
                 if (!response.IsSuccessStatusCode)
@@ -152,7 +156,7 @@ namespace SistemaGolAhora.Controllers
                 {
                     // Consultar la API de MP para ver los detalles del pago
                     using var httpClient = new System.Net.Http.HttpClient();
-                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "APP_USR-8827220724965081-060211-5262bca461db2a832b7cfa1ee3dd428c-3442109685");
+                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _mpSettings.AccessToken);
                     
                     var response = await httpClient.GetAsync($"https://api.mercadopago.com/v1/payments/{dataId}");
                     if (response.IsSuccessStatusCode)

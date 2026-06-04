@@ -43,8 +43,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddSwaggerGen();// Configuración de Opciones Fuertemente Tipadas
+builder.Services.Configure<Infraestructure.Services.EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.Configure<SistemaGolAhora.Controllers.MercadoPagoSettings>(builder.Configuration.GetSection("MercadoPagoSettings"));
 
 //Inyecciones de dependencias
 

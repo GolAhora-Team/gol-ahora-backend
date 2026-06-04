@@ -13,7 +13,7 @@ namespace Aplication.DTOs.Request.Equipo
     public class JugadorPosicionRequest
     {
         public int JugadorId { get; set; }
-        public int Posicion { get; set; } // 0: None, 1: Arquero, 2: Defensor, 3: Mediocampista, 4: Delantero
+        public int? Posicion { get; set; } // 0: None, 1: Arquero, 2: Defensor, 3: Mediocampista, 4: Delantero
         public bool EsTitular { get; set; }
     }
 }
