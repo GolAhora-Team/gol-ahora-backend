@@ -1,6 +1,7 @@
 using Aplication.DTOs.Request.Cancha;
 using Aplication.DTOs.Response;
 using Aplication.Interfaces.ICancha;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -85,17 +86,17 @@ namespace Aplication.UseCase.Canchas
             foreach (var cancha in canchas)
             {
                 bool updated = false;
-                if (cancha.Tipo == Domain.Enums.TipoCancha.Futbol5 && request.PrecioF5 > 0)
+                if (cancha.Tipo == TipoCancha.Futbol5 && request.PrecioF5 > 0)
                 {
                     cancha.PrecioPorHora = request.PrecioF5;
                     updated = true;
                 }
-                else if (cancha.Tipo == Domain.Enums.TipoCancha.Futbol7 && request.PrecioF7 > 0)
+                else if (cancha.Tipo == TipoCancha.Futbol7 && request.PrecioF7 > 0)
                 {
                     cancha.PrecioPorHora = request.PrecioF7;
                     updated = true;
                 }
-                else if (cancha.Tipo == Domain.Enums.TipoCancha.Futbol11 && request.PrecioF11 > 0)
+                else if (cancha.Tipo == TipoCancha.Futbol11 && request.PrecioF11 > 0)
                 {
                     cancha.PrecioPorHora = request.PrecioF11;
                     updated = true;
