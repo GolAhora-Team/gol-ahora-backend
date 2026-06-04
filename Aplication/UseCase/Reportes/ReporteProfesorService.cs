@@ -43,9 +43,9 @@ namespace Aplication.UseCase.Reportes
                         col.Item().Text($"Certificación: {profesor.Certificacion}");
                         
                         string validez = "No registra";
-                        if (profesor.CertificadoFechaInicio.HasValue && profesor.CertificadoFechaFin.HasValue)
+                        if (profesor.CertificadoFechaInicio.HasValue && profesor.CertificadoFechaVencimiento.HasValue)
                         {
-                            validez = $"{profesor.CertificadoFechaInicio.Value:dd/MM/yyyy} al {profesor.CertificadoFechaFin.Value:dd/MM/yyyy}";
+                            validez = $"{profesor.CertificadoFechaInicio.Value:dd/MM/yyyy} al {profesor.CertificadoFechaVencimiento.Value:dd/MM/yyyy}";
                         }
                         col.Item().Text($"Validez Certificado: {validez}");
                     });

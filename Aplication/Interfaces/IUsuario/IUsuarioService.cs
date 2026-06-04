@@ -12,7 +12,7 @@ namespace Aplication.Interfaces.IUsuario
     {
         Task<UsuarioClienteResponse> CreateUsuarioCliente(CreateUsuarioClienteRequest usuario);
         Task<UsuarioAdminResponse> CreateUsuarioAdmin(CreateUsuarioAdminRequest usuario);
-        Task<UsuarioProfesorResponse> CreateUsuarioProfesor(CreateUsuarioProfesorRequest usuario);
+        Task<UsuarioProfesorResponse> CreateUsuarioProfesor(CreateUsuarioProfesorFormRequest usuario);
         Task<UsuarioLogginResponse> LogginUsuario(LoginRequest loginRequest);
         Task<bool> ChangePassword(ChangePasswordRequest request);
         Task<List<string>> CheckAvailability(int dni, string email, string username);

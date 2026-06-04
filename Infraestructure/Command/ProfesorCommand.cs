@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Infraestructure.Command
 {
@@ -100,36 +101,31 @@ namespace Infraestructure.Command
             if (request.Especialidad != null) profesor.Especialidad = request.Especialidad;
             if (request.Certificacion != null) profesor.Certificacion = request.Certificacion;
 
-            if (!string.IsNullOrEmpty(request.CertificadoBase64))
+            if (request.CertificadoArchivo != null && request.CertificadoArchivo.Length > 0)
             {
-                var base64Data = request.CertificadoBase64;
-                if (base64Data.Contains(","))
-                {
-                    base64Data = base64Data.Split(',')[1];
-                }
-                
-                int mod4 = base64Data.Length % 4;
-                if (mod4 > 0)
-                {
-                    base64Data += new string('=', 4 - mod4);
-                }
-                
-                var sizeInBytes = (base64Data.Length * 3) / 4;
-                if (sizeInBytes > 4 * 1024 * 1024)
+                if (request.CertificadoArchivo.Length > 4 * 1024 * 1024)
                 {
                     throw new Domain.Exceptions.ExceptionBadRequest("El certificado excede el límite máximo de 4 MB.");
                 }
 
-                try 
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "certificados", "profesores");
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    profesor.CertificadoArchivo = Convert.FromBase64String(base64Data);
-                    profesor.CertificadoFechaInicio = request.CertificadoFechaInicio;
-                    profesor.CertificadoFechaFin = request.CertificadoFechaFin;
+                    Directory.CreateDirectory(uploadsFolder);
                 }
-                catch (FormatException ex)
+
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(request.CertificadoArchivo.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    throw new Domain.Exceptions.ExceptionBadRequest("El archivo PDF del certificado está corrupto o tiene un formato inválido.");
+                    await request.CertificadoArchivo.CopyToAsync(fileStream);
                 }
+
+                profesor.CertificadoUrl = $"/certificados/profesores/{uniqueFileName}";
+                profesor.CertificadoNombreArchivo = request.CertificadoArchivo.FileName;
+                profesor.CertificadoFechaInicio = request.CertificadoFechaInicio;
+                profesor.CertificadoFechaVencimiento = request.CertificadoFechaVencimiento;
             }
 
             await _context.SaveChangesAsync();
@@ -173,8 +169,8 @@ namespace Infraestructure.Command
             if (profesor is null) return false;
 
             // Lógica de validación según tu dominio
-            bool tieneCertificado = profesor.CertificadoArchivo != null && profesor.CertificadoArchivo.Length > 0;
-            bool estaVigente = profesor.CertificadoFechaFin.HasValue && profesor.CertificadoFechaFin.Value >= DateTime.UtcNow;
+            bool tieneCertificado = !string.IsNullOrEmpty(profesor.CertificadoUrl);
+            bool estaVigente = profesor.CertificadoFechaVencimiento.HasValue && profesor.CertificadoFechaVencimiento.Value >= DateTime.UtcNow;
 
             return tieneCertificado && estaVigente;
         }

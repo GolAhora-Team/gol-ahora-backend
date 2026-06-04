@@ -8,6 +8,7 @@ using Aplication.Interfaces;
 using Domain.Exceptions;
 using System.Net;
 using System.Net.Mail;
+using System.IO;
 
 namespace Aplication.UseCase
 {
@@ -116,42 +117,59 @@ namespace Aplication.UseCase
             return _usuariomapper.CreateUsuarioAdminResponse(usuarioEntity.Id, adminEntity.Nombre, adminEntity.Apellido, adminEntity.FechaAlta);
         }
 
-        public async Task<UsuarioProfesorResponse> CreateUsuarioProfesor(CreateUsuarioProfesorRequest usuario)
+        public async Task<UsuarioProfesorResponse> CreateUsuarioProfesor(CreateUsuarioProfesorFormRequest usuario)
         {
-            if (usuario.request.Dni < 0)
+            if (usuario.Dni < 0)
             {
                 throw new ExceptionBadRequest("El DNI no puede ser negativo.");
             }
 
-            var availability = await CheckAvailability(usuario.request.Dni, usuario.Email, usuario.Username);
+            var availability = await CheckAvailability(usuario.Dni, usuario.Email, usuario.Username);
             if (availability.Any())
             {
                 throw new ExceptionBadRequest($"Los siguientes datos ya están en uso: {string.Join(", ", availability)}");
             }
 
-            if (!string.IsNullOrEmpty(usuario.request.CertificadoBase64))
+            var profesorEntity = _profesorMapper.CreateProfesorFromFormRequest(usuario);
+
+            if (usuario.CertificadoArchivo != null && usuario.CertificadoArchivo.Length > 0)
             {
-                var base64Data = usuario.request.CertificadoBase64;
-                if (base64Data.Contains(","))
-                {
-                    base64Data = base64Data.Split(',')[1];
-                }
-                // Validar tamaño: máximo 4MB
-                // Fórmula aproximada de base64 a bytes: (longitud base64 * 3) / 4
-                var sizeInBytes = (base64Data.Length * 3) / 4;
-                if (sizeInBytes > 4 * 1024 * 1024)
+                if (usuario.CertificadoArchivo.Length > 4 * 1024 * 1024)
                 {
                     throw new ExceptionBadRequest("El certificado excede el límite máximo de 4 MB.");
                 }
+
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "certificados", "profesores");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(usuario.CertificadoArchivo.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await usuario.CertificadoArchivo.CopyToAsync(fileStream);
+                }
+
+                profesorEntity.CertificadoUrl = $"/certificados/profesores/{uniqueFileName}";
+                profesorEntity.CertificadoNombreArchivo = usuario.CertificadoArchivo.FileName;
             }
 
-            var profesorEntity = _profesorMapper.CreateProfesorToProfesorRequest(usuario.request);
             await _profesorCommand.CreateProfesor(profesorEntity);
 
-            var usuarioEntity = _usuariomapper.CreateUsuario(usuario, profesorEntity.Id);
+            // Mapper de usuario espera CreateUsuarioProfesorRequest. Creamos uno dummy para reusar o mapeamos a mano.
+            var createUsuarioReq = new CreateUsuarioProfesorRequest 
+            { 
+                Email = usuario.Email, 
+                Password = usuario.Password, 
+                Username = usuario.Username 
+            };
+            var usuarioEntity = _usuariomapper.CreateUsuario(createUsuarioReq, profesorEntity.Id);
             await _usuariocommand.Create(usuarioEntity);
 
-            if (profesorEntity.CertificadoArchivo == null || profesorEntity.CertificadoArchivo.Length == 0)
+            if (string.IsNullOrEmpty(profesorEntity.CertificadoUrl))
             {
                 await _notificacionService.CrearNotificacionUsuario(
                     "Te falta cargar el certificado para poder dar clases.", 

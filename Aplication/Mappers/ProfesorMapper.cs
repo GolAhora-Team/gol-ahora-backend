@@ -40,9 +40,20 @@ namespace Aplication.Mappers
                 Email = profesor.Email,
                 FechaRegistro = profesor.FechaRegistro,
                 CertificadoFechaInicio = profesor.CertificadoFechaInicio,
-                CertificadoFechaFin = profesor.CertificadoFechaFin,
-                TieneCertificado = profesor.CertificadoArchivo != null && profesor.CertificadoArchivo.Length > 0
+                CertificadoFechaVencimiento = profesor.CertificadoFechaVencimiento,
+                TieneCertificado = !string.IsNullOrEmpty(profesor.CertificadoUrl),
+                CertificadoUrl = profesor.CertificadoUrl,
+                CertificadoNombreArchivo = profesor.CertificadoNombreArchivo,
+                CertificadoEstado = ObtenerEstadoCertificado(profesor.CertificadoUrl, profesor.CertificadoFechaVencimiento)
             };
+        }
+        
+        private string ObtenerEstadoCertificado(string? url, DateTime? fechaVencimiento)
+        {
+            if (string.IsNullOrEmpty(url)) return "Sin certificado";
+            if (!fechaVencimiento.HasValue) return "Certificado válido";
+            if (fechaVencimiento.Value < DateTime.UtcNow) return "Certificado vencido";
+            return "Certificado válido";
         }
 
         public ProfesorResponse CreateProfesorResponseFromDto(ProfesorDto dto)
@@ -72,8 +83,11 @@ namespace Aplication.Mappers
                 Email = dto.Email,
                 FechaRegistro = dto.FechaRegistro,
                 CertificadoFechaInicio = dto.CertificadoFechaInicio,
-                CertificadoFechaFin = dto.CertificadoFechaFin,
-                TieneCertificado = dto.TieneCertificado
+                CertificadoFechaVencimiento = dto.CertificadoFechaVencimiento,
+                TieneCertificado = dto.TieneCertificado,
+                CertificadoUrl = dto.CertificadoUrl,
+                CertificadoNombreArchivo = dto.CertificadoNombreArchivo,
+                CertificadoEstado = dto.CertificadoEstado
             };
         }
 
@@ -113,9 +127,33 @@ namespace Aplication.Mappers
             return new Profesor
             {
                 Certificacion = request.Certificacion,
-                CertificadoArchivo = certificadoBytes,
                 CertificadoFechaInicio = request.CertificadoFechaInicio,
-                CertificadoFechaFin = request.CertificadoFechaFin,
+                CertificadoFechaVencimiento = request.CertificadoFechaVencimiento,
+                Especialidad = request.Especialidad,
+                Dni = request.Dni,
+                Nombre = request.Nombre,
+                Apellido = request.Apellido,
+                Genero = request.Genero,
+                FechaNacimiento = request.FechaNacimiento,
+                Telefono = request.Telefono,
+                Direccion = request.Direccion,
+                Localidad = request.Localidad,
+                CodigoPostal = request.CodigoPostal,
+                Provincia = request.Provincia,
+                Pais = request.Pais,
+                ContactoEmergencia = request.ContactoEmergencia,
+                Email = request.Email
+            };
+        }
+        
+        public Profesor CreateProfesorFromFormRequest(Aplication.DTOs.Request.Usuario.CreateUsuarioProfesorFormRequest request)
+        {
+            if (request == null) return null;
+            return new Profesor
+            {
+                Certificacion = request.Certificacion,
+                CertificadoFechaInicio = request.CertificadoFechaInicio,
+                CertificadoFechaVencimiento = request.CertificadoFechaVencimiento,
                 Especialidad = request.Especialidad,
                 Dni = request.Dni,
                 Nombre = request.Nombre,

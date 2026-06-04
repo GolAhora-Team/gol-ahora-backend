@@ -38,9 +38,20 @@ namespace Infraestructure.Querys
             Email = p.Email,
             FechaRegistro = p.FechaRegistro,
             CertificadoFechaInicio = p.CertificadoFechaInicio,
-            CertificadoFechaFin = p.CertificadoFechaFin,
-            TieneCertificado = p.CertificadoArchivo != null && p.CertificadoArchivo.Length > 0
+            CertificadoFechaVencimiento = p.CertificadoFechaVencimiento,
+            TieneCertificado = !string.IsNullOrEmpty(p.CertificadoUrl),
+            CertificadoUrl = p.CertificadoUrl,
+            CertificadoNombreArchivo = p.CertificadoNombreArchivo,
+            CertificadoEstado = ObtenerEstadoCertificado(p.CertificadoUrl, p.CertificadoFechaVencimiento)
         };
+
+        private static string ObtenerEstadoCertificado(string? url, DateTime? fechaVencimiento)
+        {
+            if (string.IsNullOrEmpty(url)) return "Sin certificado";
+            if (!fechaVencimiento.HasValue) return "Certificado válido";
+            if (fechaVencimiento.Value < DateTime.UtcNow) return "Certificado vencido";
+            return "Certificado válido";
+        }
 
         public async Task<IEnumerable<ProfesorDto>> GetAllAsync()
             => await _context.Profesores
@@ -75,7 +86,16 @@ namespace Infraestructure.Querys
         public async Task<byte[]?> GetCertificadoAsync(int profesorId)
         {
             var p = await _context.Profesores.FindAsync(profesorId);
-            return p?.CertificadoArchivo;
+            if (p == null || string.IsNullOrEmpty(p.CertificadoUrl)) return null;
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var filePath = Path.Combine(uploadsFolder, p.CertificadoUrl.TrimStart('/'));
+
+            if (System.IO.File.Exists(filePath))
+            {
+                return await System.IO.File.ReadAllBytesAsync(filePath);
+            }
+            return null;
         }
     }
 }

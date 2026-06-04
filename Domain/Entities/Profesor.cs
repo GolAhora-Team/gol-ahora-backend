@@ -9,9 +9,10 @@ namespace Domain.Entities
     public class Profesor : Persona
     {
         public string Certificacion { get; set; }
-        public byte[]? CertificadoArchivo { get; set; } // Archivo PDF en BD
+        public string? CertificadoUrl { get; set; }
+        public string? CertificadoNombreArchivo { get; set; }
         public DateTime? CertificadoFechaInicio { get; set; }
-        public DateTime? CertificadoFechaFin { get; set; }
+        public DateTime? CertificadoFechaVencimiento { get; set; }
 
         public string Especialidad { get; set; }
 

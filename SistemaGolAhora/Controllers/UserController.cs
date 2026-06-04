@@ -46,7 +46,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpPost("Profesor")]
-        public async Task<IActionResult> CreateUsuarioProfesor([FromBody] CreateUsuarioProfesorRequest request)
+        public async Task<IActionResult> CreateUsuarioProfesor([FromForm] CreateUsuarioProfesorFormRequest request)
         {
             try
             {

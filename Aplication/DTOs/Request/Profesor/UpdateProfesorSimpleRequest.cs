@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Aplication.DTOs.Request.Profesor
 {
@@ -22,9 +23,9 @@ namespace Aplication.DTOs.Request.Profesor
         public string Pais { get; set; }
         public string ContactoEmergencia { get; set; }
         public string Email { get; set; }
-        public string? CertificadoBase64 { get; set; }
+        public IFormFile? CertificadoArchivo { get; set; }
         public DateTime? CertificadoFechaInicio { get; set; }
-        public DateTime? CertificadoFechaFin { get; set; }
+        public DateTime? CertificadoFechaVencimiento { get; set; }
         public string? Especialidad { get; set; }
         public string? Certificacion { get; set; }
     }

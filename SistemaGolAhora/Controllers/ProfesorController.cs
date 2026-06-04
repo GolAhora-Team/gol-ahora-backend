@@ -51,7 +51,7 @@ namespace SistemaGolAhora.Controllers
         }
 
         [HttpPut("{id}/simple")]
-        public async Task<IActionResult> UpdateSimple(int id, [FromBody] UpdateProfesorSimpleRequest request)
+        public async Task<IActionResult> UpdateSimple(int id, [FromForm] UpdateProfesorSimpleRequest request)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace SistemaGolAhora.Controllers
                     Especialidad = profesorDto.Especialidad,
                     Certificacion = profesorDto.Certificacion,
                     CertificadoFechaInicio = profesorDto.CertificadoFechaInicio,
-                    CertificadoFechaFin = profesorDto.CertificadoFechaFin
+                    CertificadoFechaVencimiento = profesorDto.CertificadoFechaVencimiento
                 };
 
                 var pdfBytes = await reporteService.GenerarReporteProfesorPdfAsync(profesorEntity);

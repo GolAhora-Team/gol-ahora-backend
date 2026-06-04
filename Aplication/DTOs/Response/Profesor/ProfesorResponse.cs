@@ -26,7 +26,11 @@ namespace Aplication.DTOs.Response.Profesor
         public string Email { get; set; }
         public DateTime FechaRegistro { get; set; }
         public DateTime? CertificadoFechaInicio { get; set; }
-        public DateTime? CertificadoFechaFin { get; set; }
+        public DateTime? CertificadoFechaVencimiento { get; set; }
         public bool TieneCertificado { get; set; }
+        
+        public string? CertificadoUrl { get; set; }
+        public string? CertificadoNombreArchivo { get; set; }
+        public string? CertificadoEstado { get; set; }
     }
 }

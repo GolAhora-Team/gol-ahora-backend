@@ -1,13 +1,16 @@
+using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Aplication.DTOs.Request.Profesor
+namespace Aplication.DTOs.Request.Usuario
 {
-    public class CreateProfesorRequest
+    public class CreateUsuarioProfesorFormRequest
     {
+        // Campos de Usuario
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Username { get; set; }
+
+        // Campos de Profesor
         public int Dni { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
@@ -20,11 +23,12 @@ namespace Aplication.DTOs.Request.Profesor
         public string Provincia { get; set; }
         public string Pais { get; set; }
         public string ContactoEmergencia { get; set; }
-        public string Email { get; set; }
         public string Certificacion { get; set; }
-        public string? CertificadoBase64 { get; set; } // Archivo codificado en base64
+        public string Especialidad { get; set; }
+        
+        // Campos de Certificado (Archivo)
+        public IFormFile? CertificadoArchivo { get; set; }
         public DateTime? CertificadoFechaInicio { get; set; }
         public DateTime? CertificadoFechaVencimiento { get; set; }
-        public string Especialidad { get; set; }
     }
 }
