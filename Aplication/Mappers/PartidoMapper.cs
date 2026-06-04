@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Response;
+using Aplication.DTOs.Response;
 using Aplication.Interfaces.IPartido;
 using Domain.Entities;
 using System;
@@ -30,9 +30,13 @@ namespace Aplication.Mappers
                 
                 EquipoLocalId = partido.EquipoLocalId,
                 EquipoLocalNombre = partido.EquipoLocal?.Nombre, 
+                EquipoLocalColorPrimario = partido.EquipoLocal?.ColorPrimario,
+                EquipoLocalColorSecundario = partido.EquipoLocal?.ColorSecundario,
 
                 EquipoVisitanteId = partido.EquipoVisitanteId,
                 EquipoVisitanteNombre = partido.EquipoVisitante?.Nombre,
+                EquipoVisitanteColorPrimario = partido.EquipoVisitante?.ColorPrimario,
+                EquipoVisitanteColorSecundario = partido.EquipoVisitante?.ColorSecundario,
 
                 CompeticionId = partido.CompeticionId,
                 CompeticionNombre = partido.Competicion?.Nombre,

@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -28,8 +28,10 @@ namespace Aplication.DTOs.Response
         
         public int EquipoVisitanteId { get; set; }
         public string EquipoVisitanteNombre { get; set; }
-
-        
+        public string EquipoLocalColorPrimario { get; set; }
+        public string EquipoLocalColorSecundario { get; set; }
+        public string EquipoVisitanteColorPrimario { get; set; }
+        public string EquipoVisitanteColorSecundario { get; set; }
         public int CompeticionId { get; set; }
         public string CompeticionNombre { get; set; }
 
