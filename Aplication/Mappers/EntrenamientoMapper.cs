@@ -31,7 +31,11 @@ namespace Aplication.Mappers
                 Fecha = entrenamiento.Fecha,
                 CupoMaximo = entrenamiento.CupoMaximo,
                 ProfesorId = entrenamiento.ProfesorId,
-                CanchaId = entrenamiento.CanchaId
+                CanchaId = entrenamiento.CanchaId,
+                HoraInicio = entrenamiento.HoraInicio,
+                HoraFin = entrenamiento.HoraFin,
+                DiasSemana = entrenamiento.DiasSemana,
+                CanchaNombre = entrenamiento.Cancha?.Nombre ?? "Sin Cancha"
             };
         }
     }

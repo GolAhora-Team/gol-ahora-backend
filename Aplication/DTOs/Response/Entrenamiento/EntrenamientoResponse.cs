@@ -17,5 +17,6 @@ namespace Aplication.DTOs.Response.Entrenamiento
         public TimeSpan HoraFin { get; set; }
         public string DiasSemana { get; set; }
         public int? CanchaId { get; set; }
+        public string CanchaNombre { get; set; }
     }
 }

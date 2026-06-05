@@ -67,7 +67,10 @@ namespace Aplication.Mappers
                     Id = i.Cliente.Id,
                     Nombre = i.Cliente.Nombre,
                     Apellido = i.Cliente.Apellido
-                }).ToList() : new List<ClaseAlumnos>()
+                }).ToList() : new List<ClaseAlumnos>(),
+                DiasSemana = clase.DiasSemana,
+                CanchaId = clase.CanchaId,
+                CanchaNombre = clase.Cancha?.Nombre ?? "Sin Cancha"
             };
         }
     }

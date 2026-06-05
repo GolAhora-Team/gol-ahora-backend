@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +27,11 @@ namespace Aplication.DTOs.Response.Clase
         // Profesor
         public ProfesorShortResponse Profesor { get; set; }
         public List<ClaseAlumnos> Alumnos { get; set; }
+        
+        // Cancha y Días
+        public string DiasSemana { get; set; }
+        public int? CanchaId { get; set; }
+        public string CanchaNombre { get; set; }
     }
 
     public class ProfesorShortResponse

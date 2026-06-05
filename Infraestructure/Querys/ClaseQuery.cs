@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IClases;
+using Aplication.Interfaces.IClases;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,6 +26,7 @@ namespace Infraestructure.Querys
             public async Task<List<Clase>> GetAllClases()
             {
                 return await _context.Clases.Include(c => c.Profesor)
+                                            .Include(c => c.Cancha)
                                             .Include(c => c.Asistencias).ThenInclude(a => a.Cliente)
                                             .ToListAsync();
             }
@@ -33,6 +34,7 @@ namespace Infraestructure.Querys
             public async Task<Clase?> GetClaseById(int id)
             {
                 return await _context.Clases.Include(c => c.Profesor)
+                                            .Include(c => c.Cancha)
                                             .Include(c => c.Asistencias).ThenInclude(a => a.Cliente)
                                             .FirstOrDefaultAsync(c => c.Id == id);
             }
