@@ -15,12 +15,12 @@ namespace SistemaGolAhora.Controllers
             _asistenciaService = asistenciaService;
         }
 
-        [HttpGet("clase/{claseId}")]
-        public async Task<IActionResult> GetAsistenciasPorClaseYFecha(int claseId, [FromQuery] DateTime fecha)
+        [HttpGet("actividad/{actividadId}")]
+        public async Task<IActionResult> GetAsistenciasPorActividadYFecha(int actividadId, [FromQuery] DateTime fecha, [FromQuery] bool esClase)
         {
             try
             {
-                var response = await _asistenciaService.GetAsistenciasPorClaseYFecha(claseId, fecha);
+                var response = await _asistenciaService.GetAsistenciasPorActividadYFecha(actividadId, fecha, esClase);
                 return Ok(response);
             }
             catch (Exception ex)

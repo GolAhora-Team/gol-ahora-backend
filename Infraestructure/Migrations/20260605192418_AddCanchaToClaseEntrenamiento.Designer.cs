@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260605192418_AddCanchaToClaseEntrenamiento")]
+    partial class AddCanchaToClaseEntrenamiento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,7 +249,7 @@ namespace Infraestructure.Migrations
                     b.Property<decimal>("PrecioInscripcion")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int?>("ProfesorId")
+                    b.Property<int>("ProfesorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -413,7 +416,7 @@ namespace Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProfesorId")
+                    b.Property<int>("ProfesorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1334,7 +1337,8 @@ namespace Infraestructure.Migrations
                     b.HasOne("Domain.Entities.Profesor", "Profesor")
                         .WithMany("Clases")
                         .HasForeignKey("ProfesorId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Cancha");
 
@@ -1370,7 +1374,8 @@ namespace Infraestructure.Migrations
                     b.HasOne("Domain.Entities.Profesor", "Profesor")
                         .WithMany("Entrenamientos")
                         .HasForeignKey("ProfesorId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Cancha");
 

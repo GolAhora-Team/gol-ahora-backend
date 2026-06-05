@@ -130,6 +130,9 @@ namespace Aplication.UseCase
             claseExistente.HoraInicio = clase.HoraInicio;
             claseExistente.HoraFin = clase.HoraFin;
             claseExistente.PrecioInscripcion = clase.PrecioInscripcion;
+            claseExistente.ProfesorId = clase.ProfesorId;
+            claseExistente.CanchaId = clase.CanchaId;
+            claseExistente.DiasSemana = clase.DiasSemana;
 
             await _claseCommand.UpdateClase(claseExistente);
 

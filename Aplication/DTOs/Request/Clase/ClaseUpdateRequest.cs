@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +18,9 @@ namespace Aplication.DTOs.Request.Clase
 
         // Profesor
         public int ProfesorId { get; set; }
+        
+        public int? CanchaId { get; set; }
+        
+        public string DiasSemana { get; set; }
     }
 }

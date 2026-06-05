@@ -126,6 +126,9 @@ namespace Aplication.UseCase.Entrenamientos
             entrenamientoExistente.Nombre = request.Nombre;
             entrenamientoExistente.Fecha = request.Fecha;
             entrenamientoExistente.CupoMaximo = request.CupoMaximo;
+            entrenamientoExistente.HoraInicio = request.HoraInicio;
+            entrenamientoExistente.HoraFin = request.HoraFin;
+            entrenamientoExistente.DiasSemana = request.DiasSemana;
             entrenamientoExistente.ProfesorId = request.ProfesorId;
             entrenamientoExistente.CanchaId = request.CanchaId;
 

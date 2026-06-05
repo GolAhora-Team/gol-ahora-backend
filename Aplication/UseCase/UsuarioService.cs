@@ -238,7 +238,8 @@ namespace Aplication.UseCase
                     TipoUsuario = usuarioEntity.TipoUsuario,
                     IdPersona = clienteEntity.Id,
                     Nombre = clienteEntity.Nombre,
-                    Apellido = clienteEntity.Apellido
+                    Apellido = clienteEntity.Apellido,
+                    Token = $"{{\"idUsuario\": {usuarioEntity.Id}}}"
                 };
             }
             else if (usuarioEntity.TipoUsuario == Domain.Enums.TipoUsuario.Administrador)
@@ -255,7 +256,8 @@ namespace Aplication.UseCase
                     IdPersona = adminEntity.Id,
                     Nombre = adminEntity.Nombre,
                     Apellido = adminEntity.Apellido,
-                    Identificador = adminEntity.Identificador
+                    Identificador = adminEntity.Identificador,
+                    Token = $"{{\"idUsuario\": {usuarioEntity.Id}}}"
                 };
             }
             else if (usuarioEntity.TipoUsuario == Domain.Enums.TipoUsuario.Profesor)
@@ -271,7 +273,8 @@ namespace Aplication.UseCase
                     TipoUsuario = usuarioEntity.TipoUsuario,
                     IdPersona = profesorEntity.Id,
                     Nombre = profesorEntity.Nombre,
-                    Apellido = profesorEntity.Apellido
+                    Apellido = profesorEntity.Apellido,
+                    Token = $"{{\"idUsuario\": {usuarioEntity.Id}}}"
                 };
             }
             else

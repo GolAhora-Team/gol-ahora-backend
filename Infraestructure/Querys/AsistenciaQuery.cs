@@ -32,7 +32,15 @@ namespace Infraestructure.Querys
         {
             return await _context.Asistencias
                 .Include(a => a.Cliente)
-                .Where(a => a.ClaseId == claseId && a.Fecha.Date == fecha.Date)
+                .Where(a => a.ClaseId == claseId && a.FechaHoraRegistro.HasValue && a.FechaHoraRegistro.Value.Date == fecha.Date)
+                .ToListAsync();
+        }
+
+        public async Task<List<AsistenciaEntrenamiento>> GetAsistenciasEntrenamientoPorFecha(int entrenamientoId, DateTime fecha)
+        {
+            return await _context.AsistenciaEntrenamientos
+                .Include(a => a.Cliente)
+                .Where(a => a.EntrenamientoId == entrenamientoId && a.Fecha.Date == fecha.Date)
                 .ToListAsync();
         }
 

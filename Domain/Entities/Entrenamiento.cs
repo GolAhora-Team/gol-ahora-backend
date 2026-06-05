@@ -20,6 +20,12 @@ namespace Domain.Entities
         public int? ProfesorId { get; set; }
         public Profesor? Profesor { get; set; }
 
+        public TimeSpan HoraInicio { get; set; }
+
+        public TimeSpan HoraFin { get; set; }
+
+        public string DiasSemana { get; set; }
+
         // 🔗 Cancha (opcional)
         public int? CanchaId { get; set; }
         public Cancha Cancha { get; set; }

@@ -36,7 +36,7 @@ namespace Infraestructure.Querys
         TimeSpan horaFin,
         int? excludeReservaId = null)
         {
-            return await _context.Reservas.AnyAsync(r =>
+            bool conflictoReserva = await _context.Reservas.AnyAsync(r =>
                 r.CanchaId == canchaId &&
                 r.Fecha.Date == fecha.Date &&
                 r.Estado != EstadoReserva.Cancelada &&
@@ -45,6 +45,45 @@ namespace Infraestructure.Querys
                     horaInicio < r.HoraFin &&
                     horaFin > r.HoraInicio
                 ));
+
+            if (conflictoReserva) return true;
+
+            string diaAbreviado = GetDiaAbreviado(fecha.DayOfWeek);
+
+            bool conflictoClase = await _context.Clases.AnyAsync(c =>
+                c.CanchaId == canchaId &&
+                c.DiasSemana != null && c.DiasSemana.Contains(diaAbreviado) &&
+                (
+                    horaInicio < c.HoraFin &&
+                    horaFin > c.HoraInicio
+                ));
+
+            if (conflictoClase) return true;
+
+            bool conflictoEntrenamiento = await _context.Entrenamientos.AnyAsync(e =>
+                e.CanchaId == canchaId &&
+                e.DiasSemana != null && e.DiasSemana.Contains(diaAbreviado) &&
+                (
+                    horaInicio < e.HoraFin &&
+                    horaFin > e.HoraInicio
+                ));
+
+            return conflictoEntrenamiento;
+        }
+
+        private string GetDiaAbreviado(DayOfWeek day)
+        {
+            return day switch
+            {
+                DayOfWeek.Monday => "Lun",
+                DayOfWeek.Tuesday => "Mar",
+                DayOfWeek.Wednesday => "Mié",
+                DayOfWeek.Thursday => "Jue",
+                DayOfWeek.Friday => "Vie",
+                DayOfWeek.Saturday => "Sáb",
+                DayOfWeek.Sunday => "Dom",
+                _ => ""
+            };
         }
     }
 }

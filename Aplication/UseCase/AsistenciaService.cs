@@ -30,10 +30,30 @@ namespace Aplication.UseCase
             _claseQuery = claseQuery;
         }
 
-        public async Task<List<AsistenciaResponse>> GetAsistenciasPorClaseYFecha(int claseId, DateTime fecha)
+        public async Task<List<AsistenciaResponse>> GetAsistenciasPorActividadYFecha(int actividadId, DateTime fecha, bool esClase)
         {
-            var asistencias = await _asistenciaQuery.GetAsistenciasPorClaseYFecha(claseId, fecha);
-            return _asistenciaMapper.MapToResponseList(asistencias);
+            if (esClase)
+            {
+                var asistencias = await _asistenciaQuery.GetAsistenciasPorClaseYFecha(actividadId, fecha);
+                return _asistenciaMapper.MapToResponseList(asistencias);
+            }
+            else
+            {
+                var asistenciasEntrenamiento = await _asistenciaQuery.GetAsistenciasEntrenamientoPorFecha(actividadId, fecha);
+                var responses = new List<AsistenciaResponse>();
+                foreach (var a in asistenciasEntrenamiento)
+                {
+                    responses.Add(new AsistenciaResponse
+                    {
+                        Id = a.Id,
+                        ClienteId = a.ClienteId,
+                        Presente = a.Presente,
+                        Fecha = a.Fecha,
+                        ClaseId = a.EntrenamientoId
+                    });
+                }
+                return responses;
+            }
         }
 
         public async Task<List<AsistenciaResponse>> MarcarAsistencia(MarcarAsistenciaRequest request)
