@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,8 +25,8 @@ namespace Domain.Entities
         public decimal PrecioInscripcion { get; set; }
 
         // 🔗 Profesor
-        public int ProfesorId { get; set; }
-        public Profesor Profesor { get; set; }
+        public int? ProfesorId { get; set; }
+        public Profesor? Profesor { get; set; }
 
         // 🔗 Asistencias (relación real con Cliente)
         public ICollection<Asistencia> Asistencias { get; set; }

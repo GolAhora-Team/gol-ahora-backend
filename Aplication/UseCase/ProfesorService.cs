@@ -62,8 +62,17 @@ namespace Aplication.UseCase
             return result;
         }
 
-        public async Task<bool> DeleteAsync(int id)
-            => await _command.DeleteAsync(id);
+        public async Task<(bool Success, List<string> AffectedItems, string ProfesorName)> DeleteAsync(int id)
+        {
+            var result = await _command.DeleteAsync(id);
+            if (result.Success && result.AffectedItems != null && result.AffectedItems.Any())
+            {
+                string itemList = string.Join(", ", result.AffectedItems);
+                string mensaje = $"Se eliminó al profesor {result.ProfesorName}. Las siguientes clases y entrenamientos se quedaron sin profesor: {itemList}.";
+                await _notificacionService.CrearNotificacionGeneral(mensaje, "ADMIN,PERSONAL", "DesasignacionProfesor");
+            }
+            return result;
+        }
 
         public async Task<bool> AsignarClaseAsync(int profesorId, int claseId)
             => await _command.AsignarClaseAsync(profesorId, claseId);

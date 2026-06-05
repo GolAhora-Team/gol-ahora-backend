@@ -95,7 +95,7 @@ namespace SistemaGolAhora.Controllers
             try
             {
                 var deleted = await _services.DeleteAsync(id);
-                if (!deleted) return NotFound(new { mensaje = "Profesor no encontrado" });
+                if (!deleted.Success) return NotFound(new { mensaje = "Profesor no encontrado" });
 
                 return Ok(new { mensaje = "Profesor eliminado correctamente" });
             }

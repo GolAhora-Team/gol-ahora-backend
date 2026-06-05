@@ -178,14 +178,33 @@ namespace Infraestructure.Command
             return _mapper.CreateProfesorResponse(profesor);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<(bool Success, List<string> AffectedItems, string ProfesorName)> DeleteAsync(int id)
         {
             var profesor = await _context.Profesores.FindAsync(id);
-            if (profesor is null) return false;
+            if (profesor is null) return (false, new List<string>(), string.Empty);
+
+            string profesorName = $"{profesor.Nombre} {profesor.Apellido}".Trim();
+            var affectedItems = new List<string>();
+
+            // Obtener las clases relacionadas
+            var clases = await _context.Set<Clase>().Where(c => c.ProfesorId == id).ToListAsync();
+            foreach (var clase in clases)
+            {
+                affectedItems.Add($"Clase: {clase.Nombre}");
+                clase.ProfesorId = null;
+            }
+
+            // Obtener los entrenamientos relacionados
+            var entrenamientos = await _context.Set<Entrenamiento>().Where(e => e.ProfesorId == id).ToListAsync();
+            foreach (var entrenamiento in entrenamientos)
+            {
+                affectedItems.Add($"Entrenamiento: {entrenamiento.Nombre}");
+                entrenamiento.ProfesorId = null;
+            }
 
             _context.Profesores.Remove(profesor);
             await _context.SaveChangesAsync();
-            return true;
+            return (true, affectedItems, profesorName);
         }
 
         public async Task<bool> AsignarClaseAsync(int profesorId, int claseId)

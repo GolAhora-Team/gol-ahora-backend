@@ -233,14 +233,17 @@ namespace Aplication.UseCase
                 "Inscripcion"
             );
 
-            var profesorUsuario = await _usuarioQuery.GetUsuarioByPersonaId(claseExistente.ProfesorId);
-            if (profesorUsuario != null)
+            if (claseExistente.ProfesorId.HasValue)
             {
-                await _notificacionService.CrearNotificacionUsuario(
-                    $"El alumno {clienteExiste.Nombre} {clienteExiste.Apellido} se ha inscrito a tu clase {claseExistente.Nombre}.", 
-                    profesorUsuario.Id, 
-                    "Inscripcion"
-                );
+                var profesorUsuario = await _usuarioQuery.GetUsuarioByPersonaId(claseExistente.ProfesorId.Value);
+                if (profesorUsuario != null)
+                {
+                    await _notificacionService.CrearNotificacionUsuario(
+                        $"El alumno {clienteExiste.Nombre} {clienteExiste.Apellido} se ha inscrito a tu clase {claseExistente.Nombre}.", 
+                        profesorUsuario.Id, 
+                        "Inscripcion"
+                    );
+                }
             }
 
             return new ClaseShortResponse

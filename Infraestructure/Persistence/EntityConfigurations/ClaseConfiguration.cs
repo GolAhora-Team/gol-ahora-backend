@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -28,7 +28,7 @@ namespace Infraestructure.Persistence.EntityConfigurations
             entity.HasOne(c => c.Profesor)
                 .WithMany(p => p.Clases)
                 .HasForeignKey(c => c.ProfesorId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasMany(c => c.Asistencias)
                 .WithOne(a => a.Clase)

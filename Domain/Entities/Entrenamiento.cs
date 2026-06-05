@@ -17,8 +17,8 @@ namespace Domain.Entities
         public int CupoMaximo { get; set; }
 
         // 🔗 Profesor
-        public int ProfesorId { get; set; }
-        public Profesor Profesor { get; set; }
+        public int? ProfesorId { get; set; }
+        public Profesor? Profesor { get; set; }
 
         // 🔗 Cancha (opcional)
         public int? CanchaId { get; set; }

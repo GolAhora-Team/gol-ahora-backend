@@ -22,7 +22,7 @@ namespace Aplication.Interfaces.IProfesor
         Task<ProfesorDto> CreateAsync(ProfesorDto dto);
         Task<ProfesorDto?> UpdateAsync(int id, ProfesorDto dto);
         Task<ProfesorResponse?> UpdateSimpleAsync(int id, UpdateProfesorSimpleRequest request);
-        Task<bool> DeleteAsync(int id);
+        Task<(bool Success, List<string> AffectedItems, string ProfesorName)> DeleteAsync(int id);
         Task<bool> AsignarClaseAsync(int profesorId, int claseId);
         Task<bool> AsignarEntrenamientoAsync(int profesorId, int entrenamientoId);
         Task<bool> ValidarCertificadoAsync(int profesorId);

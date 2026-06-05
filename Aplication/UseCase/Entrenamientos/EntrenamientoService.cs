@@ -209,14 +209,17 @@ namespace Aplication.UseCase.Entrenamientos
                 "Inscripcion"
             );
 
-            var profesorUsuario = await _usuarioQuery.GetUsuarioByPersonaId(entrenamientoExistente.ProfesorId);
-            if (profesorUsuario != null)
+            if (entrenamientoExistente.ProfesorId.HasValue)
             {
-                await _notificacionService.CrearNotificacionUsuario(
-                    $"El alumno {clienteExiste.Nombre} {clienteExiste.Apellido} se ha inscrito a tu entrenamiento {entrenamientoExistente.Nombre}.", 
-                    profesorUsuario.Id, 
-                    "Inscripcion"
-                );
+                var profesorUsuario = await _usuarioQuery.GetUsuarioByPersonaId(entrenamientoExistente.ProfesorId.Value);
+                if (profesorUsuario != null)
+                {
+                    await _notificacionService.CrearNotificacionUsuario(
+                        $"El alumno {clienteExiste.Nombre} {clienteExiste.Apellido} se ha inscrito a tu entrenamiento {entrenamientoExistente.Nombre}.", 
+                        profesorUsuario.Id, 
+                        "Inscripcion"
+                    );
+                }
             }
 
             return new EntrenamientoShortResponse
