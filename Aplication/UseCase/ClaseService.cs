@@ -3,6 +3,7 @@ using Aplication.DTOs.Response.Clase;
 using Aplication.Interfaces.IClases;
 using Aplication.Interfaces.ICliente;
 using Aplication.Interfaces.IProfesor;
+using Aplication.Interfaces.IReserva;
 using Domain.Entities;
 using Domain.Exceptions;
 using System;
@@ -23,8 +24,18 @@ namespace Aplication.UseCase
         private readonly IClientesQuery _clienteQuery;
         private readonly Aplication.Interfaces.INotificacionService _notificacionService;
         private readonly Aplication.Interfaces.IUsuario.IUsuarioQuery _usuarioQuery;
+        private readonly IReservaQuery _reservaQuery;
 
-        public ClaseService(IClaseCommand claseCommand, IClaseQuery claseQuery, IClaseMapper claseMapper, IProfesorQuery profesorQuery, IProfesorCommand profesorCommand, IClientesQuery clienteQuery, Aplication.Interfaces.INotificacionService notificacionService, Aplication.Interfaces.IUsuario.IUsuarioQuery usuarioQuery)
+        public ClaseService(
+            IClaseCommand claseCommand, 
+            IClaseQuery claseQuery, 
+            IClaseMapper claseMapper, 
+            IProfesorQuery profesorQuery, 
+            IProfesorCommand profesorCommand, 
+            IClientesQuery clienteQuery, 
+            Aplication.Interfaces.INotificacionService notificacionService, 
+            Aplication.Interfaces.IUsuario.IUsuarioQuery usuarioQuery,
+            IReservaQuery reservaQuery)
         {
             _claseCommand = claseCommand;
             _claseQuery = claseQuery;
@@ -34,6 +45,7 @@ namespace Aplication.UseCase
             _clienteQuery = clienteQuery;
             _notificacionService = notificacionService;
             _usuarioQuery = usuarioQuery;
+            _reservaQuery = reservaQuery;
         }
         public async Task<ClaseCreateResponse> CrearClase(ClaseCreateRequest clase)
         {
@@ -61,6 +73,21 @@ namespace Aplication.UseCase
             if (!esValido)
             {
                 throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
+            }
+
+            if (clase.CanchaId.HasValue)
+            {
+                var conflicto = await _reservaQuery.ObtenerConflictoParaNuevaActividad(
+                    clase.CanchaId.Value,
+                    clase.DiasSemana,
+                    clase.HoraInicio,
+                    clase.HoraFin,
+                    "CLASE"
+                );
+                if (conflicto != null)
+                {
+                    throw new ExceptionBadRequest(conflicto);
+                }
             }
 
             var nuevaClase = _claseMapper.createClasetoRequest(clase);
@@ -121,6 +148,22 @@ namespace Aplication.UseCase
             if (clase.Fecha < DateTime.UtcNow)
             {
                 throw new ExceptionBadRequest("La fecha de la clase no puede ser en el pasado.");
+            }
+
+            if (clase.CanchaId.HasValue)
+            {
+                var conflicto = await _reservaQuery.ObtenerConflictoParaNuevaActividad(
+                    clase.CanchaId.Value,
+                    clase.DiasSemana,
+                    clase.HoraInicio,
+                    clase.HoraFin,
+                    "CLASE",
+                    id
+                );
+                if (conflicto != null)
+                {
+                    throw new ExceptionBadRequest(conflicto);
+                }
             }
 
             claseExistente.Nombre = clase.Nombre;

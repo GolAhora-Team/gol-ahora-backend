@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using Aplication.Interfaces.IDescuento;
 using Aplication.Interfaces.IUsuario;
 using Aplication.Interfaces.IConfiguracion;
+using Aplication.Interfaces.IClases;
+using Aplication.Interfaces.IEntrenamiento;
 
 namespace Aplication.UseCase
 {
@@ -33,6 +35,8 @@ namespace Aplication.UseCase
         private readonly IDescuentoCommand _descuentoCommand;
         private readonly IUsuarioQuery _usuarioQuery;
         private readonly IConfiguracionQuery _configuracionQuery;
+        private readonly IClaseQuery _claseQuery;
+        private readonly IEntrenamientoQuery _entrenamientoQuery;
 
         public ReservaService(
             IReservaQuery reservaQuery,
@@ -45,7 +49,9 @@ namespace Aplication.UseCase
             IPagoQuery pagoQuery,
             IDescuentoCommand descuentoCommand,
             IUsuarioQuery usuarioQuery,
-            IConfiguracionQuery configuracionQuery)
+            IConfiguracionQuery configuracionQuery,
+            IClaseQuery claseQuery,
+            IEntrenamientoQuery entrenamientoQuery)
         {
             _reservaQuery = reservaQuery;
             _reservaCommand = reservaCommand;
@@ -58,6 +64,8 @@ namespace Aplication.UseCase
             _descuentoCommand = descuentoCommand;
             _usuarioQuery = usuarioQuery;
             _configuracionQuery = configuracionQuery;
+            _claseQuery = claseQuery;
+            _entrenamientoQuery = entrenamientoQuery;
         }
 
         public async Task<CreateReservaResponse> CrearReserva(CreateReservaRequest request)
@@ -129,7 +137,7 @@ namespace Aplication.UseCase
         public async Task<List<ReservaResponse>> GetAllReservas()
         {
             var reservas = await _reservaQuery.GetAllReservas();
-            return reservas.Select(r => new ReservaResponse
+            var responseList = reservas.Select(r => new ReservaResponse
             {
                 Id = r.Id,
                 Fecha = r.Fecha,
@@ -150,7 +158,132 @@ namespace Aplication.UseCase
                     Capacidad = r.Cancha.Capacidad
                 }
             }).ToList();
+
+            var canchas = await _canchaQuery.GetListCancha();
+            var canchasDict = canchas.ToDictionary(c => c.Id);
+
+            // Proyectar Clases para los próximos 30 días
+            var classes = await _claseQuery.GetAllClases();
+            var today = DateTime.Today;
+
+            foreach (var clase in classes)
+            {
+                if (clase.CanchaId.HasValue && !string.IsNullOrEmpty(clase.DiasSemana) && canchasDict.TryGetValue(clase.CanchaId.Value, out var cancha))
+                {
+                    var diasList = clase.DiasSemana.Split(',').Select(d => d.Trim()).ToList();
+                    for (int i = 0; i <= 30; i++)
+                    {
+                        var fecha = today.AddDays(i);
+                        var diaAbrev = GetDiaAbreviado(fecha.DayOfWeek);
+                        if (diasList.Contains(diaAbrev))
+                        {
+                            // Verificar si ya existe una reserva activa en este horario y cancha
+                            bool hasOverlappingReserva = responseList.Any(r =>
+                                r.Cancha.Id == clase.CanchaId.Value &&
+                                r.Fecha.Date == fecha.Date &&
+                                r.Estado != "Cancelada" &&
+                                r.Estado != "Cancelado" &&
+                                clase.HoraInicio < r.HoraFin &&
+                                clase.HoraFin > r.HoraInicio);
+
+                            if (!hasOverlappingReserva)
+                            {
+                                responseList.Add(new ReservaResponse
+                                {
+                                    Id = -(clase.Id * 1000 + i),
+                                    Fecha = fecha,
+                                    HoraInicio = clase.HoraInicio,
+                                    HoraFin = clase.HoraFin,
+                                    Estado = "Clase",
+                                    Cliente = new ClienteShort
+                                    {
+                                        Id = 0,
+                                        Nombre = $"Clase: {clase.Nombre}",
+                                        apellido = clase.Profesor != null ? $"Prof. {clase.Profesor.Nombre} {clase.Profesor.Apellido}" : "Sin Asignar"
+                                    },
+                                    Cancha = new CanchaShort
+                                    {
+                                        Id = cancha.Id,
+                                        Nombre = cancha.Nombre,
+                                        Tipo = cancha.Tipo.ToString(),
+                                        Capacidad = cancha.Capacidad
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Proyectar Entrenamientos para los próximos 30 días
+            var entrenamientos = await _entrenamientoQuery.GetAllEntrenamientos();
+            foreach (var e in entrenamientos)
+            {
+                if (e.CanchaId.HasValue && !string.IsNullOrEmpty(e.DiasSemana) && canchasDict.TryGetValue(e.CanchaId.Value, out var cancha))
+                {
+                    var diasList = e.DiasSemana.Split(',').Select(d => d.Trim()).ToList();
+                    for (int i = 0; i <= 30; i++)
+                    {
+                        var fecha = today.AddDays(i);
+                        var diaAbrev = GetDiaAbreviado(fecha.DayOfWeek);
+                        if (diasList.Contains(diaAbrev))
+                        {
+                            // Verificar si ya existe una reserva/clase activa en este horario y cancha
+                            bool hasOverlappingReserva = responseList.Any(r =>
+                                r.Cancha.Id == e.CanchaId.Value &&
+                                r.Fecha.Date == fecha.Date &&
+                                r.Estado != "Cancelada" &&
+                                r.Estado != "Cancelado" &&
+                                e.HoraInicio < r.HoraFin &&
+                                e.HoraFin > r.HoraInicio);
+
+                            if (!hasOverlappingReserva)
+                            {
+                                responseList.Add(new ReservaResponse
+                                {
+                                    Id = -(e.Id * 1000 + 100000 + i),
+                                    Fecha = fecha,
+                                    HoraInicio = e.HoraInicio,
+                                    HoraFin = e.HoraFin,
+                                    Estado = "Entrenamiento",
+                                    Cliente = new ClienteShort
+                                    {
+                                        Id = 0,
+                                        Nombre = $"Entrenamiento: {e.Nombre}",
+                                        apellido = e.Profesor != null ? $"Prof. {e.Profesor.Nombre} {e.Profesor.Apellido}" : "Sin Asignar"
+                                    },
+                                    Cancha = new CanchaShort
+                                    {
+                                        Id = cancha.Id,
+                                        Nombre = cancha.Nombre,
+                                        Tipo = cancha.Tipo.ToString(),
+                                        Capacidad = cancha.Capacidad
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            return responseList;
         }
+
+        private string GetDiaAbreviado(DayOfWeek day)
+        {
+            return day switch
+            {
+                DayOfWeek.Monday => "Lun",
+                DayOfWeek.Tuesday => "Mar",
+                DayOfWeek.Wednesday => "Mié",
+                DayOfWeek.Thursday => "Jue",
+                DayOfWeek.Friday => "Vie",
+                DayOfWeek.Saturday => "Sáb",
+                DayOfWeek.Sunday => "Dom",
+                _ => ""
+            };
+        }
+
 
         public async Task<ReservaResponse> GetReservaById(int id)
         {

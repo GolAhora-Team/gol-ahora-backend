@@ -3,6 +3,7 @@ using Aplication.DTOs.Response.Entrenamiento;
 using Aplication.Interfaces.IEntrenamiento;
 using Aplication.Interfaces.IProfesor;
 using Aplication.Interfaces.ICliente;
+using Aplication.Interfaces.IReserva;
 using Domain.Entities;
 using Domain.Exceptions;
 using System;
@@ -22,6 +23,7 @@ namespace Aplication.UseCase.Entrenamientos
         private readonly IClientesQuery _clienteQuery;
         private readonly Aplication.Interfaces.INotificacionService _notificacionService;
         private readonly Aplication.Interfaces.IUsuario.IUsuarioQuery _usuarioQuery;
+        private readonly IReservaQuery _reservaQuery;
 
         public EntrenamientoService(
             IEntrenamientoCommand entrenamientoCommand,
@@ -31,7 +33,8 @@ namespace Aplication.UseCase.Entrenamientos
             IProfesorCommand profesorCommand,
             IClientesQuery clienteQuery,
             Aplication.Interfaces.INotificacionService notificacionService,
-            Aplication.Interfaces.IUsuario.IUsuarioQuery usuarioQuery)
+            Aplication.Interfaces.IUsuario.IUsuarioQuery usuarioQuery,
+            IReservaQuery reservaQuery)
         {
             _entrenamientoCommand = entrenamientoCommand;
             _entrenamientoQuery = entrenamientoQuery;
@@ -41,6 +44,7 @@ namespace Aplication.UseCase.Entrenamientos
             _clienteQuery = clienteQuery;
             _notificacionService = notificacionService;
             _usuarioQuery = usuarioQuery;
+            _reservaQuery = reservaQuery;
         }
 
         public async Task<EntrenamientoResponse> CrearEntrenamiento(EntrenamientoCreateRequest request)
@@ -64,6 +68,21 @@ namespace Aplication.UseCase.Entrenamientos
             if (!esValido)
             {
                 throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
+            }
+
+            if (request.CanchaId.HasValue)
+            {
+                var conflicto = await _reservaQuery.ObtenerConflictoParaNuevaActividad(
+                    request.CanchaId.Value,
+                    request.DiasSemana,
+                    request.HoraInicio,
+                    request.HoraFin,
+                    "ENTRENAMIENTO"
+                );
+                if (conflicto != null)
+                {
+                    throw new ExceptionBadRequest(conflicto);
+                }
             }
 
             var nuevoEntrenamiento = _entrenamientoMapper.CreateRequestToEntrenamiento(request);
@@ -121,6 +140,22 @@ namespace Aplication.UseCase.Entrenamientos
             if (request.Fecha < DateTime.UtcNow)
             {
                 throw new ExceptionBadRequest("La fecha no puede ser en el pasado.");
+            }
+
+            if (request.CanchaId.HasValue)
+            {
+                var conflicto = await _reservaQuery.ObtenerConflictoParaNuevaActividad(
+                    request.CanchaId.Value,
+                    request.DiasSemana,
+                    request.HoraInicio,
+                    request.HoraFin,
+                    "ENTRENAMIENTO",
+                    id
+                );
+                if (conflicto != null)
+                {
+                    throw new ExceptionBadRequest(conflicto);
+                }
             }
 
             entrenamientoExistente.Nombre = request.Nombre;
