@@ -75,7 +75,11 @@ namespace Aplication.UseCase
                         Partido nextMatch = null;
                         if (oldGanadorId.HasValue)
                         {
-                            nextMatch = nextFaseMatches.FirstOrDefault(p => p.EquipoLocalId == oldGanadorId.Value || p.EquipoVisitanteId == oldGanadorId.Value);
+                            var nextMatchResponse = nextFaseMatches.FirstOrDefault(p => p.EquipoLocalId == oldGanadorId.Value || p.EquipoVisitanteId == oldGanadorId.Value);
+                            if (nextMatchResponse != null)
+                            {
+                                nextMatch = await _query.GetPartidoById(nextMatchResponse.Id);
+                            }
                         }
 
                         bool thisHasWinner = partido.GanadorId.HasValue;
