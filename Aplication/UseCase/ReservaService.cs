@@ -33,7 +33,7 @@ namespace Aplication.UseCase
         private readonly IUsuarioQuery _usuarioQuery;
 
         // Política de cancelación
-        private const int HORAS_ANTELACION_MINIMA = 6;
+        private const int HORAS_ANTELACION_MINIMA = 24;
 
         public ReservaService(
             IReservaQuery reservaQuery,
@@ -242,7 +242,7 @@ namespace Aplication.UseCase
             }
             else if (horasRestantes < horasAntelacion)
             {
-                penalizacionAplicable = (decimal)(1 - (horasRestantes / horasAntelacion)) * 100m;
+                penalizacionAplicable = 50;
             }
 
             decimal montoPenalizacion = montoOriginal * (penalizacionAplicable / 100m);
