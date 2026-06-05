@@ -16,6 +16,7 @@ namespace Aplication.Interfaces.IAsistencia
         Task<List<Asistencia>> GetAllAsistencias();
         
         Task<List<Asistencia>> GetAsistenciasPorClaseYFecha(int claseId, DateTime fecha);
+        Task<List<AsistenciaEntrenamiento>> GetAsistenciasEntrenamientoPorFecha(int entrenamientoId, DateTime fecha);
         
         Task<Asistencia?> GetInscripcionClaseAsync(int claseId, int clienteId);
         Task<Asistencia?> GetInscripcionClaseByBarcodeAsync(int claseId, string barcode);
