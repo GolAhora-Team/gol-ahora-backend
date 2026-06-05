@@ -21,5 +21,13 @@ namespace Aplication.Interfaces.IReserva
                 TimeSpan horaInicio,
                 TimeSpan horaFin,
                 int? excludeReservaId = null);
+
+            Task<string?> ObtenerConflictoParaNuevaActividad(
+                int canchaId,
+                string diasSemana,
+                TimeSpan horaInicio,
+                TimeSpan horaFin,
+                string tipoActividad,
+                int? excludeActividadId = null);
     }
 }
