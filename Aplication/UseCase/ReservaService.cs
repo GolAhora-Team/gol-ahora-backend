@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Aplication.Interfaces.IDescuento;
 using Aplication.Interfaces.IUsuario;
+using Aplication.Interfaces.IConfiguracion;
 
 namespace Aplication.UseCase
 {
@@ -31,9 +32,7 @@ namespace Aplication.UseCase
         private readonly IPagoQuery _pagoQuery;
         private readonly IDescuentoCommand _descuentoCommand;
         private readonly IUsuarioQuery _usuarioQuery;
-
-        // Política de cancelación
-        private const int HORAS_ANTELACION_MINIMA = 24;
+        private readonly IConfiguracionQuery _configuracionQuery;
 
         public ReservaService(
             IReservaQuery reservaQuery,
@@ -45,7 +44,8 @@ namespace Aplication.UseCase
             IFacturaQuery facturaQuery,
             IPagoQuery pagoQuery,
             IDescuentoCommand descuentoCommand,
-            IUsuarioQuery usuarioQuery)
+            IUsuarioQuery usuarioQuery,
+            IConfiguracionQuery configuracionQuery)
         {
             _reservaQuery = reservaQuery;
             _reservaCommand = reservaCommand;
@@ -57,6 +57,7 @@ namespace Aplication.UseCase
             _pagoQuery = pagoQuery;
             _descuentoCommand = descuentoCommand;
             _usuarioQuery = usuarioQuery;
+            _configuracionQuery = configuracionQuery;
         }
 
         public async Task<CreateReservaResponse> CrearReserva(CreateReservaRequest request)
@@ -196,7 +197,8 @@ namespace Aplication.UseCase
             if (reserva.Estado == EstadoReserva.Finalizada)
                 throw new ExceptionBadRequest("La reserva ya finalizó.");
 
-            int horasAntelacion = HORAS_ANTELACION_MINIMA;
+            var conf = await _configuracionQuery.GetConfiguracion();
+            int horasAntelacion = conf.HorasAntelacionMinima;
 
             // Calcular horas restantes hasta el turno
             var fechaHoraTurno = reserva.Fecha.Date + reserva.HoraInicio;
@@ -242,7 +244,7 @@ namespace Aplication.UseCase
             }
             else if (horasRestantes < horasAntelacion)
             {
-                penalizacionAplicable = 50;
+                penalizacionAplicable = conf.PorcentajePenalizacion;
             }
 
             decimal montoPenalizacion = montoOriginal * (penalizacionAplicable / 100m);

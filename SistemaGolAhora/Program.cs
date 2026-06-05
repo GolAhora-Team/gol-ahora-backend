@@ -13,6 +13,7 @@ using Aplication.Interfaces.IProfesor;
 using Aplication.Interfaces.IReserva;
 using Aplication.Interfaces.IUsuario;
 using Aplication.Interfaces.IRecibo;
+using Aplication.Interfaces.IConfiguracion;
 using Aplication.Mappers;
 using Aplication.UseCase;
 using Aplication.UseCase.Clientes;
@@ -152,6 +153,11 @@ builder.Services.AddScoped<IEntrenamientoMapper, EntrenamientoMapper>();
 builder.Services.AddScoped<IReservaCommand, ReservaCommand>();
 builder.Services.AddScoped<IReservaQuery, ReservaQuery>();
 builder.Services.AddScoped<IReservaService, ReservaService>();
+
+// Configuracion
+builder.Services.AddScoped<IConfiguracionCommand, ConfiguracionCommand>();
+builder.Services.AddScoped<IConfiguracionQuery, ConfiguracionQuery>();
+builder.Services.AddScoped<IConfiguracionService, ConfiguracionService>();
 
 // Usuario
 builder.Services.AddScoped<IUsuarioCommand, UsuarioCommand>();
