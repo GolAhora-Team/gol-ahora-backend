@@ -39,9 +39,10 @@ namespace Aplication.UseCase
             if (request.Tipo == TipoCompeticion.Liga && 
                 request.CantidadEquipos != 4 && 
                 request.CantidadEquipos != 8 && 
+                request.CantidadEquipos != 10 && 
                 request.CantidadEquipos != 20)
             {
-                throw new Exception("Por el momento, las ligas deben ser de 4, 8 o 20 equipos.");
+                throw new Exception("Por el momento, las ligas deben ser de 4, 8, 10 o 20 equipos.");
             }
 
             var competicion = _mapper.CreateCompeticion(request);
