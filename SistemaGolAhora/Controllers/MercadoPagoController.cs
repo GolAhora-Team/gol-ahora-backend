@@ -51,9 +51,9 @@ namespace SistemaGolAhora.Controllers
                     },
                     back_urls = new
                     {
-                        success = request.ReturnUrl ?? _mpSettings.DefaultReturnUrl,
-                        failure = request.ReturnUrl ?? _mpSettings.DefaultReturnUrl,
-                        pending = request.ReturnUrl ?? _mpSettings.DefaultReturnUrl
+                        success = string.IsNullOrWhiteSpace(request.ReturnUrl) ? _mpSettings.DefaultReturnUrl : request.ReturnUrl,
+                        failure = string.IsNullOrWhiteSpace(request.ReturnUrl) ? _mpSettings.DefaultReturnUrl : request.ReturnUrl,
+                        pending = string.IsNullOrWhiteSpace(request.ReturnUrl) ? _mpSettings.DefaultReturnUrl : request.ReturnUrl
                     },
                     notification_url = !string.IsNullOrEmpty(request.WebhookUrl) ? request.WebhookUrl : _mpSettings.WebhookUrl, // Webhook
                     auto_return = "approved",
