@@ -55,19 +55,19 @@ namespace Aplication.Mappers
                 HoraInicio = clase.HoraInicio,
                 HoraFin = clase.HoraFin,
                 PrecioInscripcion = clase.PrecioInscripcion,
-                Profesor = new ProfesorShortResponse
+                Profesor = clase.Profesor != null ? new ProfesorShortResponse
                 {
                     Id = clase.Profesor.Id,
                     Nombre = clase.Profesor.Nombre,
                     Apellido = clase.Profesor.Apellido,
                     especialidad = clase.Profesor.Especialidad
-                },
-                Alumnos = clase.Asistencias.Select(i => new ClaseAlumnos
+                } : null,
+                Alumnos = clase.Asistencias != null ? clase.Asistencias.Where(i => i.Cliente != null).Select(i => new ClaseAlumnos
                 {
                     Id = i.Cliente.Id,
                     Nombre = i.Cliente.Nombre,
                     Apellido = i.Cliente.Apellido
-                }).ToList()
+                }).ToList() : new List<ClaseAlumnos>()
             };
         }
     }
