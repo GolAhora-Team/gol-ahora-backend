@@ -213,9 +213,10 @@ namespace Aplication.UseCase
                 var factura = await _facturaQuery.GetFacturaById(reserva.FacturaId.Value);
                 if (factura != null)
                 {
-                    montoOriginal = factura.Pagos?
+                    decimal sumaPagos = factura.Pagos?
                         .Where(p => p.Estado == EstadoPago.Pagado)
-                        .Sum(p => p.Monto) ?? factura.Total;
+                        .Sum(p => p.Monto) ?? 0;
+                    montoOriginal = sumaPagos > 0 ? sumaPagos : factura.Total;
                 }
             }
             else
@@ -229,20 +230,17 @@ namespace Aplication.UseCase
                 if (factura != null)
                 {
                     facturaIdEncontrada = factura.Id;
-                    montoOriginal = factura.Pagos?
+                    decimal sumaPagos = factura.Pagos?
                         .Where(p => p.Estado == EstadoPago.Pagado)
-                        .Sum(p => p.Monto) ?? factura.Total;
+                        .Sum(p => p.Monto) ?? 0;
+                    montoOriginal = sumaPagos > 0 ? sumaPagos : factura.Total;
                 }
             }
 
             bool dentroDePlazo = horasRestantes >= horasAntelacion;
             decimal penalizacionAplicable = 0;
 
-            if (horasRestantes <= 0)
-            {
-                penalizacionAplicable = 100;
-            }
-            else if (horasRestantes < horasAntelacion)
+            if (!dentroDePlazo)
             {
                 penalizacionAplicable = conf.PorcentajePenalizacion;
             }
