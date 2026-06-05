@@ -20,11 +20,18 @@ namespace Infraestructure.Services
         {
             try
             {
-                using var smtpClient = new SmtpClient(_emailSettings.SmtpServer)
+                var smtpServer = string.IsNullOrWhiteSpace(_emailSettings.SmtpServer) ? "smtp.gmail.com" : _emailSettings.SmtpServer;
+                var port = _emailSettings.Port <= 0 ? 587 : _emailSettings.Port;
+                var senderEmail = string.IsNullOrWhiteSpace(_emailSettings.SenderEmail) ? "complejogolahora@gmail.com" : _emailSettings.SenderEmail;
+                var senderName = string.IsNullOrWhiteSpace(_emailSettings.SenderName) ? "Complejo Gol Ahora" : _emailSettings.SenderName;
+                var password = string.IsNullOrWhiteSpace(_emailSettings.Password) ? "sgrr mapd bvgx kdeg" : _emailSettings.Password;
+                var enableSsl = string.IsNullOrWhiteSpace(_emailSettings.SmtpServer) ? true : _emailSettings.EnableSsl;
+
+                using var smtpClient = new SmtpClient(smtpServer)
                 {
-                    Port = _emailSettings.Port,
-                    Credentials = new NetworkCredential(_emailSettings.SenderEmail, _emailSettings.Password),
-                    EnableSsl = _emailSettings.EnableSsl,
+                    Port = port,
+                    Credentials = new NetworkCredential(senderEmail, password),
+                    EnableSsl = enableSsl,
                 };
 
                 var mailMessage = new MailMessage
