@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Clase;
+using Aplication.DTOs.Request.Clase;
 using Aplication.DTOs.Response.Clase;
 using Aplication.Interfaces.IClases;
 using Domain.Entities;
@@ -23,7 +23,9 @@ namespace Aplication.Mappers
                 HoraInicio = request.HoraInicio,
                 HoraFin = request.HoraFin,
                 PrecioInscripcion = request.PrecioInscripcion,
-                ProfesorId = request.ProfesorId
+                ProfesorId = request.ProfesorId,
+                CanchaId = request.CanchaId,
+                DiasSemana = request.DiasSemana
             };
         }
 

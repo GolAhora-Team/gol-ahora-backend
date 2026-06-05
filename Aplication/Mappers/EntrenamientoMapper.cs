@@ -15,6 +15,9 @@ namespace Aplication.Mappers
                 Fecha = request.Fecha,
                 CupoMaximo = request.CupoMaximo,
                 ProfesorId = request.ProfesorId,
+                HoraInicio = request.HoraInicio,
+                HoraFin = request.HoraFin,
+                DiasSemana = request.DiasSemana,
                 CanchaId = request.CanchaId
             };
         }
