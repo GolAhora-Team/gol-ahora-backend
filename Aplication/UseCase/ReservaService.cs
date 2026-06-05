@@ -204,36 +204,39 @@ namespace Aplication.UseCase
             var fechaHoraTurno = reserva.Fecha.Date + reserva.HoraInicio;
             var horasRestantes = (fechaHoraTurno - DateTime.Now).TotalHours;
 
-            // Buscar monto original pagado
+            // Buscar monto original pagado y método de pago
             decimal montoOriginal = 0;
+            string metodoPago = "No registrado";
             int? facturaIdEncontrada = reserva.FacturaId;
+
+            Factura facturaEncontrada = null;
 
             if (reserva.FacturaId.HasValue)
             {
-                var factura = await _facturaQuery.GetFacturaById(reserva.FacturaId.Value);
-                if (factura != null)
-                {
-                    decimal sumaPagos = factura.Pagos?
-                        .Where(p => p.Estado == EstadoPago.Pagado)
-                        .Sum(p => p.Monto) ?? 0;
-                    montoOriginal = sumaPagos > 0 ? sumaPagos : factura.Total;
-                }
+                facturaEncontrada = await _facturaQuery.GetFacturaById(reserva.FacturaId.Value);
             }
             else
             {
                 // Buscar factura por clienteId + concepto "Reserva"
                 var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId);
-                var factura = facturas?
+                facturaEncontrada = facturas?
                     .Where(f => f.Concepto == "Reserva")
                     .OrderByDescending(f => f.FechaEmision)
                     .FirstOrDefault();
-                if (factura != null)
+            }
+
+            if (facturaEncontrada != null)
+            {
+                facturaIdEncontrada = facturaEncontrada.Id;
+                decimal sumaPagos = facturaEncontrada.Pagos?
+                    .Where(p => p.Estado == EstadoPago.Pagado)
+                    .Sum(p => p.Monto) ?? 0;
+                montoOriginal = sumaPagos > 0 ? sumaPagos : facturaEncontrada.Total;
+
+                var primerPago = facturaEncontrada.Pagos?.FirstOrDefault(p => p.Estado == EstadoPago.Pagado);
+                if (primerPago != null)
                 {
-                    facturaIdEncontrada = factura.Id;
-                    decimal sumaPagos = factura.Pagos?
-                        .Where(p => p.Estado == EstadoPago.Pagado)
-                        .Sum(p => p.Monto) ?? 0;
-                    montoOriginal = sumaPagos > 0 ? sumaPagos : factura.Total;
+                    metodoPago = primerPago.Metodo.ToString();
                 }
             }
 
@@ -255,6 +258,7 @@ namespace Aplication.UseCase
                 HoraInicio = reserva.HoraInicio,
                 ClienteNombre = $"{reserva.Cliente?.Nombre} {reserva.Cliente?.Apellido}",
                 CanchaNombre = reserva.Cancha?.Nombre ?? "N/A",
+                MetodoPago = metodoPago,
                 MontoOriginal = montoOriginal,
                 HorasRestantes = Math.Round(horasRestantes, 1),
                 HorasAntelacionMinima = horasAntelacion,

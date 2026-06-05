@@ -13,6 +13,7 @@ namespace Aplication.DTOs.Response.Reserva
         public TimeSpan HoraInicio { get; set; }
         public string ClienteNombre { get; set; }
         public string CanchaNombre { get; set; }
+        public string MetodoPago { get; set; }
 
         /// <summary>
         /// Monto original abonado por la reserva

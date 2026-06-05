@@ -1,5 +1,9 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class AppDbContext : DbContext
 {
@@ -106,5 +110,64 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(r => r.FacturaId)
             .OnDelete(DeleteBehavior.SetNull);
+    }
+
+    public override int SaveChanges()
+    {
+        CapitalizeEntityStrings();
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        CapitalizeEntityStrings();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void CapitalizeEntityStrings()
+    {
+        var entries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+        foreach (var entry in entries)
+        {
+            // Capitalizar 'Nombre' si existe y es de tipo string
+            var nombreProp = entry.Metadata.FindProperty("Nombre");
+            if (nombreProp != null && nombreProp.ClrType == typeof(string))
+            {
+                var currentVal = entry.Property("Nombre").CurrentValue as string;
+                if (!string.IsNullOrWhiteSpace(currentVal))
+                {
+                    entry.Property("Nombre").CurrentValue = CapitalizeWords(currentVal);
+                }
+            }
+
+            // Capitalizar 'Apellido' si existe y es de tipo string
+            var apellidoProp = entry.Metadata.FindProperty("Apellido");
+            if (apellidoProp != null && apellidoProp.ClrType == typeof(string))
+            {
+                var currentVal = entry.Property("Apellido").CurrentValue as string;
+                if (!string.IsNullOrWhiteSpace(currentVal))
+                {
+                    entry.Property("Apellido").CurrentValue = CapitalizeWords(currentVal);
+                }
+            }
+        }
+    }
+
+    private string CapitalizeWords(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return value;
+        
+        var words = value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < words.Length; i++)
+        {
+            var word = words[i];
+            if (word.Length > 0)
+            {
+                words[i] = char.ToUpper(word[0]) + word.Substring(1).ToLower();
+            }
+        }
+        return string.Join(" ", words);
     }
 }
