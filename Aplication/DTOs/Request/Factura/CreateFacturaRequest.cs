@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +13,8 @@ namespace Aplication.DTOs.Request.Factura
         public decimal Total { get; set; }
 
         public int ClienteId { get; set; }
+
+        public string? Concepto { get; set; }
+        public string? Descripcion { get; set; }
     }
 }

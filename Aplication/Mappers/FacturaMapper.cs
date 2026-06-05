@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Factura;
+using Aplication.DTOs.Request.Factura;
 using Aplication.DTOs.Response.Factura;
 using Aplication.Interfaces.IFactura;
 using Domain.Entities;
@@ -19,7 +19,9 @@ namespace Aplication.Mappers
             {
                 FechaEmision = request.FechaEmision,
                 Total = request.Total,
-                ClienteId = request.ClienteId
+                ClienteId = request.ClienteId,
+                Concepto = request.Concepto,
+                Descripcion = request.Descripcion
             };
         }
 
@@ -31,7 +33,9 @@ namespace Aplication.Mappers
                 Id = factura.Id,
                 FechaEmision = factura.FechaEmision,
                 Total = factura.Total,
-                ClienteId = factura.ClienteId
+                ClienteId = factura.ClienteId,
+                Concepto = factura.Concepto,
+                Descripcion = factura.Descripcion
             };
         }
 
@@ -51,7 +55,9 @@ namespace Aplication.Mappers
                 Id = f.Id,
                 FechaEmision = f.FechaEmision,
                 Total = f.Total,
-                ClienteId = f.ClienteId
+                ClienteId = f.ClienteId,
+                Concepto = f.Concepto,
+                Descripcion = f.Descripcion
             }).ToList();
         }
     }
