@@ -13,5 +13,8 @@ namespace Aplication.Interfaces.IAsistencia
             Task UpdateAsistencia(Asistencia asistencia);
             Task RemoveAsistencia(Asistencia Asistencia);
             Task InsertAsistenciaEntrenamiento(AsistenciaEntrenamiento asistencia);
+            Task RemoveAsistenciaEntrenamiento(AsistenciaEntrenamiento asistencia);
+            Task InsertRegistroAsistenciaClase(RegistroAsistenciaClase registro);
+            Task RemoveRegistroAsistenciaClase(RegistroAsistenciaClase registro);
     }
 }

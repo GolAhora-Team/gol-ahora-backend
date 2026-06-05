@@ -36,6 +36,7 @@ public class AppDbContext : DbContext
     // 🔹 CLASES / ENTRENAMIENTO
     public DbSet<Clase> Clases { get; set; }
     public DbSet<Asistencia> Asistencias { get; set; }
+    public DbSet<RegistroAsistenciaClase> RegistroAsistenciaClases { get; set; }
     public DbSet<AsistenciaEntrenamiento> AsistenciaEntrenamientos { get; set; }
     public DbSet<Entrenamiento> Entrenamientos { get; set; }
     public DbSet<ClienteEntrenamiento> ClienteEntrenamientos { get; set; }

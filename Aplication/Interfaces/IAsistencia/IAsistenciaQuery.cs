@@ -15,7 +15,7 @@ namespace Aplication.Interfaces.IAsistencia
 
         Task<List<Asistencia>> GetAllAsistencias();
         
-        Task<List<Asistencia>> GetAsistenciasPorClaseYFecha(int claseId, DateTime fecha);
+        Task<List<RegistroAsistenciaClase>> GetAsistenciasPorClaseYFecha(int claseId, DateTime fecha);
         Task<List<AsistenciaEntrenamiento>> GetAsistenciasEntrenamientoPorFecha(int entrenamientoId, DateTime fecha);
         
         Task<Asistencia?> GetInscripcionClaseAsync(int claseId, int clienteId);
@@ -23,5 +23,10 @@ namespace Aplication.Interfaces.IAsistencia
         Task<ClienteEntrenamiento?> GetInscripcionEntrenamientoAsync(int entrenamientoId, int clienteId);
         Task<ClienteEntrenamiento?> GetInscripcionEntrenamientoByBarcodeAsync(int entrenamientoId, string barcode);
         Task<bool> YaAsistioEntrenamientoAsync(int entrenamientoId, int clienteId, DateTime fecha);
+
+        Task<RegistroAsistenciaClase?> GetRegistroAsistenciaClaseAsync(int claseId, int clienteId, DateTime fecha);
+        Task<AsistenciaEntrenamiento?> GetAsistenciaEntrenamientoAsync(int entrenamientoId, int clienteId, DateTime fecha);
+        Task<List<RegistroAsistenciaClase>> GetHistorialAsistenciaClase(int claseId, int clienteId);
+        Task<List<AsistenciaEntrenamiento>> GetHistorialAsistenciaEntrenamiento(int entrenamientoId, int clienteId);
     }
 }

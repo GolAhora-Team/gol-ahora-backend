@@ -40,5 +40,23 @@ namespace Infraestructure.Command
             await _context.AsistenciaEntrenamientos.AddAsync(asistencia);
             await _context.SaveChangesAsync();
         }
+
+        public async Task RemoveAsistenciaEntrenamiento(AsistenciaEntrenamiento asistencia)
+        {
+            _context.AsistenciaEntrenamientos.Remove(asistencia);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task InsertRegistroAsistenciaClase(RegistroAsistenciaClase registro)
+        {
+            await _context.RegistroAsistenciaClases.AddAsync(registro);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveRegistroAsistenciaClase(RegistroAsistenciaClase registro)
+        {
+            _context.RegistroAsistenciaClases.Remove(registro);
+            await _context.SaveChangesAsync();
+        }
     }
 }
