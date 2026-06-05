@@ -34,7 +34,8 @@ namespace Aplication.Mappers
                 ContactoEmergencia = request.ContactoEmergencia,
                 Email = request.Email,
                 FechaRegistro = DateTime.UtcNow,
-                FechaAlta = DateTime.UtcNow
+                FechaAlta = DateTime.UtcNow,
+                ObraSocial = "Ninguna"
             };
         }
         public AdministradorResponse CreateAdministradorResponse(Administrador admin)

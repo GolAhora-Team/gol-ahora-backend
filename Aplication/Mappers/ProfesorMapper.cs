@@ -114,7 +114,9 @@ namespace Aplication.Mappers
                 Provincia = request.Provincia,
                 Pais = request.Pais,
                 ContactoEmergencia = request.ContactoEmergencia,
-                Email = request.Email
+                Email = request.Email,
+                ObraSocial = "Ninguna",
+                FechaRegistro = DateTime.UtcNow
             };
         }
         
@@ -137,7 +139,9 @@ namespace Aplication.Mappers
                 Provincia = request.Provincia,
                 Pais = request.Pais,
                 ContactoEmergencia = request.ContactoEmergencia,
-                Email = request.Email
+                Email = request.Email,
+                ObraSocial = "Ninguna",
+                FechaRegistro = DateTime.UtcNow
             };
         }
     }
