@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Aplication.Interfaces.IDescuento;
+using Aplication.Interfaces.IUsuario;
 
 namespace Aplication.UseCase
 {
@@ -27,10 +29,11 @@ namespace Aplication.UseCase
         private readonly IPagoCommand _pagoCommand;
         private readonly IFacturaQuery _facturaQuery;
         private readonly IPagoQuery _pagoQuery;
+        private readonly IDescuentoCommand _descuentoCommand;
+        private readonly IUsuarioQuery _usuarioQuery;
 
-        // Política de cancelación por defecto (se puede sobreescribir desde la BD vía endpoint futuro)
-        private const int HORAS_ANTELACION_MINIMA = 24;
-        private const decimal PORCENTAJE_PENALIZACION = 50;
+        // Política de cancelación
+        private const int HORAS_ANTELACION_MINIMA = 6;
 
         public ReservaService(
             IReservaQuery reservaQuery,
@@ -40,7 +43,9 @@ namespace Aplication.UseCase
             INotificacionService notificacionService,
             IPagoCommand pagoCommand,
             IFacturaQuery facturaQuery,
-            IPagoQuery pagoQuery)
+            IPagoQuery pagoQuery,
+            IDescuentoCommand descuentoCommand,
+            IUsuarioQuery usuarioQuery)
         {
             _reservaQuery = reservaQuery;
             _reservaCommand = reservaCommand;
@@ -50,6 +55,8 @@ namespace Aplication.UseCase
             _pagoCommand = pagoCommand;
             _facturaQuery = facturaQuery;
             _pagoQuery = pagoQuery;
+            _descuentoCommand = descuentoCommand;
+            _usuarioQuery = usuarioQuery;
         }
 
         public async Task<CreateReservaResponse> CrearReserva(CreateReservaRequest request)
@@ -80,6 +87,10 @@ namespace Aplication.UseCase
             if (request.Fecha.Date < DateTime.Now.Date)
             {
                 throw new ExceptionBadRequest("La fecha de la reserva no puede ser en el pasado.");
+            }
+            if (request.Fecha.Date > DateTime.Now.Date.AddDays(30))
+            {
+                throw new ExceptionBadRequest("No se puede reservar con más de 30 días de antelación.");
             }
 
             var reserva = new Reserva
@@ -186,7 +197,6 @@ namespace Aplication.UseCase
                 throw new ExceptionBadRequest("La reserva ya finalizó.");
 
             int horasAntelacion = HORAS_ANTELACION_MINIMA;
-            decimal porcentajePenalizacion = PORCENTAJE_PENALIZACION;
 
             // Calcular horas restantes hasta el turno
             var fechaHoraTurno = reserva.Fecha.Date + reserva.HoraInicio;
@@ -224,7 +234,17 @@ namespace Aplication.UseCase
             }
 
             bool dentroDePlazo = horasRestantes >= horasAntelacion;
-            decimal penalizacionAplicable = dentroDePlazo ? 0 : porcentajePenalizacion;
+            decimal penalizacionAplicable = 0;
+
+            if (horasRestantes <= 0)
+            {
+                penalizacionAplicable = 100;
+            }
+            else if (horasRestantes < horasAntelacion)
+            {
+                penalizacionAplicable = (decimal)(1 - (horasRestantes / horasAntelacion)) * 100m;
+            }
+
             decimal montoPenalizacion = montoOriginal * (penalizacionAplicable / 100m);
             decimal montoReintegro = montoOriginal - montoPenalizacion;
 
@@ -270,29 +290,55 @@ namespace Aplication.UseCase
             // 2. Si hay monto a reintegrar, generar el pago negativo (nota de crédito)
             if (cancelInfo.MontoReintegro > 0)
             {
-                // Buscar la factura asociada
-                int? facturaId = reserva.FacturaId;
-                if (!facturaId.HasValue)
+                if (reserva.Cliente != null && reserva.Cliente.EsSocioActivo && cancelInfo.DentroDePlazo)
                 {
-                    var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId);
-                    var factura = facturas?
-                        .Where(f => f.Concepto == "Reserva")
-                        .OrderByDescending(f => f.FechaEmision)
-                        .FirstOrDefault();
-                    facturaId = factura?.Id;
-                }
-
-                if (facturaId.HasValue)
-                {
-                    var pagoReintegro = new Pago
+                    // Es socio activo y canceló en término: crear cupón de descuento 100%
+                    var descuento = new Descuento
                     {
-                        FechaPago = DateTime.Now,
-                        Monto = -cancelInfo.MontoReintegro, // Monto negativo = nota de crédito/reintegro
-                        Metodo = MetodoPago.Transferencia,
-                        Estado = EstadoPago.Reintegro,
-                        FacturaId = facturaId.Value
+                        Nombre = $"REFUND-{reserva.Id}",
+                        Descripcion = $"Reembolso de reserva {reserva.Id} (100% off)",
+                        Porcentaje = 100,
+                        FechaInicio = DateTime.Now,
+                        FechaFin = DateTime.Now.AddMonths(3)
                     };
-                    await _pagoCommand.InsertPago(pagoReintegro);
+                    await _descuentoCommand.InsertDescuento(descuento);
+
+                    var usuario = await _usuarioQuery.GetUsuarioByPersonaId(reserva.ClienteId);
+                    if (usuario != null)
+                    {
+                        await _notificacionService.CrearNotificacionUsuario(
+                            $"Reembolso procesado. Tienes un descuento del 100% para tu próxima reserva usando el código: REFUND-{reserva.Id}",
+                            usuario.Id,
+                            "Reembolso"
+                        );
+                    }
+                }
+                else
+                {
+                    // Buscar la factura asociada
+                    int? facturaId = reserva.FacturaId;
+                    if (!facturaId.HasValue)
+                    {
+                        var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId);
+                        var factura = facturas?
+                            .Where(f => f.Concepto == "Reserva")
+                            .OrderByDescending(f => f.FechaEmision)
+                            .FirstOrDefault();
+                        facturaId = factura?.Id;
+                    }
+
+                    if (facturaId.HasValue)
+                    {
+                        var pagoReintegro = new Pago
+                        {
+                            FechaPago = DateTime.Now,
+                            Monto = -cancelInfo.MontoReintegro, // Monto negativo = nota de crédito/reintegro
+                            Metodo = MetodoPago.Transferencia,
+                            Estado = EstadoPago.Reintegro,
+                            FacturaId = facturaId.Value
+                        };
+                        await _pagoCommand.InsertPago(pagoReintegro);
+                    }
                 }
             }
 
@@ -357,6 +403,29 @@ namespace Aplication.UseCase
             if (request.Fecha.Date < DateTime.Now.Date)
             {
                 throw new ExceptionBadRequest("La fecha de la reserva no puede ser en el pasado.");
+            }
+            if (request.Fecha.Date > DateTime.Now.Date.AddDays(30))
+            {
+                throw new ExceptionBadRequest("No se puede reservar con más de 30 días de antelación.");
+            }
+
+            if (request.Estado.HasValue && request.Estado.Value == EstadoReserva.Confirmada && reserva.Estado != EstadoReserva.Confirmada)
+            {
+                int facturaToCheck = request.FacturaId ?? reserva.FacturaId ?? 0;
+                if (facturaToCheck == 0)
+                {
+                    throw new ExceptionBadRequest("El pago completo debe ser registrado y validado para confirmar la reserva.");
+                }
+                var factura = await _facturaQuery.GetFacturaById(facturaToCheck);
+                if (factura == null)
+                {
+                    throw new ExceptionBadRequest("Factura no encontrada para confirmar la reserva.");
+                }
+                decimal totalPagado = factura.Pagos?.Where(p => p.Estado == EstadoPago.Pagado).Sum(p => p.Monto) ?? 0;
+                if (totalPagado < factura.Total)
+                {
+                    throw new ExceptionBadRequest("El pago completo debe ser registrado y validado para confirmar la reserva.");
+                }
             }
 
             reserva.Fecha = request.Fecha;
