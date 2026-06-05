@@ -89,5 +89,26 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpPost("general")]
+        public async Task<IActionResult> CrearNotificacionGeneral([FromBody] NotificacionGeneralRequest request)
+        {
+            try
+            {
+                await _notificacionService.CrearNotificacionGeneral(request.Mensaje, request.RolesDestino, request.Tipo);
+                return Ok(new { mensaje = "Notificación enviada correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+    }
+
+    public class NotificacionGeneralRequest
+    {
+        public string Mensaje { get; set; }
+        public string RolesDestino { get; set; }
+        public string Tipo { get; set; }
     }
 }
