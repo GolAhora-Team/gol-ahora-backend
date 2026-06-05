@@ -56,5 +56,33 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpDelete("actividad/{actividadId}/cliente/{clienteId}")]
+        public async Task<IActionResult> EliminarAsistencia(int actividadId, int clienteId, [FromQuery] bool esClase)
+        {
+            try
+            {
+                var response = await _asistenciaService.EliminarAsistencia(actividadId, clienteId, esClase);
+                return Ok(new { success = response, mensaje = "Asistencia desmarcada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpGet("historial/{actividadId}/cliente/{clienteId}")]
+        public async Task<IActionResult> GetHistorialAsistencias(int actividadId, int clienteId, [FromQuery] bool esClase)
+        {
+            try
+            {
+                var response = await _asistenciaService.GetHistorialAsistencias(actividadId, clienteId, esClase);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

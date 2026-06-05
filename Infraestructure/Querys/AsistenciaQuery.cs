@@ -28,11 +28,11 @@ namespace Infraestructure.Querys
             return await _context.Asistencias.FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public async Task<List<Asistencia>> GetAsistenciasPorClaseYFecha(int claseId, DateTime fecha)
+        public async Task<List<RegistroAsistenciaClase>> GetAsistenciasPorClaseYFecha(int claseId, DateTime fecha)
         {
-            return await _context.Asistencias
+            return await _context.RegistroAsistenciaClases
                 .Include(a => a.Cliente)
-                .Where(a => a.ClaseId == claseId && a.FechaHoraRegistro.HasValue && a.FechaHoraRegistro.Value.Date == fecha.Date)
+                .Where(a => a.ClaseId == claseId && a.Fecha.Date == fecha.Date)
                 .ToListAsync();
         }
 
@@ -75,6 +75,34 @@ namespace Infraestructure.Querys
         {
             return await _context.AsistenciaEntrenamientos
                 .AnyAsync(a => a.EntrenamientoId == entrenamientoId && a.ClienteId == clienteId && a.Fecha.Date == fecha.Date);
+        }
+
+        public async Task<RegistroAsistenciaClase?> GetRegistroAsistenciaClaseAsync(int claseId, int clienteId, DateTime fecha)
+        {
+            return await _context.RegistroAsistenciaClases
+                .FirstOrDefaultAsync(a => a.ClaseId == claseId && a.ClienteId == clienteId && a.Fecha.Date == fecha.Date);
+        }
+
+        public async Task<AsistenciaEntrenamiento?> GetAsistenciaEntrenamientoAsync(int entrenamientoId, int clienteId, DateTime fecha)
+        {
+            return await _context.AsistenciaEntrenamientos
+                .FirstOrDefaultAsync(a => a.EntrenamientoId == entrenamientoId && a.ClienteId == clienteId && a.Fecha.Date == fecha.Date);
+        }
+
+        public async Task<List<RegistroAsistenciaClase>> GetHistorialAsistenciaClase(int claseId, int clienteId)
+        {
+            return await _context.RegistroAsistenciaClases
+                .Where(a => a.ClaseId == claseId && a.ClienteId == clienteId)
+                .OrderByDescending(a => a.Fecha)
+                .ToListAsync();
+        }
+
+        public async Task<List<AsistenciaEntrenamiento>> GetHistorialAsistenciaEntrenamiento(int entrenamientoId, int clienteId)
+        {
+            return await _context.AsistenciaEntrenamientos
+                .Where(a => a.EntrenamientoId == entrenamientoId && a.ClienteId == clienteId)
+                .OrderByDescending(a => a.Fecha)
+                .ToListAsync();
         }
     }
 }
