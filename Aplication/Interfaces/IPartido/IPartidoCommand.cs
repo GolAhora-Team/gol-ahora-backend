@@ -12,5 +12,6 @@ namespace Aplication.Interfaces.IPartido
         Task InsertPartidos(List<Partido> partidos);
         Task UpdatePartido(Partido partido);
         Task DeletePartidosPorCompeticion(int competicionId);
+        Task DeletePartido(int id);
     }
 }

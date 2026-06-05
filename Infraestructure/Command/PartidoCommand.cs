@@ -38,5 +38,15 @@ namespace Infraestructure.Command
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task DeletePartido(int id)
+        {
+            var partido = await _context.Partidos.FindAsync(id);
+            if (partido != null)
+            {
+                _context.Partidos.Remove(partido);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
