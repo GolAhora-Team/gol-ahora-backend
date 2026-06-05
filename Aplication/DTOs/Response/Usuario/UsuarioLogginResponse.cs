@@ -15,5 +15,6 @@ namespace Aplication.DTOs.Response.Usuario
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public int? Identificador { get; set; }
+        public string Token { get; set; }
     }
 }
