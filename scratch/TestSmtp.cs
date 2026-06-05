@@ -14,7 +14,7 @@ namespace TestSmtp
                 var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
-                    Credentials = new NetworkCredential("complejogolahora@gmail.com", "tgcf xugs czdh ekpx"),
+                    Credentials = new NetworkCredential("complejogolahora@gmail.com", "sgrr mapd bvgx kdeg"),
                     EnableSsl = true,
                 };
 
