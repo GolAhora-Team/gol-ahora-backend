@@ -18,7 +18,8 @@ namespace Aplication.Mappers
                 HoraInicio = request.HoraInicio,
                 HoraFin = request.HoraFin,
                 DiasSemana = request.DiasSemana,
-                CanchaId = request.CanchaId
+                CanchaId = request.CanchaId,
+                PrecioInscripcion = request.PrecioInscripcion
             };
         }
 
@@ -35,7 +36,8 @@ namespace Aplication.Mappers
                 HoraInicio = entrenamiento.HoraInicio,
                 HoraFin = entrenamiento.HoraFin,
                 DiasSemana = entrenamiento.DiasSemana,
-                CanchaNombre = entrenamiento.Cancha?.Nombre ?? "Sin Cancha"
+                CanchaNombre = entrenamiento.Cancha?.Nombre ?? "Sin Cancha",
+                PrecioInscripcion = entrenamiento.PrecioInscripcion
             };
         }
     }

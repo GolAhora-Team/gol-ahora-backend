@@ -18,5 +18,6 @@ namespace Aplication.DTOs.Response.Entrenamiento
         public string DiasSemana { get; set; }
         public int? CanchaId { get; set; }
         public string CanchaNombre { get; set; }
+        public decimal PrecioInscripcion { get; set; }
     }
 }

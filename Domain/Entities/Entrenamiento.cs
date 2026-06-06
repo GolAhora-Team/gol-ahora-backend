@@ -16,6 +16,8 @@ namespace Domain.Entities
 
         public int CupoMaximo { get; set; }
 
+        public decimal PrecioInscripcion { get; set; }
+
         // 🔗 Profesor
         public int? ProfesorId { get; set; }
         public Profesor? Profesor { get; set; }

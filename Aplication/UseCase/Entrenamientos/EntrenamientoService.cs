@@ -171,6 +171,7 @@ namespace Aplication.UseCase.Entrenamientos
             entrenamientoExistente.DiasSemana = request.DiasSemana;
             entrenamientoExistente.ProfesorId = request.ProfesorId;
             entrenamientoExistente.CanchaId = request.CanchaId;
+            entrenamientoExistente.PrecioInscripcion = request.PrecioInscripcion;
 
             await _entrenamientoCommand.UpdateEntrenamiento(entrenamientoExistente);
 

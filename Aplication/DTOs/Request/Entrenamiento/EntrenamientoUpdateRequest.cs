@@ -16,5 +16,6 @@ namespace Aplication.DTOs.Request.Entrenamiento
         public TimeSpan HoraFin { get; set; }
         public string DiasSemana { get; set; }
         public int? CanchaId { get; set; }
+        public decimal PrecioInscripcion { get; set; }
     }
 }

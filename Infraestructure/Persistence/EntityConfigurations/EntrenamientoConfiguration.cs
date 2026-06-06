@@ -24,6 +24,14 @@ namespace Infraestructure.Persistence.EntityConfigurations
                 .WithMany()
                 .HasForeignKey(e => e.CanchaId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Property(e => e.Fecha)
+                .IsRequired();
+
+            entity.Property(e => e.PrecioInscripcion)
+                .HasColumnType("decimal(18,2)")
+                .IsRequired()
+                .HasDefaultValue(5000m);
         }
     }
 }
