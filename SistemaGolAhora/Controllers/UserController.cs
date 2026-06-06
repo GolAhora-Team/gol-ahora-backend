@@ -245,5 +245,21 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpGet("all-usernames")]
+        public async Task<IActionResult> GetAllUsernames([FromServices] AppDbContext context)
+        {
+            try
+            {
+                var usuarios = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
+                    context.Usuarios.Select(u => new { personaId = u.PersonaId, username = u.Username })
+                );
+                return Ok(usuarios);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }
