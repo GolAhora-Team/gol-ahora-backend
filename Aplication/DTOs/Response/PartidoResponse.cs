@@ -24,11 +24,11 @@ namespace Aplication.DTOs.Response
         public FaseTorneo Fase { get; set; }
 
         
-        public int EquipoLocalId { get; set; }
+        public int? EquipoLocalId { get; set; }
         public string EquipoLocalNombre { get; set; } 
 
         
-        public int EquipoVisitanteId { get; set; }
+        public int? EquipoVisitanteId { get; set; }
         public string EquipoVisitanteNombre { get; set; }
         public string EquipoLocalColorPrimario { get; set; }
         public string EquipoLocalColorSecundario { get; set; }

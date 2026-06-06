@@ -71,60 +71,24 @@ namespace Aplication.UseCase
                 
                 if (index != -1)
                 {
-                    int siblingIndex = index % 2 == 0 ? index + 1 : index - 1;
-                    if (siblingIndex >= 0 && siblingIndex < partidosList.Count)
+                    int nextFaseNum = (int)partido.Fase + 1;
+                    var nextFaseMatches = await _query.GetPartidosPorFase(partido.CompeticionId, (FaseTorneo)nextFaseNum);
+                    var nextFaseMatchesList = nextFaseMatches.OrderBy(p => p.Id).ToList();
+                    
+                    if (nextFaseMatchesList.Count > index / 2)
                     {
-                        var sibling = partidosList[siblingIndex];
-                        int nextFaseNum = (int)partido.Fase + 1;
-                        var nextFaseMatches = await _query.GetPartidosPorFase(partido.CompeticionId, (FaseTorneo)nextFaseNum);
+                        var nextMatchResponse = nextFaseMatchesList[index / 2];
+                        var nextMatch = await _query.GetPartidoById(nextMatchResponse.Id);
                         
-                        Partido nextMatch = null;
-                        if (oldGanadorId.HasValue)
+                        if (index % 2 == 0)
                         {
-                            var nextMatchResponse = nextFaseMatches.FirstOrDefault(p => p.EquipoLocalId == oldGanadorId.Value || p.EquipoVisitanteId == oldGanadorId.Value);
-                            if (nextMatchResponse != null)
-                            {
-                                nextMatch = await _query.GetPartidoById(nextMatchResponse.Id);
-                            }
-                        }
-
-                        bool thisHasWinner = partido.GanadorId.HasValue;
-                        bool siblingHasWinner = sibling.Estado == EstadoPartido.Finalizado && sibling.GanadorId.HasValue;
-
-                        if (thisHasWinner && siblingHasWinner)
-                        {
-                            int equipoLocalId = index % 2 == 0 ? partido.GanadorId.Value : sibling.GanadorId.Value;
-                            int equipoVisitanteId = index % 2 == 0 ? sibling.GanadorId.Value : partido.GanadorId.Value;
-
-                            if (nextMatch == null)
-                            {
-                                var nuevoPartido = new Partido
-                                {
-                                    CompeticionId = partido.CompeticionId,
-                                    EquipoLocalId = equipoLocalId,
-                                    EquipoVisitanteId = equipoVisitanteId,
-                                    Estado = EstadoPartido.Programado,
-                                    Fase = (FaseTorneo)nextFaseNum,
-                                    Arbitro = "Por asignar",
-                                    Fecha = partido.Fecha.AddDays(7),
-                                    Hora = partido.Hora
-                                };
-                                await _command.InsertPartidos(new List<Partido> { nuevoPartido });
-                            }
-                            else
-                            {
-                                nextMatch.EquipoLocalId = equipoLocalId;
-                                nextMatch.EquipoVisitanteId = equipoVisitanteId;
-                                await _command.UpdatePartido(nextMatch);
-                            }
+                            nextMatch.EquipoLocalId = request.GanadorId;
                         }
                         else
                         {
-                            if (nextMatch != null)
-                            {
-                                await _command.DeletePartido(nextMatch.Id);
-                            }
+                            nextMatch.EquipoVisitanteId = request.GanadorId;
                         }
+                        await _command.UpdatePartido(nextMatch);
                     }
                 }
             }
@@ -307,7 +271,7 @@ namespace Aplication.UseCase
 
         private async Task GenerarFixtureTorneo(Competicion competicion, List<Equipo> equiposInscritos)
         {
-            var faseActual = DeterminarFaseTorneo(equiposInscritos.Count);
+            var faseInicial = DeterminarFaseTorneo(equiposInscritos.Count);
 
             // Remove existing matches to prevent duplication if called multiple times
             await _command.DeletePartidosPorCompeticion(competicion.Id);
@@ -320,40 +284,59 @@ namespace Aplication.UseCase
             var fechaInicio = competicion.FechaInicio ?? DateTime.Today.AddDays(7);
             var equiposMezclados = equiposInscritos.OrderBy(e => Guid.NewGuid()).ToList();
 
-            for (int i = 0; i < equiposMezclados.Count; i += 2)
+            int faseMax = (int)FaseTorneo.Final;
+            int faseNum = (int)faseInicial;
+
+            while (faseNum <= faseMax)
             {
-                var equipoLocal = equiposMezclados[i];
-                var equipoVisitante = equiposMezclados[i + 1];
+                int cantidadPartidosEnFase = (int)Math.Pow(2, faseMax - faseNum);
 
-                var asignacion = await AsignarHorarioYCancha(fechaInicio, duracionMinutos, canchasAptas);
-
-                var nuevoPartido = new Partido
+                for (int i = 0; i < cantidadPartidosEnFase; i++)
                 {
-                    CompeticionId = competicion.Id,
-                    EquipoLocalId = equipoLocal.Id,
-                    EquipoVisitanteId = equipoVisitante.Id,
-                    Estado = EstadoPartido.Programado,
-                    Fase = faseActual,
-                    Arbitro = "Por asignar",
-                    CanchaId = asignacion.Item1.Id,
-                    Fecha = asignacion.Item2,
-                    Hora = asignacion.Item3
-                };
+                    var asignacion = await AsignarHorarioYCancha(fechaInicio, duracionMinutos, canchasAptas);
 
-                await _command.InsertPartidos(new List<Partido> { nuevoPartido });
+                    var nuevoPartido = new Partido
+                    {
+                        CompeticionId = competicion.Id,
+                        Estado = EstadoPartido.Programado,
+                        Fase = (FaseTorneo)faseNum,
+                        Arbitro = "Por asignar",
+                        CanchaId = asignacion.Item1.Id,
+                        Fecha = asignacion.Item2,
+                        Hora = asignacion.Item3
+                    };
 
-                var reserva = new Reserva
-                {
-                    Fecha = nuevoPartido.Fecha,
-                    HoraInicio = nuevoPartido.Hora,
-                    HoraFin = nuevoPartido.Hora.Add(TimeSpan.FromMinutes(duracionMinutos)),
-                    CanchaId = asignacion.Item1.Id,
-                    Estado = EstadoReserva.Confirmada,
-                    PartidoId = nuevoPartido.Id,
-                    ClienteId = null
-                };
+                    // Asignar equipos solo a la primera fase
+                    if (faseNum == (int)faseInicial)
+                    {
+                        nuevoPartido.EquipoLocalId = equiposMezclados[i * 2].Id;
+                        nuevoPartido.EquipoVisitanteId = equiposMezclados[i * 2 + 1].Id;
+                    }
+                    else
+                    {
+                        nuevoPartido.EquipoLocalId = null;
+                        nuevoPartido.EquipoVisitanteId = null;
+                    }
 
-                await _reservaCommand.InsertReserva(reserva);
+                    await _command.InsertPartidos(new List<Partido> { nuevoPartido });
+
+                    var reserva = new Reserva
+                    {
+                        Fecha = nuevoPartido.Fecha,
+                        HoraInicio = nuevoPartido.Hora,
+                        HoraFin = nuevoPartido.Hora.Add(TimeSpan.FromMinutes(duracionMinutos)),
+                        CanchaId = asignacion.Item1.Id,
+                        Estado = EstadoReserva.Confirmada,
+                        PartidoId = nuevoPartido.Id,
+                        ClienteId = null
+                    };
+
+                    await _reservaCommand.InsertReserva(reserva);
+                }
+
+                // La próxima fase se juega 7 días después de la fecha de inicio actual de esta fase.
+                fechaInicio = fechaInicio.AddDays(7);
+                faseNum++;
             }
         }
     }

@@ -32,10 +32,10 @@ namespace Domain.Entities
         public FaseTorneo Fase { get; set; }
 
         // 🔗 Equipos
-        public int EquipoLocalId { get; set; }
+        public int? EquipoLocalId { get; set; }
         public Equipo EquipoLocal { get; set; }
 
-        public int EquipoVisitanteId { get; set; }
+        public int? EquipoVisitanteId { get; set; }
         public Equipo EquipoVisitante { get; set; }
 
         // 🔗 Competición
