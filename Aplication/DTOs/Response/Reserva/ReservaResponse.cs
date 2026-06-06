@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +21,14 @@ namespace Aplication.DTOs.Response.Reserva
         public ClienteShort Cliente { get; set; }
 
         public CanchaShort Cancha { get; set; }
+
+        public bool EsPartido { get; set; }
+        public string CompeticionNombre { get; set; }
+        public string TipoCompeticion { get; set; }
+        public string EquipoLocalNombre { get; set; }
+        public string EquipoLocalColorPrimario { get; set; }
+        public string EquipoVisitanteNombre { get; set; }
+        public string EquipoVisitanteColorPrimario { get; set; }
     }
 
     public class ClienteShort

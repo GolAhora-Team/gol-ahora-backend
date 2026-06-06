@@ -82,8 +82,14 @@ namespace Infraestructure.Querys
             var rolesEnum = new List<Domain.Enums.TipoUsuario>();
             foreach (var rol in roles)
             {
-                if (Enum.TryParse<Domain.Enums.TipoUsuario>(rol.Trim().ToUpper() == "ADMIN" ? "Administrador" : 
-                    rol.Trim().Substring(0, 1).ToUpper() + rol.Trim().Substring(1).ToLower(), out var enumValue))
+                string rolNormalizado = rol.Trim().ToUpper();
+                string enumStr = "";
+                
+                if (rolNormalizado == "ADMIN" || rolNormalizado == "PERSONAL" || rolNormalizado == "ADMINISTRADOR") enumStr = "Administrador";
+                else if (rolNormalizado == "PROFE" || rolNormalizado == "PROFESOR") enumStr = "Profesor";
+                else if (rolNormalizado == "CLIENTE") enumStr = "Cliente";
+
+                if (!string.IsNullOrEmpty(enumStr) && Enum.TryParse<Domain.Enums.TipoUsuario>(enumStr, out var enumValue))
                 {
                     rolesEnum.Add(enumValue);
                 }

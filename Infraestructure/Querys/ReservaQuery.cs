@@ -18,11 +18,23 @@ namespace Infraestructure.Querys
         }
         public async Task<List<Domain.Entities.Reserva>> GetAllReservas()
         {
-            return await _context.Reservas.Include(r => r.Cancha).Include(r => r.Cliente).ToListAsync();
+            return await _context.Reservas
+                .Include(r => r.Cancha)
+                .Include(r => r.Cliente)
+                .Include(r => r.Partido).ThenInclude(p => p.Competicion)
+                .Include(r => r.Partido).ThenInclude(p => p.EquipoLocal)
+                .Include(r => r.Partido).ThenInclude(p => p.EquipoVisitante)
+                .ToListAsync();
         }
         public async Task<Domain.Entities.Reserva?> GetReservaById(int id)
         {
-            return await _context.Reservas.Include(r => r.Cancha).Include(r => r.Cliente).FirstOrDefaultAsync(r => r.Id == id);
+            return await _context.Reservas
+                .Include(r => r.Cancha)
+                .Include(r => r.Cliente)
+                .Include(r => r.Partido).ThenInclude(p => p.Competicion)
+                .Include(r => r.Partido).ThenInclude(p => p.EquipoLocal)
+                .Include(r => r.Partido).ThenInclude(p => p.EquipoVisitante)
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
         public async Task<bool> ReservaExists(int id)
         {

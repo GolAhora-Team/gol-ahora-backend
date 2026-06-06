@@ -144,19 +144,26 @@ namespace Aplication.UseCase
                 HoraInicio = r.HoraInicio,
                 HoraFin = r.HoraFin,
                 Estado = r.Estado.ToString(),
-                Cliente = new ClienteShort
+                Cliente = r.Cliente != null ? new ClienteShort
                 {
                     Id = r.Cliente.Id,
                     Nombre = r.Cliente.Nombre,
                     apellido = r.Cliente.Apellido
-                },
+                } : null,
                 Cancha = new CanchaShort
                 {
                     Id = r.Cancha.Id,
                     Nombre = r.Cancha.Nombre,
                     Tipo = r.Cancha.Tipo.ToString(),
                     Capacidad = r.Cancha.Capacidad
-                }
+                },
+                EsPartido = r.Partido != null,
+                CompeticionNombre = r.Partido != null ? r.Partido.Competicion.Nombre : null,
+                TipoCompeticion = r.Partido != null ? r.Partido.Competicion.Tipo.ToString() : null,
+                EquipoLocalNombre = r.Partido != null ? r.Partido.EquipoLocal.Nombre : null,
+                EquipoLocalColorPrimario = r.Partido != null ? r.Partido.EquipoLocal.ColorPrimario : null,
+                EquipoVisitanteNombre = r.Partido != null ? r.Partido.EquipoVisitante.Nombre : null,
+                EquipoVisitanteColorPrimario = r.Partido != null ? r.Partido.EquipoVisitante.ColorPrimario : null
             }).ToList();
 
             var canchas = await _canchaQuery.GetListCancha();
@@ -207,7 +214,8 @@ namespace Aplication.UseCase
                                         Nombre = cancha.Nombre,
                                         Tipo = cancha.Tipo.ToString(),
                                         Capacidad = cancha.Capacidad
-                                    }
+                                    },
+                                    EsPartido = false
                                 });
                             }
                         }
@@ -258,7 +266,8 @@ namespace Aplication.UseCase
                                         Nombre = cancha.Nombre,
                                         Tipo = cancha.Tipo.ToString(),
                                         Capacidad = cancha.Capacidad
-                                    }
+                                    },
+                                    EsPartido = false
                                 });
                             }
                         }
@@ -311,7 +320,14 @@ namespace Aplication.UseCase
                     Nombre = reserva.Cancha.Nombre,
                     Tipo = reserva.Cancha.Tipo.ToString(),
                     Capacidad = reserva.Cancha.Capacidad
-                }
+                },
+                EsPartido = reserva.Partido != null,
+                CompeticionNombre = reserva.Partido != null ? reserva.Partido.Competicion.Nombre : null,
+                TipoCompeticion = reserva.Partido != null ? reserva.Partido.Competicion.Tipo.ToString() : null,
+                EquipoLocalNombre = reserva.Partido != null ? reserva.Partido.EquipoLocal.Nombre : null,
+                EquipoLocalColorPrimario = reserva.Partido != null ? reserva.Partido.EquipoLocal.ColorPrimario : null,
+                EquipoVisitanteNombre = reserva.Partido != null ? reserva.Partido.EquipoVisitante.Nombre : null,
+                EquipoVisitanteColorPrimario = reserva.Partido != null ? reserva.Partido.EquipoVisitante.ColorPrimario : null
             };
         }
 
@@ -348,10 +364,10 @@ namespace Aplication.UseCase
             {
                 facturaEncontrada = await _facturaQuery.GetFacturaById(reserva.FacturaId.Value);
             }
-            else
+            else if (reserva.ClienteId.HasValue)
             {
                 // Buscar factura por clienteId + concepto "Reserva"
-                var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId);
+                var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId.Value);
                 facturaEncontrada = facturas?
                     .Where(f => f.Concepto == "Reserva")
                     .OrderByDescending(f => f.FechaEmision)
@@ -440,23 +456,26 @@ namespace Aplication.UseCase
                     };
                     await _descuentoCommand.InsertDescuento(descuento);
 
-                    var usuario = await _usuarioQuery.GetUsuarioByPersonaId(reserva.ClienteId);
-                    if (usuario != null)
+                    if (reserva.ClienteId.HasValue)
                     {
-                        await _notificacionService.CrearNotificacionUsuario(
-                            $"Reembolso procesado. Tienes un descuento del 100% para tu próxima reserva usando el código: REFUND-{reserva.Id}",
-                            usuario.Id,
-                            "Reembolso"
-                        );
+                        var usuario = await _usuarioQuery.GetUsuarioByPersonaId(reserva.ClienteId.Value);
+                        if (usuario != null)
+                        {
+                            await _notificacionService.CrearNotificacionUsuario(
+                                $"Reembolso procesado. Tienes un descuento del 100% para tu próxima reserva usando el código: REFUND-{reserva.Id}",
+                                usuario.Id,
+                                "Reembolso"
+                            );
+                        }
                     }
                 }
                 else
                 {
                     // Buscar la factura asociada
                     int? facturaId = reserva.FacturaId;
-                    if (!facturaId.HasValue)
+                    if (!facturaId.HasValue && reserva.ClienteId.HasValue)
                     {
-                        var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId);
+                        var facturas = await _facturaQuery.GetFacturasByClienteId(reserva.ClienteId.Value);
                         var factura = facturas?
                             .Where(f => f.Concepto == "Reserva")
                             .OrderByDescending(f => f.FechaEmision)
@@ -498,19 +517,26 @@ namespace Aplication.UseCase
                 HoraInicio = reserva.HoraInicio,
                 HoraFin = reserva.HoraFin,
                 Estado = reserva.Estado.ToString(),
-                Cliente = new ClienteShort
+                Cliente = reserva.Cliente != null ? new ClienteShort
                 {
                     Id = reserva.Cliente.Id,
                     Nombre = reserva.Cliente.Nombre,
                     apellido = reserva.Cliente.Apellido
-                },
+                } : null,
                 Cancha = new CanchaShort
                 {
                     Id = reserva.Cancha.Id,
                     Nombre = reserva.Cancha.Nombre,
                     Tipo = reserva.Cancha.Tipo.ToString(),
                     Capacidad = reserva.Cancha.Capacidad
-                }
+                },
+                EsPartido = reserva.Partido != null,
+                CompeticionNombre = reserva.Partido != null ? reserva.Partido.Competicion.Nombre : null,
+                TipoCompeticion = reserva.Partido != null ? reserva.Partido.Competicion.Tipo.ToString() : null,
+                EquipoLocalNombre = reserva.Partido != null ? reserva.Partido.EquipoLocal.Nombre : null,
+                EquipoLocalColorPrimario = reserva.Partido != null ? reserva.Partido.EquipoLocal.ColorPrimario : null,
+                EquipoVisitanteNombre = reserva.Partido != null ? reserva.Partido.EquipoVisitante.Nombre : null,
+                EquipoVisitanteColorPrimario = reserva.Partido != null ? reserva.Partido.EquipoVisitante.ColorPrimario : null
             };
         }
 
@@ -589,19 +615,26 @@ namespace Aplication.UseCase
                 HoraInicio = reserva.HoraInicio,
                 HoraFin = reserva.HoraFin,
                 Estado = reserva.Estado.ToString(),
-                Cliente = new ClienteShort
+                Cliente = reserva.Cliente != null ? new ClienteShort
                 {
                     Id = reserva.Cliente.Id,
                     Nombre = reserva.Cliente.Nombre,
                     apellido = reserva.Cliente.Apellido
-                },
+                } : null,
                 Cancha = new CanchaShort
                 {
                     Id = reserva.Cancha.Id,
                     Nombre = reserva.Cancha.Nombre,
                     Tipo = reserva.Cancha.Tipo.ToString(),
                     Capacidad = reserva.Cancha.Capacidad
-                }
+                },
+                EsPartido = reserva.Partido != null,
+                CompeticionNombre = reserva.Partido != null ? reserva.Partido.Competicion.Nombre : null,
+                TipoCompeticion = reserva.Partido != null ? reserva.Partido.Competicion.Tipo.ToString() : null,
+                EquipoLocalNombre = reserva.Partido != null ? reserva.Partido.EquipoLocal.Nombre : null,
+                EquipoLocalColorPrimario = reserva.Partido != null ? reserva.Partido.EquipoLocal.ColorPrimario : null,
+                EquipoVisitanteNombre = reserva.Partido != null ? reserva.Partido.EquipoVisitante.Nombre : null,
+                EquipoVisitanteColorPrimario = reserva.Partido != null ? reserva.Partido.EquipoVisitante.ColorPrimario : null
             };
         }
     }

@@ -42,6 +42,10 @@ namespace Domain.Entities
         public int CompeticionId { get; set; }
         public Competicion Competicion { get; set; }
 
+        // 🔗 Cancha (opcional, asignada al generar fixture o editar)
+        public int? CanchaId { get; set; }
+        public Cancha Cancha { get; set; }
+
         // 🔗 Ganador (opcional)
         public int? GanadorId { get; set; }
         public Equipo Ganador { get; set; }

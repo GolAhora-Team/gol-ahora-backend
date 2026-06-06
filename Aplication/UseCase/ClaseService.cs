@@ -71,11 +71,7 @@ namespace Aplication.UseCase
                     throw new ExceptionNotFound("Profesor no encontrado.");
                 }
 
-                bool esValido = await _profesorCommand.ValidarCertificadoAsync(clase.ProfesorId.Value);
-                if (!esValido)
-                {
-                    throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
-                }
+
             }
 
             if (clase.CanchaId.HasValue)
