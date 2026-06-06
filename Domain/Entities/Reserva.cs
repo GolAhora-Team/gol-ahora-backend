@@ -18,8 +18,12 @@ namespace Domain.Entities
         public TimeSpan HoraFin { get; set; }
 
         // 🔗 Cliente
-        public int ClienteId { get; set; }
+        public int? ClienteId { get; set; }
         public Cliente Cliente { get; set; }
+
+        // 🔗 Partido (Para competiciones)
+        public int? PartidoId { get; set; }
+        public Partido Partido { get; set; }
 
         // 🔗 Cancha
         public int CanchaId { get; set; }

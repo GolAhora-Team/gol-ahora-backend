@@ -22,6 +22,8 @@ namespace Aplication.UseCase
         private readonly ICompeticionQuery _competicionQuery;
         private readonly ICanchaQuery _canchaQuery;
         private readonly ICompeticionCommand _competicionCommand;
+        private readonly Aplication.Interfaces.IReserva.IReservaCommand _reservaCommand;
+        private readonly Aplication.Interfaces.IReserva.IReservaQuery _reservaQuery;
 
         public PartidoService(
             IPartidoMapper mapper, 
@@ -29,7 +31,9 @@ namespace Aplication.UseCase
             IPartidoQuery query, 
             ICompeticionQuery competicionQuery,
             ICanchaQuery canchaQuery,
-            ICompeticionCommand competicionCommand)
+            ICompeticionCommand competicionCommand,
+            Aplication.Interfaces.IReserva.IReservaCommand reservaCommand,
+            Aplication.Interfaces.IReserva.IReservaQuery reservaQuery)
         {
             _mapper = mapper;
             _command = command;
@@ -37,6 +41,8 @@ namespace Aplication.UseCase
             _competicionQuery = competicionQuery;
             _canchaQuery = canchaQuery;
             _competicionCommand = competicionCommand;
+            _reservaCommand = reservaCommand;
+            _reservaQuery = reservaQuery;
         }
 
         public async Task<PartidoResponse> CargarResultado(int partidoId, CargarResultadoRequest request)
@@ -194,6 +200,34 @@ namespace Aplication.UseCase
             await _competicionCommand.UpdateCompeticion(competicion);
         }
 
+        private async Task<(Cancha, DateTime, TimeSpan)> AsignarHorarioYCancha(DateTime fechaInicial, int duracionMinutos, List<Cancha> canchasAptas)
+        {
+            DateTime fechaActual = fechaInicial;
+
+            while (true) // Buscar hasta encontrar
+            {
+                foreach (var cancha in canchasAptas)
+                {
+                    TimeSpan horaActual = cancha.HoraInicio;
+                    while (horaActual + TimeSpan.FromMinutes(duracionMinutos) <= cancha.HoraFin)
+                    {
+                        bool ocupado = await _reservaQuery.ExisteReservaEnHorario(
+                            cancha.Id,
+                            fechaActual,
+                            horaActual,
+                            horaActual + TimeSpan.FromMinutes(duracionMinutos));
+
+                        if (!ocupado)
+                        {
+                            return (cancha, fechaActual, horaActual);
+                        }
+                        horaActual = horaActual.Add(TimeSpan.FromMinutes(duracionMinutos));
+                    }
+                }
+                fechaActual = fechaActual.AddDays(1);
+            }
+        }
+
         private async Task GenerarFixtureLiga(Competicion competicion, List<Equipo> equiposInscritos)
         {
             if (equiposInscritos.Count % 2 != 0)
@@ -210,24 +244,21 @@ namespace Aplication.UseCase
             int numJornadas = numEquipos - 1;
             int partidosPorJornada = numEquipos / 2;
 
-            var partidosNuevos = new List<Partido>();
-
             var canchasDisponibles = await _canchaQuery.GetListCancha();
-            var canchasAptas = canchasDisponibles.Where(c => c.Tipo == competicion.TipoCancha).ToList();
+            var canchasAptas = canchasDisponibles.Where(c => c.Tipo == competicion.TipoCancha && c.Disponibilidad && c.Estado == EstadoCancha.Disponible).ToList();
+            if (!canchasAptas.Any()) throw new Exception("No hay canchas disponibles para el tipo de cancha seleccionado.");
+
+            int duracionMinutos = competicion.TipoCancha == TipoCancha.Futbol11 ? 90 : 60;
             var fechaInicio = competicion.FechaInicio ?? DateTime.Today.AddDays(7);
 
             for (int jornada = 0; jornada < numJornadas; jornada++)
             {
-                int canchaIndex = 0;
                 for (int i = 0; i < partidosPorJornada; i++)
                 {
                     int localIndex = (jornada + i) % (numEquipos - 1);
                     int visitanteIndex = (numEquipos - 1 - i + jornada) % (numEquipos - 1);
 
-                    if (i == 0)
-                    {
-                        visitanteIndex = numEquipos - 1;
-                    }
+                    if (i == 0) visitanteIndex = numEquipos - 1;
 
                     var equipoLocal = equipos[localIndex];
                     var equipoVisitante = equipos[visitanteIndex];
@@ -239,29 +270,39 @@ namespace Aplication.UseCase
                         equipoVisitante = temp;
                     }
 
-                    var cancha = canchasAptas.Count > 0 ? canchasAptas[canchaIndex % canchasAptas.Count] : null;
+                    DateTime fechaJornada = fechaInicio.AddDays(jornada * 7);
+                    var asignacion = await AsignarHorarioYCancha(fechaJornada, duracionMinutos, canchasAptas);
 
-                    partidosNuevos.Add(new Partido
+                    var nuevoPartido = new Partido
                     {
                         CompeticionId = competicion.Id,
                         EquipoLocalId = equipoLocal.Id,
                         EquipoVisitanteId = equipoVisitante.Id,
                         Estado = EstadoPartido.Programado,
-
                         Jornada = jornada + 1,
-
                         Fase = 0,
                         Arbitro = "Por asignar",
+                        CanchaId = asignacion.Item1.Id,
+                        Fecha = asignacion.Item2,
+                        Hora = asignacion.Item3
+                    };
 
-                        Fecha = fechaInicio.AddDays(jornada * 7),
-                        Hora = cancha != null ? cancha.HoraInicio.Add(TimeSpan.FromHours(canchaIndex)) : new TimeSpan(15, 0, 0)
-                    });
-                    
-                    canchaIndex++;
+                    await _command.InsertPartidos(new List<Partido> { nuevoPartido });
+
+                    var reserva = new Reserva
+                    {
+                        Fecha = nuevoPartido.Fecha,
+                        HoraInicio = nuevoPartido.Hora,
+                        HoraFin = nuevoPartido.Hora.Add(TimeSpan.FromMinutes(duracionMinutos)),
+                        CanchaId = asignacion.Item1.Id,
+                        Estado = EstadoReserva.Confirmada,
+                        PartidoId = nuevoPartido.Id,
+                        ClienteId = null
+                    };
+
+                    await _reservaCommand.InsertReserva(reserva);
                 }
             }
-
-            await _command.InsertPartidos(partidosNuevos);
         }
 
         private async Task GenerarFixtureTorneo(Competicion competicion, List<Equipo> equiposInscritos)
@@ -272,20 +313,19 @@ namespace Aplication.UseCase
             await _command.DeletePartidosPorCompeticion(competicion.Id);
 
             var canchasDisponibles = await _canchaQuery.GetListCancha();
-            var canchasAptas = canchasDisponibles.Where(c => c.Tipo == competicion.TipoCancha).ToList();
+            var canchasAptas = canchasDisponibles.Where(c => c.Tipo == competicion.TipoCancha && c.Disponibilidad && c.Estado == EstadoCancha.Disponible).ToList();
+            if (!canchasAptas.Any()) throw new Exception("No hay canchas disponibles para el tipo de cancha seleccionado.");
+
+            int duracionMinutos = competicion.TipoCancha == TipoCancha.Futbol11 ? 90 : 60;
             var fechaInicio = competicion.FechaInicio ?? DateTime.Today.AddDays(7);
-
             var equiposMezclados = equiposInscritos.OrderBy(e => Guid.NewGuid()).ToList();
-
-            var partidosNuevos = new List<Partido>();
-            int horasASumar = 0;
-            int canchaIndex = 0;
 
             for (int i = 0; i < equiposMezclados.Count; i += 2)
             {
                 var equipoLocal = equiposMezclados[i];
                 var equipoVisitante = equiposMezclados[i + 1];
-                var cancha = canchasAptas.Count > 0 ? canchasAptas[canchaIndex % canchasAptas.Count] : null;
+
+                var asignacion = await AsignarHorarioYCancha(fechaInicio, duracionMinutos, canchasAptas);
 
                 var nuevoPartido = new Partido
                 {
@@ -295,16 +335,26 @@ namespace Aplication.UseCase
                     Estado = EstadoPartido.Programado,
                     Fase = faseActual,
                     Arbitro = "Por asignar",
-                    Fecha = fechaInicio,
-                    Hora = cancha != null ? cancha.HoraInicio.Add(TimeSpan.FromHours(horasASumar)) : new TimeSpan(14 + horasASumar, 0, 0)
+                    CanchaId = asignacion.Item1.Id,
+                    Fecha = asignacion.Item2,
+                    Hora = asignacion.Item3
                 };
 
-                partidosNuevos.Add(nuevoPartido);
-                horasASumar++;
-                canchaIndex++;
-            }
+                await _command.InsertPartidos(new List<Partido> { nuevoPartido });
 
-            await _command.InsertPartidos(partidosNuevos);
+                var reserva = new Reserva
+                {
+                    Fecha = nuevoPartido.Fecha,
+                    HoraInicio = nuevoPartido.Hora,
+                    HoraFin = nuevoPartido.Hora.Add(TimeSpan.FromMinutes(duracionMinutos)),
+                    CanchaId = asignacion.Item1.Id,
+                    Estado = EstadoReserva.Confirmada,
+                    PartidoId = nuevoPartido.Id,
+                    ClienteId = null
+                };
+
+                await _reservaCommand.InsertReserva(reserva);
+            }
         }
     }
 }

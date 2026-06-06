@@ -111,6 +111,13 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(r => r.FacturaId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        // 🔗 Relación opcional Reserva -> Partido (Para evitar ciclos de borrado en cascada con Cancha)
+        modelBuilder.Entity<Reserva>()
+            .HasOne(r => r.Partido)
+            .WithMany()
+            .HasForeignKey(r => r.PartidoId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public override int SaveChanges()
