@@ -63,16 +63,19 @@ namespace Aplication.UseCase
                 throw new ExceptionBadRequest("La fecha de la clase no puede ser en el pasado.");
             }
 
-            var profesorExistente = await _profesorQuery.GetByIdAsync(clase.ProfesorId);
-            if (profesorExistente == null)
+            if (clase.ProfesorId.HasValue)
             {
-                throw new ExceptionNotFound("Profesor no encontrado.");
-            }
+                var profesorExistente = await _profesorQuery.GetByIdAsync(clase.ProfesorId.Value);
+                if (profesorExistente == null)
+                {
+                    throw new ExceptionNotFound("Profesor no encontrado.");
+                }
 
-            bool esValido = await _profesorCommand.ValidarCertificadoAsync(clase.ProfesorId);
-            if (!esValido)
-            {
-                throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
+                bool esValido = await _profesorCommand.ValidarCertificadoAsync(clase.ProfesorId.Value);
+                if (!esValido)
+                {
+                    throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
+                }
             }
 
             if (clase.CanchaId.HasValue)
@@ -121,20 +124,23 @@ namespace Aplication.UseCase
         public async Task<ClaseCreateResponse> UpdateClase(int id, ClaseUpdateRequest clase)
         {
             var claseExistente = await _claseQuery.GetClaseById(id);
-            var profesorExistente = await _profesorQuery.GetByIdAsync(clase.ProfesorId);
             if (claseExistente == null)
             {
                 throw new ExceptionNotFound("Clase no encontrada.");
             }
-            if (profesorExistente == null)
+            if (clase.ProfesorId.HasValue)
             {
-                throw new ExceptionNotFound("Profesor no encontrado.");
-            }
+                var profesorExistente = await _profesorQuery.GetByIdAsync(clase.ProfesorId.Value);
+                if (profesorExistente == null)
+                {
+                    throw new ExceptionNotFound("Profesor no encontrado.");
+                }
 
-            bool esValido = await _profesorCommand.ValidarCertificadoAsync(clase.ProfesorId);
-            if (!esValido)
-            {
-                throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
+                bool esValido = await _profesorCommand.ValidarCertificadoAsync(clase.ProfesorId.Value);
+                if (!esValido)
+                {
+                    throw new ExceptionBadRequest("El profesor no tiene un certificado válido o ha expirado.");
+                }
             }
 
             if (clase.CapacidadMax < 0)

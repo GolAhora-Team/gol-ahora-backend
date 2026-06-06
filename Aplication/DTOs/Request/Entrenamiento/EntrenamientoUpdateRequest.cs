@@ -11,7 +11,7 @@ namespace Aplication.DTOs.Request.Entrenamiento
         public string Nombre { get; set; }
         public DateTime Fecha { get; set; }
         public int CupoMaximo { get; set; }
-        public int ProfesorId { get; set; }
+        public int? ProfesorId { get; set; }
         public TimeSpan HoraInicio { get; set; }
         public TimeSpan HoraFin { get; set; }
         public string DiasSemana { get; set; }

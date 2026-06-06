@@ -17,7 +17,7 @@ namespace Aplication.DTOs.Request.Clase
         public decimal PrecioInscripcion { get; set; }
 
         // Profesor
-        public int ProfesorId { get; set; }
+        public int? ProfesorId { get; set; }
         
         public int? CanchaId { get; set; }
         
