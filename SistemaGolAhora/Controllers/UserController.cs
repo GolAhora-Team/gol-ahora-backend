@@ -102,6 +102,62 @@ namespace SistemaGolAhora.Controllers
             }
         }
 
+        [HttpGet("check-username-available")]
+        public async Task<IActionResult> CheckUsernameAvailable([FromQuery] string username, [FromQuery] int? excludeUserId, [FromServices] AppDbContext context)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(username))
+                    return Ok(new { available = false });
+
+                var cleanUsername = username.Trim().ToLower();
+                bool taken;
+                if (excludeUserId.HasValue)
+                    taken = await context.Usuarios.AnyAsync(u => u.Username.ToLower() == cleanUsername && u.Id != excludeUserId.Value);
+                else
+                    taken = await context.Usuarios.AnyAsync(u => u.Username.ToLower() == cleanUsername);
+
+                return Ok(new { available = !taken });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpPut("update-username")]
+        public async Task<IActionResult> UpdateUsername([FromBody] UpdateUsernameRequest request, [FromServices] AppDbContext context)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.NewUsername))
+                    return BadRequest(new { mensaje = "El nombre de usuario no puede estar vacío." });
+
+                var cleanUsername = request.NewUsername.Trim().ToLower();
+                var taken = await context.Usuarios.AnyAsync(u => u.Username.ToLower() == cleanUsername && u.Id != request.UserId);
+                if (taken)
+                    return BadRequest(new { mensaje = "El nombre de usuario ya está en uso." });
+
+                var usuario = await context.Usuarios.FindAsync(request.UserId);
+                if (usuario == null)
+                    return NotFound(new { mensaje = "Usuario no encontrado." });
+
+                usuario.Username = cleanUsername;
+                await context.SaveChangesAsync();
+                return Ok(new { message = "Nombre de usuario actualizado correctamente.", username = usuario.Username });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        public class UpdateUsernameRequest
+        {
+            public int UserId { get; set; }
+            public string NewUsername { get; set; }
+        }
+
         public class ForgotPasswordRequestDto
         {
             public string Email { get; set; }
@@ -252,7 +308,7 @@ namespace SistemaGolAhora.Controllers
             try
             {
                 var usuarios = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
-                    context.Usuarios.Select(u => new { personaId = u.PersonaId, username = u.Username })
+                    context.Usuarios.Select(u => new { id = u.Id, personaId = u.PersonaId, username = u.Username })
                 );
                 return Ok(usuarios);
             }
