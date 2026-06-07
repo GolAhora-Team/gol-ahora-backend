@@ -246,12 +246,16 @@ namespace Aplication.UseCase
             }
 
             // Validación de Apto Médico
-            if (clienteExiste.AptoMedicoArchivo == null || clienteExiste.AptoMedicoArchivo.Length == 0)
+            bool tieneAptoManual = clienteExiste.AptoFisico;
+            bool tieneArchivoValido = clienteExiste.AptoMedicoArchivo != null && clienteExiste.AptoMedicoArchivo.Length > 0 && 
+                                      clienteExiste.AptoMedicoFechaFin.HasValue && clienteExiste.AptoMedicoFechaFin.Value >= DateTime.UtcNow;
+
+            if (!tieneAptoManual && !tieneArchivoValido)
             {
-                throw new ExceptionBadRequest("El cliente no posee un apto médico cargado.");
-            }
-            if (!clienteExiste.AptoMedicoFechaFin.HasValue || clienteExiste.AptoMedicoFechaFin.Value < DateTime.UtcNow)
-            {
+                if (clienteExiste.AptoMedicoArchivo == null || clienteExiste.AptoMedicoArchivo.Length == 0)
+                {
+                    throw new ExceptionBadRequest("El cliente no posee un apto médico cargado.");
+                }
                 throw new ExceptionBadRequest("El apto médico del cliente se encuentra vencido.");
             }
 
