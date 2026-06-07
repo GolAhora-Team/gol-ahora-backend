@@ -25,15 +25,16 @@ namespace Infraestructure.Querys
 
         public async Task<Usuario?> GetByIdentifierAndPassword(string identifier, string password)
         {
-            return await _context.Usuarios
+            var usuarios = await _context.Usuarios
                 .Include(u => u.Persona)
                 .Where(u => 
-                    (u.Username == identifier || 
-                     u.Email == identifier || 
-                     u.Persona.Email == identifier || 
-                     u.Persona.Dni.ToString() == identifier) 
-                    && u.PasswordHash == password)
-                .FirstOrDefaultAsync();
+                    u.Username == identifier || 
+                    u.Email == identifier || 
+                    u.Persona.Email == identifier || 
+                    u.Persona.Dni.ToString() == identifier)
+                .ToListAsync();
+
+            return usuarios.FirstOrDefault(u => u.PasswordHash == password);
         }
 
         public async Task<List<string>> CheckUniqueness(int dni, string email, string username)
@@ -68,7 +69,8 @@ namespace Infraestructure.Querys
         {
             if (string.IsNullOrWhiteSpace(email)) return null;
             var cleanEmail = email.Trim();
-            return await _context.Usuarios.Where(u => u.Email.Trim() == cleanEmail && u.PasswordHash == password).FirstOrDefaultAsync();
+            var usuarios = await _context.Usuarios.Where(u => u.Email.Trim() == cleanEmail).ToListAsync();
+            return usuarios.FirstOrDefault(u => u.PasswordHash == password);
         }
 
         public async Task<Usuario?> GetByResetToken(string token)
