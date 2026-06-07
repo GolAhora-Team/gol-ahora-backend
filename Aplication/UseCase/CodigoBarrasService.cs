@@ -103,7 +103,7 @@ namespace Aplication.UseCase
                         {
                             if (logoImageBytes.Length > 0)
                             {
-                                col.Item().Image(logoImageBytes).FitHeight(25);
+                                col.Item().Height(25).Image(logoImageBytes);
                             }
                         });
 
@@ -121,7 +121,7 @@ namespace Aplication.UseCase
                         {
                             innerRow.RelativeItem().AlignCenter().Column(col =>
                             {
-                                col.Item().Image(barcodeImageBytes).FitWidth(100);
+                                col.Item().Width(100).Image(barcodeImageBytes);
                                 col.Item().Text(codigoBarras).FontSize(7).AlignCenter();
                             });
                             // Espacio en blanco a la derecha
