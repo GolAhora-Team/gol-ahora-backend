@@ -117,15 +117,10 @@ namespace Aplication.UseCase
                         });
 
                         // 3. Código de barras a la derecha, dejando espacio
-                        row.ConstantItem(120).AlignMiddle().Row(innerRow =>
+                        row.ConstantItem(150).AlignMiddle().Column(col =>
                         {
-                            innerRow.RelativeItem().AlignCenter().Column(col =>
-                            {
-                                col.Item().Width(120).Image(barcodeImageBytes);
-                                col.Item().Text(codigoBarras).FontSize(7).AlignCenter();
-                            });
-                            // Espacio en blanco a la derecha
-                            innerRow.ConstantItem(120);
+                            col.Item().Width(120).Image(barcodeImageBytes);
+                            col.Item().Text(codigoBarras).FontSize(7).AlignCenter();
                         });
                     });
                 });
