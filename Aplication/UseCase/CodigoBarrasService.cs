@@ -64,7 +64,7 @@ namespace Aplication.UseCase
             var barcodeWriter = new BarcodeWriterGeneric
             {
                 Format = BarcodeFormat.CODE_128,
-                Options = new EncodingOptions { Height = 100, Width = 300, Margin = 10 }
+                Options = new EncodingOptions { Height = 50, Width = 200, Margin = 5 }
             };
             var bitMatrix = barcodeWriter.Encode(codigoBarras);
 
@@ -81,28 +81,51 @@ namespace Aplication.UseCase
                 barcodeImageBytes = data.ToArray();
             }
 
+            string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "futbol-logo.png");
+            if (!File.Exists(logoPath))
+            {
+                logoPath = Path.Combine(Directory.GetCurrentDirectory(), "assets", "futbol-logo.png");
+            }
+            byte[] logoImageBytes = File.Exists(logoPath) ? File.ReadAllBytes(logoPath) : new byte[0];
+
             var document = Document.Create(container =>
             {
                 container.Page(page =>
                 {
-                    page.Size(new PageSize(250, 80, Unit.Millimetre));
-                    page.Margin(5, Unit.Millimetre);
+                    page.Size(new PageSize(250, 40, Unit.Millimetre));
+                    page.Margin(3, Unit.Millimetre);
                     page.PageColor(Colors.White);
 
                     page.Content().Row(row =>
                     {
-                        row.RelativeItem().PaddingRight(10).Column(col =>
+                        // 1. Logo a la izquierda
+                        row.ConstantItem(40).AlignMiddle().AlignCenter().Column(col =>
                         {
-                            col.Item().Text("GOL AHORA - ACCESO").SemiBold().FontSize(14).FontColor(Colors.Blue.Darken2);
-                            col.Item().Text($"Usuario: {nombreUsuario}").FontSize(10);
-                            col.Item().Text($"Actividad: {nombreActividad}").FontSize(10);
-                            col.Item().Text($"Fecha: {fechaActividad}").FontSize(10);
+                            if (logoImageBytes.Length > 0)
+                            {
+                                col.Item().Image(logoImageBytes).FitHeight(25);
+                            }
                         });
 
-                        row.ConstantItem(120).AlignMiddle().AlignCenter().Column(col =>
+                        // 2. Datos al centro
+                        row.RelativeItem().PaddingHorizontal(5).AlignMiddle().Column(col =>
                         {
-                            col.Item().Image(barcodeImageBytes);
-                            col.Item().Text(codigoBarras).FontSize(8).AlignCenter();
+                            col.Item().Text("GOL AHORA - ACCESO").SemiBold().FontSize(11).FontColor(Colors.Blue.Darken2);
+                            col.Item().Text($"Usuario: {nombreUsuario}").FontSize(8);
+                            col.Item().Text($"Actividad: {nombreActividad}").FontSize(8);
+                            col.Item().Text($"Fecha: {fechaActividad}").FontSize(8);
+                        });
+
+                        // 3. Código de barras a la derecha, dejando espacio
+                        row.ConstantItem(120).AlignMiddle().Row(innerRow =>
+                        {
+                            innerRow.RelativeItem().AlignCenter().Column(col =>
+                            {
+                                col.Item().Image(barcodeImageBytes).FitWidth(100);
+                                col.Item().Text(codigoBarras).FontSize(7).AlignCenter();
+                            });
+                            // Espacio en blanco a la derecha
+                            innerRow.ConstantItem(20);
                         });
                     });
                 });
