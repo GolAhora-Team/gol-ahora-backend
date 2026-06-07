@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.ICompeticion;
+using Aplication.Interfaces.ICompeticion;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -29,6 +29,23 @@ namespace Infraestructure.Command
 
             if (competicion != null)
             {
+                var partidosIds = _context.Partidos
+                    .Where(p => p.CompeticionId == idCompeticion)
+                    .Select(p => p.Id)
+                    .ToList();
+
+                if (partidosIds.Any())
+                {
+                    var reservas = _context.Reservas
+                        .Where(r => r.PartidoId.HasValue && partidosIds.Contains(r.PartidoId.Value))
+                        .ToList();
+
+                    if (reservas.Any())
+                    {
+                        _context.Reservas.RemoveRange(reservas);
+                    }
+                }
+
                 _context.Remove(competicion);
                 await _context.SaveChangesAsync();
             }

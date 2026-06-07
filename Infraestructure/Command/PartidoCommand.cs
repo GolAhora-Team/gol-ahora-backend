@@ -31,9 +31,19 @@ namespace Infraestructure.Command
 
         public async Task DeletePartidosPorCompeticion(int competicionId)
         {
-            var partidos = _context.Partidos.Where(p => p.CompeticionId == competicionId);
+            var partidos = _context.Partidos.Where(p => p.CompeticionId == competicionId).ToList();
             if (partidos.Any())
             {
+                var partidoIds = partidos.Select(p => p.Id).ToList();
+                var reservas = _context.Reservas
+                    .Where(r => r.PartidoId.HasValue && partidoIds.Contains(r.PartidoId.Value))
+                    .ToList();
+
+                if (reservas.Any())
+                {
+                    _context.Reservas.RemoveRange(reservas);
+                }
+
                 _context.Partidos.RemoveRange(partidos);
                 await _context.SaveChangesAsync();
             }
