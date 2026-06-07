@@ -273,5 +273,35 @@ namespace Aplication.UseCase.Entrenamientos
                 CupoMaximo = entrenamientoExistente.CupoMaximo
             };
         }
+
+        public async Task<EntrenamientoShortResponse> RemoveCliente(int entrenamientoId, int clienteId)
+        {
+            var entrenamientoExistente = await _entrenamientoQuery.GetEntrenamientoById(entrenamientoId);
+            if (entrenamientoExistente == null)
+            {
+                throw new ExceptionNotFound("Entrenamiento no encontrado.");
+            }
+
+            if (entrenamientoExistente.Clientes == null)
+            {
+                throw new ExceptionNotFound("El cliente no está inscrito en este entrenamiento.");
+            }
+
+            var clienteEntrenamiento = entrenamientoExistente.Clientes.FirstOrDefault(c => c.ClienteId == clienteId);
+            if (clienteEntrenamiento == null)
+            {
+                throw new ExceptionNotFound("El cliente no está inscrito en este entrenamiento.");
+            }
+
+            entrenamientoExistente.Clientes.Remove(clienteEntrenamiento);
+            await _entrenamientoCommand.UpdateEntrenamiento(entrenamientoExistente);
+
+            return new EntrenamientoShortResponse
+            {
+                Id = entrenamientoExistente.Id,
+                Nombre = entrenamientoExistente.Nombre,
+                CupoMaximo = entrenamientoExistente.CupoMaximo
+            };
+        }
     }
 }

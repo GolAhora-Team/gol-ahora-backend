@@ -13,5 +13,6 @@ namespace Aplication.Interfaces.IEntrenamiento
         Task<List<EntrenamientoResponse>> GetAllEntrenamientos();
         Task<EntrenamientoDeleteResponse> DeleteEntrenamiento(int id);
         Task<EntrenamientoShortResponse> AddCliente(int entrenamientoId, int clienteId);
+        Task<EntrenamientoShortResponse> RemoveCliente(int entrenamientoId, int clienteId);
     }
 }

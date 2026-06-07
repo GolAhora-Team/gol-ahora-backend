@@ -120,5 +120,23 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpDelete("{entrenamientoId}/cliente/{clienteId}")]
+        public async Task<ActionResult<EntrenamientoShortResponse>> RemoveCliente(int entrenamientoId, int clienteId)
+        {
+            try
+            {
+                var response = await _entrenamientoService.RemoveCliente(entrenamientoId, clienteId);
+                return Ok(response);
+            }
+            catch (ExceptionNotFound ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (ExceptionBadRequest ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }

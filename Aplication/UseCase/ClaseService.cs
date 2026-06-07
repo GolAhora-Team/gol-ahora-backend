@@ -306,5 +306,31 @@ namespace Aplication.UseCase
                 IdProfesor = claseExistente.ProfesorId
             };
         }
+
+        public async Task<ClaseShortResponse> removeCliente(int claseId, int clienteId)
+        {
+            var claseExistente = await _claseQuery.GetClaseById(claseId);
+            if (claseExistente == null)
+            {
+                throw new ExceptionNotFound("Clase no encontrada.");
+            }
+            
+            var asistencia = claseExistente.Asistencias.FirstOrDefault(a => a.ClienteId == clienteId);
+            if (asistencia == null)
+            {
+                throw new ExceptionNotFound("El cliente no está inscrito en esta clase.");
+            }
+
+            claseExistente.Asistencias.Remove(asistencia);
+            await _claseCommand.UpdateClase(claseExistente);
+
+            return new ClaseShortResponse
+            {
+                Id = claseExistente.Id,
+                Nombre = claseExistente.Nombre,
+                capacidadMax = claseExistente.CapacidadMax,
+                IdProfesor = claseExistente.ProfesorId
+            };
+        }
     }
 }

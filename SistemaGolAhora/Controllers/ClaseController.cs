@@ -131,5 +131,23 @@ namespace SistemaGolAhora.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        [HttpDelete("{claseId}/cliente/{clienteId}")]
+        public async Task<IActionResult> RemoveCliente(int claseId, int clienteId)
+        {
+            try
+            {
+                var result = await _claseService.removeCliente(claseId, clienteId);
+                return Ok(result);
+            }
+            catch (ExceptionNotFound ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ExceptionBadRequest ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

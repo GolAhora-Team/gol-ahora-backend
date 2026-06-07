@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Clase;
+using Aplication.DTOs.Request.Clase;
 using Aplication.DTOs.Response.Clase;
 using Domain.Entities;
 using System;
@@ -18,5 +18,6 @@ namespace Aplication.Interfaces.IClases
         Task<ClaseDeleteResponse> DeleteClase(int id);
         Task<ClaseShortResponse> addProfesor(int claseId, int profesorId);
         Task<ClaseShortResponse> addCliente(int claseId, int clienteId);
+        Task<ClaseShortResponse> removeCliente(int claseId, int clienteId);
     }
 }
