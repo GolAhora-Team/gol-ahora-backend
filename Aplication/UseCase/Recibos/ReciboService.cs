@@ -59,7 +59,7 @@ namespace Aplication.UseCase.Recibos
                 {
                     ReservaId = reservaId,
                     NumeroRecibo = numeroRecibo,
-                    FechaEmision = DateTime.Now,
+                    FechaEmision = DateTime.UtcNow.AddHours(-3),
                     MontoTotal = montoTotal,
                     Concepto = $"Pago total por reserva de cancha de {reserva.Cancha?.Superficie} - Turno: {reserva.Fecha:dd/MM/yyyy} {reserva.HoraInicio:hh\\:mm}hs",
                     MetodoPago = "Transferencia", // Asumido por defecto si no tenemos enlace directo

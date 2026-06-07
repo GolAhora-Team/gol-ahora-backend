@@ -158,7 +158,7 @@ namespace Aplication.UseCase
 
         public async Task<bool> EliminarAsistencia(int actividadId, int clienteId, bool esClase)
         {
-            var hoy = DateTime.Now.Date;
+            var hoy = DateTime.UtcNow.AddHours(-3).Date;
 
             if (esClase)
             {
@@ -190,7 +190,7 @@ namespace Aplication.UseCase
 
         private async Task<bool> RegistrarAsistenciaBase(int actividadId, int clienteId, bool esClase, string metodo)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow.AddHours(-3);
             var hoy = now.Date;
             var diaAbbr = GetDayAbbr(now.DayOfWeek);
 

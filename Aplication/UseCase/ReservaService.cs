@@ -93,11 +93,11 @@ namespace Aplication.UseCase
             {
                 throw new ExceptionBadRequest("La hora de inicio debe ser menor que la hora de fin.");
             }
-            if (request.Fecha.Date < DateTime.Now.Date)
+            if (request.Fecha.Date < DateTime.UtcNow.AddHours(-3).Date)
             {
                 throw new ExceptionBadRequest("La fecha de la reserva no puede ser en el pasado.");
             }
-            if (request.Fecha.Date > DateTime.Now.Date.AddDays(30))
+            if (request.Fecha.Date > DateTime.UtcNow.AddHours(-3).Date.AddDays(30))
             {
                 throw new ExceptionBadRequest("No se puede reservar con más de 30 días de antelación.");
             }
@@ -352,7 +352,7 @@ namespace Aplication.UseCase
 
             // Calcular horas restantes hasta el turno
             var fechaHoraTurno = reserva.Fecha.Date + reserva.HoraInicio;
-            var horasRestantes = (fechaHoraTurno - DateTime.Now).TotalHours;
+            var horasRestantes = (fechaHoraTurno - DateTime.UtcNow.AddHours(-3)).TotalHours;
 
             // Buscar monto original pagado y método de pago
             decimal montoOriginal = 0;
@@ -452,8 +452,8 @@ namespace Aplication.UseCase
                         Nombre = $"REFUND-{reserva.Id}",
                         Descripcion = $"Reembolso de reserva {reserva.Id} (100% off)",
                         Porcentaje = 100,
-                        FechaInicio = DateTime.Now,
-                        FechaFin = DateTime.Now.AddMonths(3)
+                        FechaInicio = DateTime.UtcNow.AddHours(-3),
+                        FechaFin = DateTime.UtcNow.AddHours(-3).AddMonths(3)
                     };
                     await _descuentoCommand.InsertDescuento(descuento);
 
@@ -488,7 +488,7 @@ namespace Aplication.UseCase
                     {
                         var pagoReintegro = new Pago
                         {
-                            FechaPago = DateTime.Now,
+                            FechaPago = DateTime.UtcNow.AddHours(-3),
                             Monto = -cancelInfo.MontoReintegro, // Monto negativo = nota de crédito/reintegro
                             Metodo = MetodoPago.Transferencia,
                             Estado = EstadoPago.Reintegro,
@@ -564,11 +564,11 @@ namespace Aplication.UseCase
             {
                 throw new ExceptionBadRequest("La hora de inicio debe ser menor que la hora de fin.");
             }
-            if (request.Fecha.Date < DateTime.Now.Date)
+            if (request.Fecha.Date < DateTime.UtcNow.AddHours(-3).Date)
             {
                 throw new ExceptionBadRequest("La fecha de la reserva no puede ser en el pasado.");
             }
-            if (request.Fecha.Date > DateTime.Now.Date.AddDays(30))
+            if (request.Fecha.Date > DateTime.UtcNow.AddHours(-3).Date.AddDays(30))
             {
                 throw new ExceptionBadRequest("No se puede reservar con más de 30 días de antelación.");
             }
