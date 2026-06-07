@@ -39,6 +39,12 @@ namespace Aplication.UseCase
 
         public async Task<EquipoResponse> CreateEquipo(CreateEquipoRequest request)
         {
+            var existente = await _query.GetListEquipos();
+            if (existente.Any(e => e.Nombre.Trim().ToLower() == request.Nombre.Trim().ToLower()))
+            {
+                throw new Exception("Ya existe un equipo con ese nombre. Por favor elegí otro para evitar confusiones en los torneos.");
+            }
+
             var equipo = _mapper.CreateEquipo(request);
 
             await _command.InsertEquipo(equipo);
@@ -88,6 +94,12 @@ namespace Aplication.UseCase
 
             if (equipoOriginal == null)
                 throw new Exception("El equipo no existe");
+
+            var existente = await _query.GetListEquipos();
+            if (existente.Any(e => e.Id != equipoId && e.Nombre.Trim().ToLower() == request.Nombre.Trim().ToLower()))
+            {
+                throw new Exception("Ya existe un equipo con ese nombre. Por favor elegí otro para evitar confusiones en los torneos.");
+            }
 
             equipoOriginal.Nombre = request.Nombre;
             equipoOriginal.CantidadMaxJugadores = request.CantidadMaxJugadores;
