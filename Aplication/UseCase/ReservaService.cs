@@ -116,8 +116,9 @@ namespace Aplication.UseCase
             await _reservaCommand.InsertReserva(reserva);
 
             var cliente = await _clienteQuery.GetClienteById(request.ClienteId);
+            var cancha = await _canchaQuery.GetCanchaById(request.CanchaId);
             await _notificacionService.CrearNotificacionGeneral(
-                $"Reserva confirmada por {cliente?.Nombre} {cliente?.Apellido} para la cancha ID {reserva.CanchaId} el {reserva.Fecha:dd/MM/yyyy}.", 
+                $"Reserva confirmada por {cliente?.Nombre} {cliente?.Apellido} para la cancha {cancha?.Nombre} el {reserva.Fecha:dd/MM/yyyy}.", 
                 "ADMIN,PERSONAL", 
                 "Reserva"
             );
