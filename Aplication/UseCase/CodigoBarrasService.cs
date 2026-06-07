@@ -99,11 +99,11 @@ namespace Aplication.UseCase
                     page.Content().Row(row =>
                     {
                         // 1. Logo a la izquierda
-                        row.ConstantItem(40).AlignMiddle().AlignCenter().Column(col =>
+                        row.ConstantItem(50).AlignMiddle().AlignCenter().Column(col =>
                         {
                             if (logoImageBytes.Length > 0)
                             {
-                                col.Item().Height(25).Image(logoImageBytes);
+                                col.Item().Height(35).Image(logoImageBytes);
                             }
                         });
 
@@ -121,11 +121,11 @@ namespace Aplication.UseCase
                         {
                             innerRow.RelativeItem().AlignCenter().Column(col =>
                             {
-                                col.Item().Width(100).Image(barcodeImageBytes);
+                                col.Item().Width(120).Image(barcodeImageBytes);
                                 col.Item().Text(codigoBarras).FontSize(7).AlignCenter();
                             });
                             // Espacio en blanco a la derecha
-                            innerRow.ConstantItem(20);
+                            innerRow.ConstantItem(120);
                         });
                     });
                 });
