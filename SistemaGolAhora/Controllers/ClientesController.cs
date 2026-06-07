@@ -89,6 +89,20 @@ namespace SistemaGolAhora.Controllers
             }
         }
 
+        [HttpDelete("{id}/apto-medico")]
+        public async Task<IActionResult> DeleteAptoMedico(int id)
+        {
+            try
+            {
+                await _services.DeleteAptoMedico(id);
+                return Ok(new { mensaje = "Apto médico eliminado correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

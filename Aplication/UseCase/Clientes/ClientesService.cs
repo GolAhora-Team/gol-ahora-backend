@@ -101,6 +101,22 @@ namespace Aplication.UseCase.Clientes
             var cliente = await _query.GetClienteById(clienteId);
             return cliente?.AptoMedicoArchivo;
         }
+
+        public async Task DeleteAptoMedico(int clienteId)
+        {
+            var cliente = await _query.GetClienteById(clienteId);
+            if (cliente == null)
+                throw new Exception("El cliente no existe");
+
+            cliente.AptoMedicoArchivo = null;
+            cliente.AptoMedicoFechaInicio = null;
+            cliente.AptoMedicoFechaFin = null;
+            // Opcionalmente, podemos dejar AptoFisico en false si se elimina el archivo.
+            // cliente.AptoFisico = false; // El user dijo "El cambio de eliminacion tiene que verse reflejado en todo el sistema". Si se elimina, ya no tiene apto fisico.
+            cliente.AptoFisico = false;
+
+            await _command.UpdateCliente(cliente);
+        }
                 
         public async Task<ClienteResponse> DeleteCliente(int id)
         {

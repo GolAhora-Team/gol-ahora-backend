@@ -17,5 +17,6 @@ namespace Aplication.Interfaces.ICliente
         Task<List<ClienteResponse>> GetAll();
         Task<ClienteResponse> GetClienteById(int clienteId);
         Task<byte[]?> GetAptoMedico(int clienteId);
+        Task DeleteAptoMedico(int clienteId);
     }
 }
