@@ -85,7 +85,7 @@ namespace Aplication.UseCase
             {
                 container.Page(page =>
                 {
-                    page.Size(new PageSize(250, 70, Unit.Millimetre));
+                    page.Size(new PageSize(250, 80, Unit.Millimetre));
                     page.Margin(5, Unit.Millimetre);
                     page.PageColor(Colors.White);
 
