@@ -37,6 +37,11 @@ namespace SistemaGolAhora.Controllers
             {
                 var extRef = request.ExternalReference ?? Guid.NewGuid().ToString();
 
+                if (request.IsRealMoney)
+                {
+                    extRef = "PROD_" + extRef;
+                }
+
                 var body = new
                 {
                     items = new[]
@@ -61,7 +66,12 @@ namespace SistemaGolAhora.Controllers
                 };
 
                 using var httpClient = new System.Net.Http.HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _mpSettings.AccessToken);
+                
+                string tokenToUse = request.IsRealMoney && !string.IsNullOrEmpty(_mpSettings.ProductionAccessToken) 
+                                    ? _mpSettings.ProductionAccessToken 
+                                    : _mpSettings.AccessToken;
+                
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenToUse);
                 
                 var content = new System.Net.Http.StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync("https://api.mercadopago.com/checkout/preferences", content);
@@ -94,7 +104,11 @@ namespace SistemaGolAhora.Controllers
             try
             {
                 using var httpClient = new System.Net.Http.HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _mpSettings.AccessToken);
+                string tokenToUse = externalReference.StartsWith("PROD_") && !string.IsNullOrEmpty(_mpSettings.ProductionAccessToken)
+                                    ? _mpSettings.ProductionAccessToken
+                                    : _mpSettings.AccessToken;
+                                    
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenToUse);
                 
                 var response = await httpClient.GetAsync($"https://api.mercadopago.com/v1/payments/search?external_reference={externalReference}");
                 if (!response.IsSuccessStatusCode)
@@ -156,9 +170,18 @@ namespace SistemaGolAhora.Controllers
                 {
                     // Consultar la API de MP para ver los detalles del pago
                     using var httpClient = new System.Net.Http.HttpClient();
-                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _mpSettings.AccessToken);
                     
+                    // Primero intentamos con el token por defecto (sandbox)
+                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _mpSettings.AccessToken);
                     var response = await httpClient.GetAsync($"https://api.mercadopago.com/v1/payments/{dataId}");
+                    
+                    // Si falla, intentamos con el de producción
+                    if (!response.IsSuccessStatusCode && !string.IsNullOrEmpty(_mpSettings.ProductionAccessToken))
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _mpSettings.ProductionAccessToken);
+                        response = await httpClient.GetAsync($"https://api.mercadopago.com/v1/payments/{dataId}");
+                    }
+                    
                     if (response.IsSuccessStatusCode)
                     {
                         var json = await response.Content.ReadAsStringAsync();
@@ -169,6 +192,11 @@ namespace SistemaGolAhora.Controllers
                             if (result.TryGetProperty("external_reference", out var extRefElement))
                             {
                                 string extRef = extRefElement.GetString() ?? "";
+                                if (extRef.StartsWith("PROD_"))
+                                {
+                                    extRef = extRef.Replace("PROD_", "");
+                                }
+                                
                                 // Parseamos el external_reference, por ejemplo si es formato "Reserva_123" o solo el "123"
                                 if (int.TryParse(extRef, out int reservaId) || (extRef.StartsWith("Reserva_") && int.TryParse(extRef.Replace("Reserva_", ""), out reservaId)))
                                 {
@@ -214,5 +242,6 @@ namespace SistemaGolAhora.Controllers
         public string? ReturnUrl { get; set; }
         public string? WebhookUrl { get; set; }
         public string? ExternalReference { get; set; }
+        public bool IsRealMoney { get; set; }
     }
 }
