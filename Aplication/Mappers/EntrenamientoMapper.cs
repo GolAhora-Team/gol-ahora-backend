@@ -37,7 +37,13 @@ namespace Aplication.Mappers
                 HoraFin = entrenamiento.HoraFin,
                 DiasSemana = entrenamiento.DiasSemana,
                 CanchaNombre = entrenamiento.Cancha?.Nombre ?? "Sin Cancha",
-                PrecioInscripcion = entrenamiento.PrecioInscripcion
+                PrecioInscripcion = entrenamiento.PrecioInscripcion,
+                Clientes = entrenamiento.Clientes != null ? entrenamiento.Clientes.Where(i => i.Cliente != null).Select(i => new Aplication.DTOs.Response.Clase.ClaseAlumnos
+                {
+                    Id = i.Cliente.Id,
+                    Nombre = i.Cliente.Nombre,
+                    Apellido = i.Cliente.Apellido
+                }).ToList() : new System.Collections.Generic.List<Aplication.DTOs.Response.Clase.ClaseAlumnos>()
             };
         }
     }
