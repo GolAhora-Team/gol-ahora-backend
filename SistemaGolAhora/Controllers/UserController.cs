@@ -3,8 +3,6 @@ using Aplication.Interfaces.IUsuario;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace SistemaGolAhora.Controllers
 {
     [Route("api/[controller]")]

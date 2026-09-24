@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -22,7 +22,6 @@ namespace Infraestructure.Persistence.EntityConfigurations
             entity.Property(c => c.PrecioPorHora)
                 .HasColumnType("decimal(10,2)");
 
-            // Guardar enums como int
             entity.Property(c => c.Tipo)
                 .HasConversion<int>();
 

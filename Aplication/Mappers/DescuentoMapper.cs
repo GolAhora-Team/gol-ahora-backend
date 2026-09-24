@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Descuento;
+using Aplication.DTOs.Request.Descuento;
 using Aplication.Interfaces.IDescuento;
 using Aplication.Response;
 using Domain.Entities;
@@ -36,7 +36,6 @@ namespace Aplication.Mappers
                 FechaFin = descuento.FechaFin
             };
         }
-        // UPDATE
         public void UpdateDescuento(Descuento descuento, UpdateDescuentoRequest request)
         {
             descuento.Nombre = request.Nombre;
@@ -46,7 +45,6 @@ namespace Aplication.Mappers
             descuento.FechaFin = request.FechaFin;
         }
 
-        // LIST
         public List<DescuentoResponse> CreateDescuentoResponseList(List<Descuento> descuentos)
         {
             return descuentos.Select(d => new DescuentoResponse

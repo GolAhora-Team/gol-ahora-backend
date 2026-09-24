@@ -12,7 +12,6 @@ namespace Aplication.Mappers
 {
     public class FacturaMapper : IFacturaMapper
     {
-        // CREATE
         public Factura CreateFactura(CreateFacturaRequest request)
         {
             return new Factura
@@ -25,7 +24,6 @@ namespace Aplication.Mappers
             };
         }
 
-        // RESPONSE
         public FacturaResponse CreateFacturaResponse(Factura factura)
         {
             return new FacturaResponse
@@ -39,7 +37,6 @@ namespace Aplication.Mappers
             };
         }
 
-        // UPDATE
         public void UpdateFactura(Factura factura, UpdateFacturaRequest request)
         {
             factura.FechaEmision = request.FechaEmision;
@@ -47,7 +44,6 @@ namespace Aplication.Mappers
             factura.ClienteId = request.ClienteId;
         }
 
-        // LIST
         public List<FacturaResponse> CreateFacturaResponseList(List<Factura> facturas)
         {
             return facturas.Select(f => new FacturaResponse

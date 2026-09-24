@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -31,7 +31,6 @@ namespace Infraestructure.Persistence.EntityConfigurations
                 .HasForeignKey(a => a.ClaseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // 🔥 evita duplicados (muy importante)
             entity.HasIndex(a => new { a.ClienteId, a.ClaseId })
                 .IsUnique();
         }

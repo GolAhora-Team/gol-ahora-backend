@@ -18,13 +18,11 @@ namespace Infraestructure.Persistence.EntityConfigurations
             entity.Property(j => j.Estado)
                 .HasConversion<int>();
 
-            // 🔗 1 a 1 con Cliente
             entity.HasOne(j => j.Cliente)
                 .WithOne(c => c.Jugador)
                 .HasForeignKey<Jugador>(j => j.ClienteId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // 🔗 1 a N con Equipo
             entity.HasOne(j => j.Equipo)
                 .WithMany()
                 .HasForeignKey(j => j.EquipoId)

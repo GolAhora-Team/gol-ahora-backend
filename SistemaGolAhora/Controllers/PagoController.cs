@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Pago;
+using Aplication.DTOs.Request.Pago;
 using Aplication.Interfaces.IPago;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +15,6 @@ namespace SistemaGolAhora.Controllers
             _service = service;
         }
 
-        // GET ALL
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -23,7 +22,6 @@ namespace SistemaGolAhora.Controllers
             return Ok(pagos);
         }
 
-        // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -31,7 +29,6 @@ namespace SistemaGolAhora.Controllers
             return Ok(pago);
         }
 
-        // CREATE
         [HttpPost]
         public async Task<IActionResult> Create(CreatePagoRequest request)
         {
@@ -39,7 +36,6 @@ namespace SistemaGolAhora.Controllers
             return Ok(result);
         }
 
-        // UPDATE
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdatePagoRequest request)
         {
@@ -47,7 +43,6 @@ namespace SistemaGolAhora.Controllers
             return Ok(result);
         }
 
-        // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,19 +19,16 @@ namespace Infraestructure.Persistence.EntityConfigurations
             entity.Property(c => c.Hora)
                 .IsRequired();
 
-            // 🔗 Jugador que sale
             entity.HasOne(c => c.JugadorSale)
                 .WithMany()
                 .HasForeignKey(c => c.JugadorSaleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 🔗 Jugador que entra
             entity.HasOne(c => c.JugadorEntra)
                 .WithMany()
                 .HasForeignKey(c => c.JugadorEntraId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 🔗 Partido
             entity.HasOne(c => c.Partido)
                 .WithMany(p => p.Cambios)
                 .HasForeignKey(c => c.PartidoId)

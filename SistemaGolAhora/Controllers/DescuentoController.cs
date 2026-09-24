@@ -1,4 +1,4 @@
-﻿namespace SistemaGolAhora.Controllers
+namespace SistemaGolAhora.Controllers
 {
     using Aplication.DTOs.Request.Descuento;
     using Aplication.Interfaces.IDescuento;
@@ -18,7 +18,6 @@
                 _service = service;
             }
 
-            // 🟢 CREATE
             [HttpPost]
             public async Task<IActionResult> Create([FromBody] CreateDescuentoRequest request)
             {
@@ -26,7 +25,6 @@
                 return Ok(result);
             }
 
-            // 🔵 GET ALL
             [HttpGet]
             public async Task<IActionResult> GetAll()
             {
@@ -34,7 +32,6 @@
                 return Ok(result);
             }
 
-            // 🔵 GET BY ID
             [HttpGet("{id}")]
             public async Task<IActionResult> GetById(int id)
             {
@@ -42,7 +39,6 @@
                 return Ok(result);
             }
 
-            // 🟡 UPDATE
             [HttpPut("{id}")]
             public async Task<IActionResult> Update(int id, [FromBody] UpdateDescuentoRequest request)
             {
@@ -50,7 +46,6 @@
                 return Ok(result);
             }
 
-            // 🔴 DELETE
             [HttpDelete("{id}")]
             public async Task<IActionResult> Delete(int id)
             {
@@ -58,7 +53,6 @@
                 return Ok(new { message = "Descuento eliminado correctamente" });
             }
 
-            // 🧪 TEST (opcional para verificar rápido)
             [HttpGet("test")]
             public IActionResult Test()
             {

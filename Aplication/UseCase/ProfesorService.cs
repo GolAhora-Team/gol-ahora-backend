@@ -25,7 +25,6 @@ namespace Aplication.UseCase
             _notificacionService = notificacionService;
         }
 
-        // ── Queries ────────────────────────────────
         public async Task<IEnumerable<ProfesorDto>> GetAllAsync()
             => await _query.GetAllAsync();
 
@@ -41,7 +40,6 @@ namespace Aplication.UseCase
         public async Task<IEnumerable<ProfesorDto>> GetByClaseAsync(int claseId)
             => await _query.GetByClaseAsync(claseId);
 
-        // ── Commands ───────────────────────────────
         public async Task<ProfesorDto> CreateAsync(ProfesorDto dto)
             => await _command.CreateAsync(dto);
 

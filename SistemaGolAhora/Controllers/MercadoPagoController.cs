@@ -227,11 +227,10 @@ namespace SistemaGolAhora.Controllers
             }
             catch (System.Exception ex)
             {
-                // Log error, pero retornar 200 a MP para que no reintente locamente
                 Console.WriteLine("Error procesando Webhook: " + ex.Message);
             }
 
-            return Ok(); // Siempre retornar 200 OK a Mercado Pago
+            return Ok();
         }
     }
 

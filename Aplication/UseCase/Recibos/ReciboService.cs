@@ -44,16 +44,11 @@ namespace Aplication.UseCase.Recibos
 
             if (recibo == null)
             {
-                // Generar nuevo recibo
                 int lastId = await _reciboQuery.GetLastReciboId();
                 int nextId = lastId + 1;
                 string numeroRecibo = $"0001-{nextId:D8}";
 
-                // Asumimos un monto por defecto ya que la tabla de Pagos puede ser compleja de enlazar aquí
-                // O idealmente lo sacaríamos de PrecioCancha, pero por ahora tomaremos un valor de la reserva o harcodeado
-                // El precio no está directo en Cancha, habría que obtenerlo, pero podemos poner 0 temporalmente
-                // o extraer de una tabla Precios si es necesario.
-                decimal montoTotal = 0; // Se debe calcular el total real si Cancha no tiene Precio.
+                decimal montoTotal = 0;
 
                 recibo = new Recibo
                 {
@@ -62,7 +57,7 @@ namespace Aplication.UseCase.Recibos
                     FechaEmision = DateTime.UtcNow.AddHours(-3),
                     MontoTotal = montoTotal,
                     Concepto = $"Pago total por reserva de cancha de {reserva.Cancha?.Superficie} - Turno: {reserva.Fecha:dd/MM/yyyy} {reserva.HoraInicio:hh\\:mm}hs",
-                    MetodoPago = "Transferencia", // Asumido por defecto si no tenemos enlace directo
+                    MetodoPago = "Transferencia",
                     FirmaDigital = "GOL AHORA"
                 };
 

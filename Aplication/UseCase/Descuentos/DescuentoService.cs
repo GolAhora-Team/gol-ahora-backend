@@ -1,4 +1,4 @@
-﻿using Aplication.Interfaces.IDescuento;
+using Aplication.Interfaces.IDescuento;
 using Aplication.Response;
 using Domain.Entities;
 
@@ -24,7 +24,6 @@ namespace Aplication.UseCase.Descuentos
             _mapper = mapper;
         }
 
-        // 🟢 CREATE
         public async Task<DescuentoResponse> CreateDescuento(CreateDescuentoRequest request)
         {
             var descuento = _mapper.CreateDescuento(request);
@@ -34,7 +33,6 @@ namespace Aplication.UseCase.Descuentos
             return _mapper.CreateDescuentoResponse(descuento);
         }
 
-        // 🔵 GET ALL
         public async Task<List<DescuentoResponse>> GetAll()
         {
             var descuentos = await _query.GetListDescuentos();
@@ -42,7 +40,6 @@ namespace Aplication.UseCase.Descuentos
             return _mapper.CreateDescuentoResponseList(descuentos);
         }
 
-        // 🔵 GET BY ID
         public async Task<DescuentoResponse> GetById(int id)
         {
             var d = await _query.GetDescuentoById(id);
@@ -53,7 +50,6 @@ namespace Aplication.UseCase.Descuentos
             return _mapper.CreateDescuentoResponse(d);
         }
 
-        // 🟡 UPDATE
         public async Task<DescuentoResponse> UpdateDescuento(int id, UpdateDescuentoRequest request)
         {
             var d = await _query.GetDescuentoById(id);
@@ -68,7 +64,6 @@ namespace Aplication.UseCase.Descuentos
             return _mapper.CreateDescuentoResponse(d);
         }
 
-        // 🔴 DELETE
         public async Task DeleteDescuento(int id)
         {
             await _command.RemoveDescuento(id);

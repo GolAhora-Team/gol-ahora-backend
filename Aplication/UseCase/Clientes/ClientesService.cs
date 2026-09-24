@@ -111,8 +111,6 @@ namespace Aplication.UseCase.Clientes
             cliente.AptoMedicoArchivo = null;
             cliente.AptoMedicoFechaInicio = null;
             cliente.AptoMedicoFechaFin = null;
-            // Opcionalmente, podemos dejar AptoFisico en false si se elimina el archivo.
-            // cliente.AptoFisico = false; // El user dijo "El cambio de eliminacion tiene que verse reflejado en todo el sistema". Si se elimina, ya no tiene apto fisico.
             cliente.AptoFisico = false;
 
             await _command.UpdateCliente(cliente);

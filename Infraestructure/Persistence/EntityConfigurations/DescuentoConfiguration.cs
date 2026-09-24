@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +33,6 @@ namespace Infraestructure.Persistence.EntityConfigurations
             entity.Property(d => d.FechaFin)
                 .IsRequired();
 
-            // 🔗 Relación con Precio
             entity.HasMany(d => d.Precios)
                 .WithOne(p => p.Descuento)
                 .HasForeignKey(p => p.DescuentoId)

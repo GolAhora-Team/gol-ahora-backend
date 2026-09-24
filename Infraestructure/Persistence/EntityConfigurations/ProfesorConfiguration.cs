@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,18 +19,6 @@ namespace Infraestructure.Persistence.EntityConfigurations
 
             entity.Property(p => p.Especialidad)
                 .HasMaxLength(100);
-
-            // Relaciones
-
-            //entity.HasMany(p => p.Clases)
-            //    .WithOne(c => c.Profesor)
-            //    .HasForeignKey(c => c.ProfesorId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //entity.HasMany(p => p.Entrenamientos)
-            //    .WithOne(e => e.Profesor)
-            //    .HasForeignKey(e => e.ProfesorId)
-            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -86,7 +86,6 @@ namespace Infraestructure.Querys
         public async Task<IEnumerable<ProfesorDto>> GetByClaseAsync(int claseId)
         {
             var profesores = await _context.Profesores.Include(p => p.Certificados)
-     //           .Where(p => p.claseId == claseId)
                 .ToListAsync();
             return profesores.Select(p => MapToDto(p)).ToList();
         }

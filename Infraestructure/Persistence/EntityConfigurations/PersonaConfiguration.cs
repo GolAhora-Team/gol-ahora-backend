@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,16 +8,13 @@ namespace Infraestructure.Persistence.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Persona> entity)
         {
-            // Clave primaria
             entity.HasKey(p => p.Id);
 
-            // Discriminador (herencia TPH)
             entity.HasDiscriminator<string>("TipoPersona")
                 .HasValue<Cliente>("Cliente")
                 .HasValue<Profesor>("Profesor")
                 .HasValue<Administrador>("Administrador");
 
-            // Propiedades obligatorias
             entity.Property(p => p.Nombre)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -61,7 +58,6 @@ namespace Infraestructure.Persistence.EntityConfigurations
             entity.Property(p => p.FechaRegistro)
                 .HasDefaultValueSql("GETDATE()");
 
-            // Índice único
             entity.HasIndex(p => p.Dni)
                 .IsUnique();
         }

@@ -332,9 +332,6 @@ namespace Aplication.UseCase
             };
         }
 
-        // ==========================================
-        // 🔥 NUEVO: Obtener info de cancelación con cálculo de penalización
-        // ==========================================
         public async Task<CancelacionInfoResponse> GetCancelacionInfo(int reservaId)
         {
             var reserva = await _reservaQuery.GetReservaById(reservaId);
@@ -419,9 +416,6 @@ namespace Aplication.UseCase
             };
         }
 
-        // ==========================================
-        // 🔥 MODIFICADO: Cancelar reserva con reintegro financiero
-        // ==========================================
         public async Task<ReservaResponse> CancelarReserva(int id)
         {
             var reserva = await _reservaQuery.GetReservaById(id);

@@ -12,7 +12,6 @@ public class AppDbContext : DbContext
     {
     }
 
-    // 🔹 PERSONAS (herencia)
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Persona> Personas { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
@@ -20,7 +19,6 @@ public class AppDbContext : DbContext
     public DbSet<CertificadoProfesor> CertificadosProfesores { get; set; }
     public DbSet<Administrador> Administradores { get; set; }
 
-    // 🔹 DEPORTIVO
     public DbSet<Jugador> Jugadores { get; set; }
     public DbSet<Sancion> Sanciones { get; set; }
 
@@ -33,7 +31,6 @@ public class AppDbContext : DbContext
     public DbSet<Partido> Partidos { get; set; }
     public DbSet<Cambio> Cambios { get; set; }
 
-    // 🔹 CLASES / ENTRENAMIENTO
     public DbSet<Clase> Clases { get; set; }
     public DbSet<Asistencia> Asistencias { get; set; }
     public DbSet<RegistroAsistenciaClase> RegistroAsistenciaClases { get; set; }
@@ -41,43 +38,34 @@ public class AppDbContext : DbContext
     public DbSet<Entrenamiento> Entrenamientos { get; set; }
     public DbSet<ClienteEntrenamiento> ClienteEntrenamientos { get; set; }
 
-    // 🔹 CANCHAS / RESERVAS
     public DbSet<Cancha> Canchas { get; set; }
     public DbSet<Reserva> Reservas { get; set; }
 
     public DbSet<Precio> Precios { get; set; }
     public DbSet<Descuento> Descuentos { get; set; }
 
-    // 🔹 FACTURACIÓN
     public DbSet<Factura> Facturas { get; set; }
     public DbSet<Pago> Pagos { get; set; }
     public DbSet<Recibo> Recibos { get; set; }
 
-    // 🔹 REPORTES
     public DbSet<Reporte> Reportes { get; set; }
 
-    // 🔹 NOTIFICACIONES
     public DbSet<Notificacion> Notificaciones { get; set; }
 
-    // 🔹 CONFIGURACIONES
     public DbSet<ConfiguracionCancelaciones> ConfiguracionCancelaciones { get; set; }
 
-    // 🔥 CONFIGURACIONES
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // 👇 esto es clave (mucho mejor que registrar uno por uno)
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        // 🔥 HERENCIA (TPH por defecto)
         modelBuilder.Entity<Persona>()
             .HasDiscriminator<string>("TipoPersona")
             .HasValue<Cliente>("Cliente")
             .HasValue<Profesor>("Profesor")
             .HasValue<Administrador>("Administrador");
 
-        // 🔥 SEED DATA (Usuarios por defecto)
         var fechaBase = new DateTime(2024, 1, 1);
 
         modelBuilder.Entity<Administrador>().HasData(
@@ -100,19 +88,16 @@ public class AppDbContext : DbContext
             new Usuario { Id = 4, PersonaId = 4, Username = "profe", Email = "profe@golahora.com", PasswordHash = "1234", TipoUsuario = Domain.Enums.TipoUsuario.Profesor }
         );
 
-        // 🔥 SEED: Configuración de cancelaciones por defecto
         modelBuilder.Entity<ConfiguracionCancelaciones>().HasData(
             new ConfiguracionCancelaciones { Id = 1, HorasAntelacionMinima = 24, PorcentajePenalizacion = 50 }
         );
 
-        // 🔗 Relación opcional Reserva -> Factura
         modelBuilder.Entity<Reserva>()
             .HasOne(r => r.Factura)
             .WithMany()
             .HasForeignKey(r => r.FacturaId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        // 🔗 Relación opcional Reserva -> Partido (Para evitar ciclos de borrado en cascada con Cancha)
         modelBuilder.Entity<Reserva>()
             .HasOne(r => r.Partido)
             .WithMany()

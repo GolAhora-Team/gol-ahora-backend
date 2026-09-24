@@ -20,7 +20,6 @@ namespace SistemaGolAhora.Controllers
             _emailService = emailService;
         }
 
-        // GET ALL
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -28,7 +27,6 @@ namespace SistemaGolAhora.Controllers
             return Ok(facturas);
         }
 
-        // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -36,7 +34,6 @@ namespace SistemaGolAhora.Controllers
             return Ok(factura);
         }
 
-        // CREATE
         [HttpPost]
         public async Task<IActionResult> Create(CreateFacturaRequest request)
         {
@@ -44,7 +41,6 @@ namespace SistemaGolAhora.Controllers
             return Ok(result);
         }
 
-        // UPDATE
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateFacturaRequest request)
         {
@@ -52,7 +48,6 @@ namespace SistemaGolAhora.Controllers
             return Ok(result);
         }
 
-        // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -60,7 +55,6 @@ namespace SistemaGolAhora.Controllers
             return Ok();
         }
 
-        // GET BY CLIENTE
         [HttpGet("por-cliente/{clienteId}")]
         public async Task<IActionResult> GetByClienteId(int clienteId)
         {

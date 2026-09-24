@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Pago;
+using Aplication.DTOs.Request.Pago;
 using Aplication.DTOs.Response.Pago;
 using Aplication.Interfaces.IDescuento;
 using Aplication.Interfaces.IPago;
@@ -24,7 +24,6 @@ namespace Aplication.UseCase.Pagos
             _mapper = mapper;
         }
 
-        //  CREATE
         public async Task<PagoResponse> CreatePago(CreatePagoRequest request)
         {
             var pago = _mapper.CreatePago(request);
@@ -34,7 +33,6 @@ namespace Aplication.UseCase.Pagos
             return _mapper.CreatePagoResponse(pago);
         }
 
-        //  GET ALL
         public async Task<List<PagoResponse>> GetAll()
         {
             var pago = await _query.GetListPagos();
@@ -42,7 +40,6 @@ namespace Aplication.UseCase.Pagos
             return _mapper.CreatePagoResponseList(pago);
         }
 
-        //  GET BY ID
         public async Task<PagoResponse> GetById(int id)
         {
             var d = await _query.GetPagoById(id);
@@ -53,13 +50,12 @@ namespace Aplication.UseCase.Pagos
             return _mapper.CreatePagoResponse(d);
         }
 
-        //  UPDATE
         public async Task<PagoResponse> UpdatePago(int id, UpdatePagoRequest request)
         {
             var d = await _query.GetPagoById(id);
 
             if (d == null)
-                throw new Exception("ERROR CHE: El pago no existe");
+                throw new Exception("El pago no existe");
 
             _mapper.UpdatePago(d, request);
 
@@ -68,7 +64,6 @@ namespace Aplication.UseCase.Pagos
             return _mapper.CreatePagoResponse(d);
         }
 
-        //  DELETE
         public async Task DeletePago(int id)
         {
             await _command.RemovePago(id);

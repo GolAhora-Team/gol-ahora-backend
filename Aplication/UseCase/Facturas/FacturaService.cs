@@ -23,7 +23,6 @@ namespace Aplication.UseCase.Facturas
             _mapper = mapper;
         }
 
-        // 🟢 CREATE
         public async Task<FacturaResponse> CreateFactura(CreateFacturaRequest request)
         {
             var factura = _mapper.CreateFactura(request);
@@ -35,7 +34,6 @@ namespace Aplication.UseCase.Facturas
             return _mapper.CreateFacturaResponse(factura);
         }
 
-        // 🔵 GET ALL
         public async Task<List<FacturaResponse>> GetAll()
         {
             var facturas = await _query.GetListFacturas();
@@ -43,7 +41,6 @@ namespace Aplication.UseCase.Facturas
             return _mapper.CreateFacturaResponseList(facturas);
         }
 
-        // 🔵 GET BY ID
         public async Task<FacturaResponse> GetById(int id)
         {
             var factura = await _query.GetFacturaById(id);
@@ -54,7 +51,6 @@ namespace Aplication.UseCase.Facturas
             return _mapper.CreateFacturaResponse(factura);
         }
 
-        // 🟡 UPDATE
         public async Task<FacturaResponse> UpdateFactura(int id, UpdateFacturaRequest request)
         {
             var factura = await _query.GetFacturaById(id);
@@ -69,13 +65,11 @@ namespace Aplication.UseCase.Facturas
             return _mapper.CreateFacturaResponse(factura);
         }
 
-        // 🔴 DELETE
         public async Task DeleteFactura(int id)
         {
             await _command.RemoveFactura(id);
         }
 
-        // 🟣 GET BY CLIENTE
         public async Task<List<FacturaResponse>> GetFacturasByClienteId(int clienteId)
         {
             var facturas = await _query.GetFacturasByClienteId(clienteId);

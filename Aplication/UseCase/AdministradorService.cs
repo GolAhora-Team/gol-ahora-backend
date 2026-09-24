@@ -21,7 +21,6 @@ namespace Aplication.UseCase
             _command = command;
         }
 
-        // ── Queries ────────────────────────────────
         public async Task<IEnumerable<AdministradorDto>> GetAllAsync()
             => await _query.GetAllAsync();
 
@@ -36,10 +35,6 @@ namespace Aplication.UseCase
 
         public async Task<IEnumerable<AdministradorDto>> GetFacturadoresAsync()
             => await _query.GetFacturadoresAsync();
-
-        // ── Commands ───────────────────────────────
-        //public async Task<AdministradorDto> CreateAsync(AdministradorDto dto)
-        //    => await _command.CreateAsync(dto);
 
         public async Task<AdministradorDto?> UpdateAsync(int id, AdministradorDto dto)
             => await _command.UpdateAsync(id, dto);

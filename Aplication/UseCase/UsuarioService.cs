@@ -189,7 +189,6 @@ namespace Aplication.UseCase
 
             await _profesorCommand.CreateProfesor(profesorEntity);
 
-            // Mapper de usuario espera CreateUsuarioProfesorRequest. Creamos uno dummy para reusar o mapeamos a mano.
             var createUsuarioReq = new CreateUsuarioProfesorRequest 
             { 
                 Email = usuario.Email, 
@@ -313,7 +312,6 @@ namespace Aplication.UseCase
             var usuarioEntity = await _usuarioQuery.GetByEmail(email);
             if (usuarioEntity == null)
             {
-                // Por seguridad es mejor no revelar si el email existe o no, pero seguiremos el patrón de la app.
                 throw new ExceptionNotFound("Usuario no encontrado con ese correo.");
             }
 
@@ -322,14 +320,12 @@ namespace Aplication.UseCase
                 throw new ExceptionBadRequest("El correo electrónico registrado para este usuario no es un correo válido para enviar mensajes (Ej: es un nombre de usuario genérico o le falta el @). Por favor contactá al administrador.");
             }
 
-            // Generar token y expiración
             var token = Guid.NewGuid().ToString();
             usuarioEntity.ResetToken = token;
             usuarioEntity.ResetTokenExpires = DateTime.UtcNow.AddHours(1);
 
             await _usuariocommand.Update(usuarioEntity);
 
-            // Enviar email
             try
             {
 

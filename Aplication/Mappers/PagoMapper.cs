@@ -1,4 +1,4 @@
-﻿using Aplication.DTOs.Request.Factura;
+using Aplication.DTOs.Request.Factura;
 using Aplication.DTOs.Request.Pago;
 using Aplication.DTOs.Response.Factura;
 using Aplication.DTOs.Response.Pago;
@@ -41,7 +41,6 @@ namespace Aplication.Mappers
                 FacturaId = pago.FacturaId
             };
         }
-        // UPDATE
         public void UpdatePago(Pago pago, UpdatePagoRequest request)
         {
             pago.FechaPago = request.FechaPago;
@@ -49,9 +48,8 @@ namespace Aplication.Mappers
             pago.Metodo = request.Metodo;
             pago.Estado = request.Estado;
             pago.FacturaId = request.FacturaId;
-                }
+        }
 
-        // LIST
         public List<PagoResponse> CreatePagoResponseList(List<Pago> pago)
         {
             return pago.Select(pag => new PagoResponse

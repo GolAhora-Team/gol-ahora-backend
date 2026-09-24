@@ -31,10 +31,8 @@ using Aplication.Interfaces.IEntrenamiento;
 using Aplication.UseCase.Entrenamientos;
 using Aplication.UseCase.Canchas;
 using Aplication.Interfaces.ISancion;
-//
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
@@ -42,13 +40,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();// Configuración de Opciones Fuertemente Tipadas
+builder.Services.AddSwaggerGen();
+
 builder.Services.Configure<Infraestructure.Services.EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.Configure<SistemaGolAhora.Controllers.MercadoPagoSettings>(builder.Configuration.GetSection("MercadoPagoSettings"));
-
-//Inyecciones de dependencias
 
 // Clientes
 builder.Services.AddScoped<IClienteServices, ClientesService>();
@@ -106,7 +102,6 @@ builder.Services.AddScoped<IAdminMapper, AdminMapper>();
 builder.Services.AddScoped<IProfesorService, ProfesorService>();
 builder.Services.AddScoped<IProfesorQuery, ProfesorQuery>();
 builder.Services.AddScoped<IProfesorCommand, ProfesorCommand>();
-builder.Services.AddScoped<IProfesorService, ProfesorService>();
 builder.Services.AddScoped<IProfesorMapper, ProfesorMapper>();
 
 // Descuento

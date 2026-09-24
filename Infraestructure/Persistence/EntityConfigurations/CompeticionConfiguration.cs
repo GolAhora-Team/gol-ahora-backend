@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,20 +24,17 @@ namespace Infraestructure.Persistence.EntityConfigurations
                 .HasMaxLength(250);
 
             entity.Property(c => c.Tipo)
-                .HasConversion<int>() // 👈 enum
-
+                .HasConversion<int>()
                 .IsRequired();
 
             entity.Property(c => c.CantidadEquipos)
                 .IsRequired();
 
-            // 🔗 Relación con Equipos
             entity.HasMany(c => c.Equipos)
                 .WithOne(e => e.Competicion)
                 .HasForeignKey(e => e.CompeticionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 🔗 Relación con Partidos (fixture real)
             entity.HasMany(c => c.Partidos)
                 .WithOne(p => p.Competicion)
                 .HasForeignKey(p => p.CompeticionId)
