@@ -416,3 +416,11 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Custom exclusions for Gol Ahora Backend
+apiOutput.zip
+*.zip
+publish_output/
+archivos para servidor/
+scratch/
+

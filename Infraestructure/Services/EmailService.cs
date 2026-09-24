@@ -23,10 +23,10 @@ namespace Infraestructure.Services
             {
                 var smtpServer = string.IsNullOrWhiteSpace(_emailSettings.SmtpServer) ? "smtp.gmail.com" : _emailSettings.SmtpServer;
                 var port = _emailSettings.Port <= 0 ? 587 : _emailSettings.Port;
-                var senderEmail = string.IsNullOrWhiteSpace(_emailSettings.SenderEmail) ? "complejogolahora@gmail.com" : _emailSettings.SenderEmail;
+                var senderEmail = _emailSettings.SenderEmail ?? string.Empty;
                 var senderName = string.IsNullOrWhiteSpace(_emailSettings.SenderName) ? "Complejo Gol Ahora" : _emailSettings.SenderName;
-                var password = string.IsNullOrWhiteSpace(_emailSettings.Password) ? "sgrr mapd bvgx kdeg" : _emailSettings.Password;
-                var enableSsl = string.IsNullOrWhiteSpace(_emailSettings.SmtpServer) ? true : _emailSettings.EnableSsl;
+                var password = _emailSettings.Password ?? string.Empty;
+                var enableSsl = _emailSettings.EnableSsl;
 
                 using var smtpClient = new SmtpClient(smtpServer)
                 {
@@ -66,10 +66,10 @@ namespace Infraestructure.Services
             {
                 var smtpServer = string.IsNullOrWhiteSpace(_emailSettings.SmtpServer) ? "smtp.gmail.com" : _emailSettings.SmtpServer;
                 var port = _emailSettings.Port <= 0 ? 587 : _emailSettings.Port;
-                var senderEmail = string.IsNullOrWhiteSpace(_emailSettings.SenderEmail) ? "complejogolahora@gmail.com" : _emailSettings.SenderEmail;
+                var senderEmail = _emailSettings.SenderEmail ?? string.Empty;
                 var senderName = string.IsNullOrWhiteSpace(_emailSettings.SenderName) ? "Complejo Gol Ahora" : _emailSettings.SenderName;
-                var password = string.IsNullOrWhiteSpace(_emailSettings.Password) ? "sgrr mapd bvgx kdeg" : _emailSettings.Password;
-                var enableSsl = string.IsNullOrWhiteSpace(_emailSettings.SmtpServer) ? true : _emailSettings.EnableSsl;
+                var password = _emailSettings.Password ?? string.Empty;
+                var enableSsl = _emailSettings.EnableSsl;
 
                 using var smtpClient = new SmtpClient(smtpServer)
                 {
