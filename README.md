@@ -160,15 +160,28 @@ El repositorio cuenta con un pipeline automatizado en **GitHub Actions** ([`.git
    cd Gol-Ahora-Backend
    ```
 
-2. **Configurar la cadena de conexión:**  
-   En `SistemaGolAhora/appsettings.json`, ajusta la clave `DefaultConnection` para que apunte a tu servidor local de SQL Server:
+2. **Configurar la base de datos (SQL Server):**  
+   Por defecto, `SistemaGolAhora/appsettings.Development.json` está configurado para **SQL Server LocalDB** (`Server=(localdb)\mssqllocaldb;Database=GolAhoraDb;...`).
+   
+   Si utilizas otra instancia, puedes editar `SistemaGolAhora/appsettings.json` o `appsettings.Development.json`:
    ```json
    {
      "ConnectionStrings": {
-       "DefaultConnection": "Server=localhost;Database=GolAhoraDb;Trusted_Connection=True;TrustServerCertificate=True;"
+       // Opción A: LocalDB (Visual Studio / Windows por defecto)
+       "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=GolAhoraDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+       
+       // Opción B: SQL Server Express local
+       // "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=GolAhoraDb;Trusted_Connection=True;TrustServerCertificate=True;"
+       
+       // Opción C: SQL Server en Docker
+       // "DefaultConnection": "Server=localhost,1433;Database=GolAhoraDb;User Id=sa;Password=YourPassword123!;TrustServerCertificate=True;"
      }
    }
    ```
+   > 💡 **Tip con Docker:** Puedes levantar un contenedor de SQL Server rápidamente con:
+   > ```bash
+   > docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourPassword123!" -p 1433:1433 --name sql-golahora -d mcr.microsoft.com/mssql/server:2022-latest
+   > ```
 
 3. **Restaurar paquetes y compilar:**
    ```bash
@@ -181,7 +194,20 @@ El repositorio cuenta con un pipeline automatizado en **GitHub Actions** ([`.git
    cd SistemaGolAhora
    dotnet run
    ```
-   > *Nota:* Al iniciar, la aplicación ejecuta automáticamente `context.Database.Migrate()` en [Program.cs](SistemaGolAhora/Program.cs), por lo que creará las tablas y relaciones en tu base de datos de manera desatendida.
+   > ⚡ **Migraciones automáticas (EF Core):** Al iniciar, la aplicación ejecuta automáticamente `context.Database.Migrate()` en [Program.cs](SistemaGolAhora/Program.cs), por lo que creará la base de datos, todas las tablas, relaciones y datos iniciales (Seed Data) de forma desatendida.
+
+---
+
+### 🔑 Usuarios de Prueba (Seed Data)
+
+Las migraciones de Entity Framework Core inicializan automáticamente la base de datos con los siguientes usuarios para pruebas inmediatas en Swagger UI o frontend:
+
+| Rol | Username | Email | Contraseña | Permisos / Tipo |
+| :--- | :--- | :--- | :--- | :--- |
+| **Administrador** | `admin` | `admin@golahora.com` | `1234` | Acceso completo (Admin, Tipo 3) |
+| **Personal / Staff** | `personal` | `personal@golahora.com` | `1234` | Gestión operativa / Staff (Tipo 3) |
+| **Profesor** | `profe` | `profe@golahora.com` | `1234` | Gestión de clases y asistencias (Tipo 2) |
+| **Cliente / Socio** | `cliente` | `cliente@golahora.com` | `1234` | Reservas y perfil de socio (Tipo 1) |
 
 ---
 
@@ -200,3 +226,22 @@ Desde allí podrás explorar, probar e interactuar con todos los endpoints RESTf
 - `/api/MercadoPago` — Preferencias de cobro y recepción de Webhooks.
 - `/api/User` y `/api/Clientes` — Autenticación, perfiles y recupero de clave.
 - `/api/Factura` y `/api/Pago` — Facturación, cobros y recibos.
+
+---
+
+## 👥 Equipo de Desarrollo (Grupo 4)
+
+Proyecto desarrollado para la cátedra de **Ingeniería de Software I**:
+- Antunes Julián
+- Araujo Julio
+- Espindola Nadia
+- Fabbio Benjamín
+- Florentín Javier
+- Salas Alejandro
+- Zalazar Ezequiel
+
+---
+
+<p align="center">
+  <sub>© 2026 Gol Ahora — Sistema Integral de Gestión Deportiva. Todos los derechos reservados.</sub>
+</p>
